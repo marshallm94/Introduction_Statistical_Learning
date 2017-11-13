@@ -120,6 +120,12 @@ When K = 3, the 3 "nearest neighbors" to the test point are green, red and red. 
 If the Bayes Decision Boundary is highly non-linear, then you could expect the best (most accurate) value for K to be small. The reason for this is as K increases, the Bayes Decision Boundary becomes less and less flexible (i.e. more and more linear) because, as the classifier takes more data points into consideration, each data point has less leverage on the decision boundary.
 
 
-
-
 # Applied
+
+```{r}
+# install packages
+install.packages("ISLR")
+library(ISLR)
+head(College)
+
+```
