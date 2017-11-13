@@ -149,10 +149,34 @@ $(document).ready(function () {
 <div id="section-3" class="section level2">
 <h2>4</h2>
 <p><strong>A</strong>.</p>
-<p>Classification would be useful when…</p>
+<p>Classification would be useful when …</p>
 <ul>
-<li><em>Situation 1</em> … you would want to determine which treatment method a new cancer patient would respond the best too. The response would be whether the patient went into remission and the predictors would include variables such as age, prevalence of cancer in family history, diet, genetic predispositions, etc (certainly not an easy task). The goal would be prediction, since you theoretically already know the patient has cancer and you would just like to predict the treatment for which they would respond the best.</li>
+<li><p><em>Situation 1</em> … you would want to determine which treatment method a new cancer patient would respond the best too. The response would be whether the patient went into remission and the predictors would include variables such as age, prevalence of cancer in family history, diet, genetic predispositions, etc (certainly not an easy task). The goal would be prediction, since you theoretically already know the patient has cancer and you would just like to predict the treatment for which they would respond the best.</p></li>
+<li><p><em>Situation 2</em> … you would want to determine whether a potential investment property would be a success or failure (Defining what a “successful” investment property is would be the important part). Given that we define a “successful” investment property as one that makes $10,000/year, the response would be whether other investment properties met that criteria, coded as 1 for success or 0 for failure, and the predictors could be location, rent per month, HOA fees, proximity to parks/malls, etc. Since the ultimate goal would be to decide whether you wanted to invest in the property or not, this would be a prediction problem.</p></li>
+<li><p><em>Situation 3</em> … you want to see how different demographic variables affect someone’s voting tendencies. Variables could include age, state of current residence, birth state, voting tendencies of parents, income, married, etc. The responce would be Democrate or Republican. Since the end goal is to see <em>how</em> each of the variables affect someone’s voting tendencies, this would be an inference problem.</p></li>
 </ul>
+<p><strong>B</strong>.</p>
+<p>Regression would be useful when …</p>
+<ul>
+<li><p><em>Situation 1</em> … you would like to understand how variables affect a customers ecommerce order amount. The response would be the total amount their “cart” was worth at the time of checkout and predictors could be advertising budget, date, the items in their cart and time spent at each webpage. The goal would be inference so as to <em>understand</em> how each variable affects the response.</p></li>
+<li><p><em>Situation 2</em> … you would like to predict the next price of a certain stock. Predictors would include the last price, current assets, current liabilities, NCAVPS, prevalence of company in news (to name a few) and the response would be the stocks price. Since the goal is to determine the next price, this would be a prediction problem.</p></li>
+<li><p><em>Situation 3</em> … you want to see how various health habits affect a person resting heart rate. Variables could include diet, time spent exercising per week, type of exercise, age, activity level at job and the reponse would be their resting heart rate. Sinc predicting someone’s resting heart rate isn’t of that much importantance, this would be an inference problem; you are looking to understand <em>how</em> each variable affects the response.</p></li>
+</ul>
+<p><strong>C</strong>.</p>
+<p>Cluster analysis would be useful when …</p>
+<ul>
+<li><p><em>Situation 1</em> … a company would like to see what similarities their customers have with one another. Clustering could be performed on location, income level, education, etc.</p></li>
+<li><p><em>Situation 2</em> … clinical researchers would like to see what similarities patients with Alzheimer’s disease have.</p></li>
+<li><p><em>Situation 3</em> … the authors of “An Introduction to Statistical Learning” want to see the various education levels of the people that bought their book.</p></li>
+</ul>
+</div>
+<div id="section-4" class="section level2">
+<h2>5</h2>
+<p>The advantages of a flexible learning method over a less flexible learning method are that flexible learning methods are typically going to be less biased than inflexible method (holding all else equal). However, with this comes the disadvantage that more flexible method are also prone to more variance. In addition, flexible methods are usually much less interpretable than inflexible methods, so if inference is the goal, an inflexible method might be a better option. If prediction is the goal and it doesn’t particularly matter if you understand how each variable affects the outcome, a more flexible method will most likely be more accurate.</p>
+</div>
+<div id="section-5" class="section level2">
+<h2>6</h2>
+<p>The main difference between parametric and non-parametric methods is that parametric methods make some assumption about the general shape of f(x). The advantages of this are that, give that the structure is defined, the challenge of estimating f(x) is reduced to one of estimating the parameters/coefficients of each regressor. On the other hand, non-parametric models make no assumption about the structure of f(x). For both regression and classification implementations of non-parametric methods, a large sample size is needed to reduce the chance of overfitting, so when n is small, a parametric approach is probably the better option.</p>
 </div>
 </div>
 
