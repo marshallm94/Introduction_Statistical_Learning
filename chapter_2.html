@@ -123,19 +123,36 @@ $(document).ready(function () {
 <h1>Conceptual</h1>
 <div id="section" class="section level2">
 <h2>1</h2>
-<p><strong>a</strong>. Given the sample size n is extremely large and the number of predictors p is small, I would expect a flexible learning method to outperform an inflexible method. Since n is large, there wouldn’t be a need to make any assumptions about f(x), which is the first step in an inflexible (parametric) learning method; the very size of n would give structure to f(x) and allowing the flexible method (non-parametric) to learn from the data without restrictions would produce a better model of the data, with little risk of overfitting due to large n.</p>
-<ol start="2" style="list-style-type: lower-alpha">
-<li><p>Given the numbers of predictors p is extremely high and the number of observations n is small, I would expect an inflexible method to outperform a flexible one. A flexible method runs the risk of modeling the noise in the data, leading to overfitting and a high test error rate. If some assumptions are made about the structure of f(x) (i.e. using a parametric/inflexible method), the risk of overfitting is lowered.</p></li>
-<li><p>Given the relationship between the predictors and the response is highly non-linear, I would expect a flexible method to outperform an inflexible method since the true f(x) is non-linear, and flexible learning methods don’t make any assumptions about the f(x).</p></li>
-<li><p>Given that the variance of the error terms is extremely high, I would expect an inflexible method to outperform a flexible one. Without making any assumptions about f(x) (inflexible/parametric), a flexible method has a relatively high probability of modeling the variance of the error terms as a part of f(x), whereas an inflexible method would reduce that probability, at least somewhat.</p></li>
-</ol>
+<p><strong>A</strong>. Given the sample size n is extremely large and the number of predictors p is small, I would expect a flexible learning method to outperform an inflexible method. Since n is large, there wouldn’t be a need to make any assumptions about f(x), which is the first step in an inflexible (parametric) learning method; the very size of n would give structure to f(x) and allowing the flexible method (non-parametric) to learn from the data without restrictions would produce a better model of the data, with little risk of overfitting due to large n.</p>
+<p><strong>B</strong>. Given the numbers of predictors p is extremely high and the number of observations n is small, I would expect an inflexible method to outperform a flexible one. A flexible method runs the risk of modeling the noise in the data, leading to overfitting and a high test error rate. If some assumptions are made about the structure of f(x) (i.e. using a parametric/inflexible method), the risk of overfitting is lowered.</p>
+<p><strong>C</strong>. Given the relationship between the predictors and the response is highly non-linear, I would expect a flexible method to outperform an inflexible method since the true f(x) is non-linear, and flexible learning methods don’t make any assumptions about the f(x).</p>
+<p><strong>D</strong>. Given that the variance of the error terms is extremely high, I would expect an inflexible method to outperform a flexible one. Without making any assumptions about f(x) (inflexible/parametric), a flexible method has a relatively high probability of modeling the variance of the error terms as a part of f(x), whereas an inflexible method would reduce that probability, at least somewhat.</p>
 </div>
 <div id="section-1" class="section level2">
 <h2>2</h2>
-<ol style="list-style-type: lower-alpha">
-<li><p>Since the question is interested in understanding which factors affect CEO salary, which is a quantitative metric, this would be a regression scenario and the word “understanding” lends towards an interest in inference, as opposed to prediction. n = 500 (firms) and p = 3 (profit, number of employees and industry).</p></li>
-<li><p>Determining whether a new product will be a success or failure is a classification problem, and since the response is binary, logistic regression would be a good starting (Although logistic regression has the word regression in it, due to the output of f(x) being quantitative, the output is a probability of an observation being classified as a success, therefore the method is ultimately used for classification problems). n = 20 (similar products) and p = 13 (price charged for product, marketing budget, competition price and 10 other variables).</p></li>
-</ol>
+<p><strong>A</strong>. Since the question is interested in understanding which factors affect CEO salary, which is a quantitative metric, this would be a regression scenario and the word “understanding” lends towards an interest in inference, as opposed to prediction. n = 500 (firms) and p = 3 (profit, number of employees and industry).</p>
+<p><strong>B</strong>. Determining whether a new product will be a success or failure is a classification problem, and since the response is binary, logistic regression would be a good starting (Although logistic regression has the word regression in it, due to the output of f(x) being quantitative, the output is a probability of an observation being classified as a success, therefore the method is ultimately used for classification problems). n = 20 (similar products) and p = 13 (price charged for product, marketing budget, competition price and 10 other variables).</p>
+<p><strong>C</strong>. Interest in prediction, and since metric of interest is quantitative, this would be a regression problem. n = 52 (weeks in 2012) and p = 3 (% change in the US market, % change in the British market and the % change in the German market.)</p>
+</div>
+<div id="section-2" class="section level2">
+<h2>3</h2>
+<p><strong>A</strong>. (see graphic)</p>
+<p><strong>B</strong>.</p>
+<ul>
+<li><p><em>The Bayes error curve</em> (dashed black line) will always be a flat line because it represents the irreducible error; even the best model cannot account for the natural variance of the error terms, hence the horizontal line.</p></li>
+<li><p><em>The training error curve</em> (solid red line) has downward sloping curve because, as more flexible learning methods are used, the method can always “explain away” all of the variance in the training data.</p></li>
+<li><p><em>The test error curve</em> (solid blue line) has a U-shape to it because, as more flexible methods are used, the test error is reduced <em>up until the point (red circle)</em> where the method begins to model the noise in the training data, which will lead to higher variance and therefore a higher test error rate. Note that the perfect method and model <strong>cannot</strong> go below the Bayes error curve.</p></li>
+<li><p><em>The (squared) bias curve</em> (dotted black line) has a downward sloping curve. Bias is defined as the error that occurs by attempting to model a real life relationship mathematically. So, the simpler (less flexible) the method, the more bias will be introduced (e.g. the probability that any real life relationship is <em>truly</em> linear is low). The more flexible the method, the closer the estimate of f(x) will be to the true f(x). (given a large enough sample size)</p></li>
+<li><p><em>The variance curve</em> (solid black line) has is upward sloping because as the flexiblility of the learning method increases, the more the data affect the estimate of f(x), therefore changing the data would change the estimate of f(x) drastically. On the other hand, using the least flexible method possible (horizontal line) as your way of estimating f(x), would have zero variance.</p></li>
+</ul>
+</div>
+<div id="section-3" class="section level2">
+<h2>4</h2>
+<p><strong>A</strong>.</p>
+<p>Classification would be useful when…</p>
+<ul>
+<li><em>Situation 1</em> … you would want to determine which treatment method a new cancer patient would respond the best too. The response would be whether the patient went into remission and the predictors would include variables such as age, prevalence of cancer in family history, diet, genetic predispositions, etc (certainly not an easy task). The goal would be prediction, since you theoretically already know the patient has cancer and you would just like to predict the treatment for which they would respond the best.</li>
+</ul>
 </div>
 </div>
 
