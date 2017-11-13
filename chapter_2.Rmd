@@ -49,7 +49,6 @@ has a U-shape to it because, as more flexible methods are used, the test error i
       
 ## 4
 **A**.
-
 Classification would be useful when ...
 
 * *Situation 1* ... you would want to determine which treatment method a new cancer patient would respond the best too. The response would be whether the patient went into remission and the predictors would include variables such as age, prevalence of cancer in family history, diet, genetic predispositions, etc (certainly not an easy task). The goal would be prediction, since you theoretically already know the patient has cancer and you would just like to predict the treatment for which they would respond the best.
@@ -59,7 +58,6 @@ Classification would be useful when ...
 * *Situation 3* ... you want to see how different demographic variables affect someone's voting tendencies. Variables could include age, state of current residence, birth state, voting tendencies of parents, income, married, etc. The responce would be Democrate or Republican. Since the end goal is to see *how* each of the variables affect someone's voting tendencies, this would be an inference problem.
 
 **B**.
-
 Regression would be useful when ...
 
 * *Situation 1* ... you would like to understand how variables affect a customers ecommerce order amount. The response would be the total amount their "cart" was worth at the time of checkout and predictors could be advertising budget, date, the items in their cart and time spent at each webpage. The goal would be inference so as to *understand* how each variable affects the response.
@@ -115,5 +113,10 @@ arrange(df3, Distance)
 **B**.
 When K = 1, the prediction for Y would be green because the "nearest neighbor" to the test point (at a distance of 1.41) is observation 5, which is green.
 
-**C**. 
+**C**.
+When K = 3, the 3 "nearest neighbors" to the test point are green, red and red. Therefore, P("Green" | X = 0) = 0.33 and P("Red" | X = 0) = 0.66 and the test point is assigned the classification with the highest probability, red.
+
+**D**.
+If the Bayes Decision Boundary is highly non-linear, then you could expect the best (most accurate) value for K to be small. The reason for this is as K increases, the Bayes Decision Boundary becomes less and less flexible (i.e. more and more linear) because, as the classifier takes more data points into consideration, each data point has less leverage on the decision boundary.
+
 
