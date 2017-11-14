@@ -120,12 +120,191 @@ When K = 3, the 3 "nearest neighbors" to the test point are green, red and red. 
 If the Bayes Decision Boundary is highly non-linear, then you could expect the best (most accurate) value for K to be small. The reason for this is as K increases, the Bayes Decision Boundary becomes less and less flexible (i.e. more and more linear) because, as the classifier takes more data points into consideration, each data point has less leverage on the decision boundary.
 
 
+
 # Applied
+
+## 8
+**A & B**.
+(As opposed to reading the data in with read.csv(), I'm going to install the ISLR package and reference the data manually; the row names are already assigned)
 
 ```{r}
 # install packages
-install.packages("ISLR")
 library(ISLR)
 head(College)
+```
 
+**C**.
+
+* *i*
+```{r}
+summary(College)
+```
+
+* *ii*
+```{r}
+pairs(College[,1:10])
+```
+
+* *iii*
+```{r}
+with(College, boxplot(Outstate, Private))
+title("Outstate vs. Private")
+```
+
+* *iv*
+```{r}
+# repeat the string "No" 777 times (number of rows in College data set)
+Elite <- rep("No", nrow(College))
+# for every observation in College, if the value in the Top10perc is greater than 50, assign "Yes" to that matching index of Elite 
+Elite[College$Top10perc > 50] <- "Yes"
+Elite <- as.factor(Elite)
+College <-  data.frame(College, Elite)
+summary(College$Elite)
+with(College, boxplot(Outstate, Elite))
+title("Outstate vs Elite")
+```
+
+* *v*
+```{r}
+par(mfrow = c(2,2))
+hist(College$Books)
+hist(College$Outstate)
+hist(College$Personal)
+hist(College$Room.Board)
+```
+
+* *vi*
+```{r basic_eda}
+library(ggplot2)
+qplot(College$Expend)
+qplot(y = Grad.Rate, x = Expend, data = College)
+qplot(y = perc.alumni, x = Expend, data = College)
+```
+
+A couple conclusions can be drawn from the above graphs:
+
+1. The average amount spent on each student by universities is roughly $9,500
+2. Although there are few universities in the data set that do spend more than $25,000 per student, those that do have graduation rates at or above 90% (excluding one outlier)
+3. There seems to be a positive relationship betwwen the percent of alumni that donate to the university and the instructional expenditure per student. (Not a strong relationship however)
+
+
+## 9
+```{r}
+sum(is.na(Auto))
+str(Auto)
+```
+**A**.
+* *Quantitative* mpg, cylinders, displacement, horsepower, weight, acceleration, year
+* *Qualitative* origin, name
+
+**B**.
+```{r}
+lapply(Auto[1:7], range)
+```
+
+**C**.
+```{r}
+lapply(Auto[c(1,2,3,4,5,6,7)], mean)
+lapply(Auto[c(1,2,3,4,5,6,7)], sd)
+```
+
+**D**.
+```{r}
+df <- Auto[-c(10:85),]
+lapply(df[1:7], range)
+lapply(df[c(1,2,3,4,5,6,7)], mean)
+lapply(df[c(1,2,3,4,5,6,7)], sd)
+```
+
+**E**.
+```{r}
+pairs(Auto)
+```
+
+Although using the pairs function doesn't creat the most visually appealing, it does allow quick views of how the relationship between each variable and all the other. Most notably, there seem so be a negative linear relationship between mpg and displacement, horsepower and weight. Conversely, as one would expect those thee variable seem to have positive linear relationships with one another.
+
+**F**.
+As stated in my previous answer, it seems as though displacement, horsepower and weight all have negative linear relationships with mpg. We can take a closer look by zooming in on how those specific variable relate to mpg. Creating a rough linear model of mpg as predicted by the other three variables (displacement, horsepower and weight) returns a model that explains 70% of the variance in mpg.
+
+```{r}
+qplot(y = mpg, x = displacement, data = Auto)
+qplot(y = mpg, x = horsepower, data = Auto)
+qplot(y = mpg, x = weight, data = Auto)
+fit <- lm(mpg ~ displacement + horsepower + weight, data = Auto)
+summary(fit)
+```
+
+
+## 10
+**A**.
+```{r}
+library(MASS)
+dim(Boston)
+```
+
+There are 506 observations (suburbs in Boston) and 14 columns, representing various attributes of the suburbs. (e.g. the variable "crim" is the per capita crime rate by town)
+
+**B**.
+```{r}
+library(corrplot)
+cors <- cor(Boston)
+corrplot(cors)
+qplot(dis, tax, data = Boston)
+qplot(rad, tax, data = Boston)
+```
+
+Looking at the correlation matrix , the tax and dis variables have a relatively negative correlation and tax and rad (index of accessibility to radial highways) are the most positively correlated variables in the data set. Looking closer at these two relationships, both have data points with high leverage.
+
+**C**.
+Referencing the correlation matrix, the rad and tax variables are the ones that are the most correlated with per capita crime rate (crim).
+
+```{r}
+qplot(rad, crim, data = Boston)
+qplot(tax, crim, data = Boston)
+```
+
+Both of these plots have the same basic shape in that as rad/tax increase to close to their maximum values, the distribution of crim is becomes much more spread out. Given any value for tax (rad) up to roughly 450 (8), crim deviates very little. However, once the tax (rad) approach their maximum values, the values for crim have a much higher variance.
+
+**D**.
+It seem that the vast majority of suburbs in Boston have low per capita crime rates. However, their is a long tail on the histogram, indicating that certain suburbs have very high crime rates. Subsetting the data to only those suburbs with crime rates greater than 30, one commonality that jumps out is the age variable; most of the units in these suburbs are older (built before 1940).
+
+```{r}
+# high crime rates
+qplot(crim, data = Boston, binwidth = 5)
+subset(Boston, crim > 30)
+
+# high tax rates
+qplot(tax, data = Boston)
+
+# pupil-teacher ratio
+qplot(ptratio, data = Boston)
+```
+
+While crime and tax rates have a unique distribution, the pupil-teacher ratio distribution doesn't have any exteme tails.
+
+**E**.
+35 suburbs bound the Charles River.
+
+```{r}
+table(Boston$chas)
+```
+
+**F**.
+```{r}
+median(Boston$ptratio)
+```
+
+**G**.
+Suburbs 399 and 406 have the lowest median value of owner occupied homes. Both of these suburbs are in the upper extremes of most of the other variables as well; all units in both suburbs were build before 1940, both have crime rates that are in the tail of the distribution, have high black populations, high levels of nitrogen oxide.
+```{r}
+subset(Boston, medv == min(Boston$medv))
+```
+
+**H**.
+64 suburbs average more than 7 rooms per dwelling and 13 average more than 8 per dwelling. All of the suburbs that average more than 8 rooms per dwelling have mostly older buildings, and, most notably, have the highest median value of owner-occupied homes in the data set.
+
+```{r}
+nrow(subset(Boston, rm > 7))
+nrow(subset(Boston, rm > 8))
+subset(Boston, rm > 8)
 ```
