@@ -123,45 +123,45 @@ $(document).ready(function () {
 <h1>Conceptual</h1>
 <div id="section" class="section level2">
 <h2>1</h2>
-<p>The null hypothesis that the P-values in Table 3.4 (reproduced below) are calculated on is that coefficients to all the variables in the model (TV, Radio and Newspaper) are zero. That is… <span class="math display">\[H_0:\beta_{tv} = \beta_{radio} = \beta_{newspaper} = 0\]</span> and the alternate hypothesis is at least one of the coefficients is non-zero… <span class="math display">\[H_A:~~\beta_{tv},~~\beta_{radio}~~or~~\beta_{newspaper} ≠ 0\]</span></p>
+<p>The null hypothesis that the P-values in Table 3.4 (reproduced below) are calculated on is that coefficients to all the variables in the model (TV, Radio and Newspaper) are zero. That is… <span class="math display">\[H_0:~~\beta_{tv} = \beta_{radio} = \beta_{newspaper} = 0\]</span> and the alternate hypothesis is at least one of the coefficients is non-zero… <span class="math display">\[H_A:~~\beta_{tv},~~\beta_{radio}~~or~~\beta_{newspaper} ≠ 0\]</span></p>
 <p>The conclusions that can be drawn from the P-values in the table are that <em>TV</em> and <em>Radio</em> have some relationship with <em>Sales</em> with practically complete certainty (the probability of observing those t-statistic’s by chance given the null hypotheis is less than 0.01%). On the other hand, given the null hypothesis, we would expect to observe a t-statistic greater than or equal to that of <em>Newspaper’s</em> 85.99% of the time, and thus we fail to reject the null hypothesis that <em>Newspaper</em> has an affect on <em>Sales.</em></p>
 <table>
 <thead>
 <tr class="header">
 <th align="left">Variable</th>
-<th align="right">Coefficient</th>
-<th align="right">Std_Error</th>
-<th align="right">t_statistic</th>
+<th align="left">Coefficient</th>
+<th align="left">Std_Error</th>
+<th align="left">t_statistic</th>
 <th align="left">p_value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">Intercept</td>
-<td align="right">2.939</td>
-<td align="right">0.3119</td>
-<td align="right">9.42</td>
+<td align="left">2.939</td>
+<td align="left">0.3119</td>
+<td align="left">9.42</td>
 <td align="left">&lt; 0.0001</td>
 </tr>
 <tr class="even">
 <td align="left">TV</td>
-<td align="right">0.046</td>
-<td align="right">0.0014</td>
-<td align="right">32.81</td>
+<td align="left">0.046</td>
+<td align="left">0.0014</td>
+<td align="left">32.81</td>
 <td align="left">&lt; 0.0001</td>
 </tr>
 <tr class="odd">
 <td align="left">radio</td>
-<td align="right">0.189</td>
-<td align="right">0.0086</td>
-<td align="right">21.89</td>
+<td align="left">0.189</td>
+<td align="left">0.0086</td>
+<td align="left">21.89</td>
 <td align="left">&lt; 0.0001</td>
 </tr>
 <tr class="even">
 <td align="left">Newspaper</td>
-<td align="right">-0.001</td>
-<td align="right">0.0059</td>
-<td align="right">-0.18</td>
+<td align="left">-0.001</td>
+<td align="left">0.0059</td>
+<td align="left">-0.18</td>
 <td align="left">0.8599</td>
 </tr>
 </tbody>
@@ -170,6 +170,12 @@ $(document).ready(function () {
 <div id="section-1" class="section level2">
 <h2>2</h2>
 <p>The main difference between the <em>KNN classifier</em> and <em>KNN regression</em> methods is that the <em>KNN classifier</em> outputs a qualitative prediction and <em>KNN regression</em> ouputs a quantitative prediction.</p>
+<p>Mathematically, <em>KNN classification</em> takes the K nearest training observations to test obersvation x<sub>0</sub>, and takes a majority vote on which class x<sub>0</sub> will be. For example, if you set <em>K = 5</em>, and you have two possible classes, <em>A</em> or <em>B</em>, <em>KNN classifcation</em> takes the 5 training observations closest to your test observation x<sub>0</sub>, say 3 <em>A</em>’s and 2 <em>B</em>’s, and classifies x<sub>0</sub> as <em>A</em> because there are more <em>A</em>’s in the 5 nearest neighbors than <em>B</em>’s.</p>
+<p><em>KNN regression</em> takes the <em>average</em> of the K nearest neighbors’ <em>quantitative output</em>. For example, again using the example where <em>K = 5</em>, if the 5 training observations closest to x<sub>0</sub> have respective response values of 16, 22, 14, 24 and 18, then <em>KNN regression</em> takes their average and gives the test observation x<sub>0</sub> that value…<span class="math display">\[\frac{16+22+14+24+18}{5} = 18.8 = y_0\]</span></p>
+</div>
+<div id="section-2" class="section level2">
+<h2>3</h2>
+<p>To answer this question, the first step I took was to write out and simplify the model:<span class="math display">\[\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_4~+~\hat{\beta_5}X_5\]</span>Which, rewritten to express the interaction terms is:<span class="math display">\[\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3\]</span>Now, X<sub>3</sub> is a binary variable, which means we can “split” this equation into two separate equations, based on the value of X<sub>3</sub>, where a value of 1 = Female and 0 = Male. Thus:<span class="math display">\[\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Female\]</span><span class="math display">\[\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Male\]</span>X<sub>5</sub> is an interaction term between Gender and GPA, so if Gender = Male (that is to say X<sub>3</sub> = 0) we can rewrite the above Male equation as:<span class="math display">\[\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~0~~~if~x_i~is~Male\]</span>And the Female equation, where X<sub>3</sub> = 1, becomes:<span class="math display">\[\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1~~~if~x_i~is~Female\]</span></p>
 </div>
 </div>
 
