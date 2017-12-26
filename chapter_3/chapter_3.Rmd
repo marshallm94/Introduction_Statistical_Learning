@@ -1,0 +1,40 @@
+# Conceptual
+
+## 1
+
+The null hypothesis that the P-values in Table 3.4 (reproduced below) are calculated on is that coefficients to all the variables in the model (TV, Radio and Newspaper) are zero. That is... $$H_0:\beta_{tv} = \beta_{radio} = \beta_{newspaper} = 0$$
+and the alternate hypothesis is at least one of the coefficients is non-zero... $$H_A:~~\beta_{tv},~~\beta_{radio}~~or~~\beta_{newspaper} ≠ 0$$
+
+The conclusions that can be drawn from the P-values in the table are that *TV* and *Radio* have some relationship with *Sales* with practically complete certainty (the probability of observing those t-statistic's by chance given the null hypotheis is less than 0.01%). On the other hand, given the null hypothesis, we would expect to observe a t-statistic greater than or equal to that of *Newspaper's* 85.99% of the time, and thus we fail to reject the null hypothesis that *Newspaper* has an affect on *Sales.*
+
+
+```{r, echo = FALSE}
+library(knitr)
+df <-  data.frame(Variable = c("Intercept",
+                               "TV",
+                               "radio",
+                               "Newspaper"),
+                  Coefficient = c(2.939,
+                                  0.046,
+                                  0.189,
+                                  -0.001),
+                  Std_Error = c(0.3119,
+                                 0.0014,
+                                 0.0086,
+                                 0.0059),
+                  t_statistic = c(9.42,
+                                  32.81,
+                                  21.89,
+                                  -0.18),
+                  p_value = c("< 0.0001",
+                              "< 0.0001",
+                              "< 0.0001",
+                              "0.8599")
+                  )
+kable(df)
+```
+
+
+## 2
+
+The main difference between the *KNN classifier* and *KNN regression* methods is that the *KNN classifier* outputs a qualitative prediction and *KNN regression* ouputs a quantitative prediction.
