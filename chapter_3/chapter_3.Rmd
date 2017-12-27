@@ -2,10 +2,10 @@
 
 ## 1
 
-The null hypothesis that the P-values in Table 3.4 (reproduced below) are calculated on is that coefficients to all the variables in the model (TV, Radio and Newspaper) are zero. That is... $$H_0:~~\beta_{tv} = \beta_{radio} = \beta_{newspaper} = 0$$
+The null hypothesis that the P-values in Table 3.4 (reproduced below) are calculated on is that at least one of the coefficients to all the variables in the model (TV, Radio and Newspaper) are zero. That is... $$H_0:~~\beta_{tv},~\beta_{radio}~or~\beta_{newspaper} = 0$$
 and the alternate hypothesis is at least one of the coefficients is non-zero... $$H_A:~~\beta_{tv},~~\beta_{radio}~~or~~\beta_{newspaper} ≠ 0$$
 
-The conclusions that can be drawn from the P-values in the table are that *TV* and *Radio* have some relationship with *Sales* with practically complete certainty (the probability of observing those t-statistic's by chance given the null hypotheis is less than 0.01%). On the other hand, given the null hypothesis, we would expect to observe a t-statistic greater than or equal to that of *Newspaper's* 85.99% of the time, and thus we fail to reject the null hypothesis that *Newspaper* has an affect on *Sales.*
+The conclusions that can be drawn from the P-values in the table are that *TV* and *Radio* have some relationship with *Sales* with practically complete certainty (the probability of observing those t-statistic's by chance given the null hypotheis is less than 0.01%). On the other hand, given the null hypothesis, we would expect to observe a t-statistic greater than or equal to that of *Newspaper's* 85.99% of the time, and thus we fail to reject the null hypothesis that *Newspaper* has any effect on *Sales.*
 
 
 ```{r, echo = FALSE}
@@ -45,4 +45,38 @@ Mathematically, *KNN classification* takes the K nearest training observations t
 
 ## 3
 
-To answer this question, the first step I took was to write out and simplify the model:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_4~+~\hat{\beta_5}X_5$$Which, rewritten to express the interaction terms is:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3$$Now, X~3~ is a binary variable, which means we can "split" this equation into two separate equations, based on the value of X~3~, where a value of 1 = Female and 0 = Male. Thus:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Female$$$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Male$$X~5~ is an interaction term between Gender and GPA, so if Gender = Male (that is to say X~3~ = 0) we can rewrite the above Male equation as:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~0~~~if~x_i~is~Male$$And the Female equation, where X~3~ = 1, becomes:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$
+To answer this question, the first step I took was to write out and simplify the model:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_4~+~\hat{\beta_5}X_5$$Which, rewritten to express the interaction terms is:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3$$Now, X~3~ is a binary variable, which means we can "split" this equation into two separate equations, based on the value of X~3~, where a value of 1 = Female and 0 = Male. Thus:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Female$$$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Male$$X~5~ is an interaction term between Gender and GPA, so if Gender = Male (that is to say X~3~ = 0) we can rewrite the above Male equation as:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~0~~~if~x_i~is~Male$$And the Female equation, where X~3~ = 1, becomes:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$Finally, we can move a few things around to get our final equations:$$\hat{y_i}~=~\hat{\beta_o}~+~X_1\left( \hat{\beta_1}~+~\hat{\beta_4}X_2 \right)~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$$$\hat{y_i}~=~\hat{\beta_o}~+~X_1\left(\hat{\beta_1}~+~\hat{\beta_4}X_2\right)~+~\hat{\beta_2}X_2~~~if~x_i~is~Male$$Simplified:
+$$
+    \hat{y_i}~=~\begin{cases}
+        \hat{\beta_o}~+~\tilde{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_5}X_1,~~~if~x_i~=~Female\\
+        \hat{\beta_o}~+~\tilde{\beta_1}X_1~+~\hat{\beta_2}X_2,~~~if~x_i~=~Male  
+        \end{cases} ~where~\tilde{\beta_1}~=~\hat{\beta_1}~+~\hat{\beta_4}X_2  
+$$
+
+**A**.
+$$
+    \hat{y_i}~=~\begin{cases}
+        50~+~\tilde{\beta_1}X_1~+~0.07X_2~+~35~+~(-10)X_1,~~~if~x_i~=~Female\\
+        50~+~\tilde{\beta_1}X_1~+~0.07X_2,~~~if~x_i~=~Male  
+        \end{cases} ~where~\tilde{\beta_1}~=~20~+~0.01X_2  
+$$
+Once simplified down to the above two equations, it isn't necessary to put in multiple testing values to see that the correct answer is *iii:* **for a fixed value of IQ and GPA, males earn more on average than females provided that the GPA is high enough.** This is easy to see because the equations have the exact same ouput through the third term in the equation (0.07X~2~). The caveat *..provided that the GPA is high enough.* is necessary because GPA (X~1~) needs to be high enough (> 3.5, to be exact) in order to offset addition of 35 in the female equation. If GPA < 3.5, the prediction for females will be 25, 15 and 5 higher than males for GPA values of 1, 2 and 3 respectively. However, for GPA values that are greater than 3.5, the fifth term in the Female equation becomes greater than the fourth term (35), leading to a decrease in the Female prediction relative to the Male prediction.
+
+**B**.
+$$\hat{y_i}~=~50~+~(4)\left(20~+~0.01(110)\right)~+~0.07(110)~+~35~+~(-10)(4)~=~137.1~(~137,100~dollars~)$$
+**C**.
+False. Without knowing the standard error for the GPA/IQ interaction coefficient, we can't say that there is little evidence for the interaction. The value of the coefficent itself does not lend any information about how confident we are in that value. In order to find this out, we would use the standard error of the coefficient to construct a confidence interval for said coefficient. If that confidence interval contains 0, than there might not be an interaction at all.
+
+
+## 4
+**A**.
+Given the true relationship between X and Y is linear, and two models are fit (model~1~ being simple linear regression and model~2~ being cubic regression), we would expect model~2~ to have a lower (better) RSS on the training data, since the more there is a negative linear relationship between the flexibility in learning methods used, and the training error rate (the more flexible the model, the more of the irreducible error will be explained away in the training data, masking itself as a better model).
+
+**B**.
+Using the test RSS, model~1~ (linear) would outperform model~2~ (cubic), because, in this case, model~1~ represents the true relationship between X and Y perfectly, and the only variance left is that of the irreducible error, which can't be predicted, so the model is "perfect" in the sense that everything that can be modeled is accounted for.
+
+**C**.
+Given that the true relationship between X and Y is not linear, and we don't know how far from linear it is, once again, we would expect the cubic regression to have a lower training RSS than the simple linear model. The cubic (more flexible) learning method will be able to "predict" responses that are closer to the training responses because it doesn't make the assumption that the unknown *f(x)~true~* is linear.
+
+**D**.
+Given that the true relationship between X and Y is not linear, but we don't know how far it is from linear, we don't have enough information to definitively say which model will have a lower test RSS. Whichever model (simple linear regression or cubic regression) is closer to the true relationship between X and Y will have the lower test RSS, however since we don't know which is closer, we can't say (I image this is the main challenge of most statistical models.)
