@@ -43,6 +43,7 @@ Mathematically, *KNN classification* takes the K nearest training observations t
 
 *KNN regression* takes the *average* of the K nearest neighbors' *quantitative output*. For example, again using the example where *K = 5*, if the 5 training observations closest to x~0~ have respective response values of 16, 22, 14, 24 and 18, then *KNN regression* takes their average and gives the test observation x~0~ that value...$$\frac{16+22+14+24+18}{5} = 18.8 = y_0$$
 
+
 ## 3
 
 To answer this question, the first step I took was to write out and simplify the model:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_4~+~\hat{\beta_5}X_5$$Which, rewritten to express the interaction terms is:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3$$Now, X~3~ is a binary variable, which means we can "split" this equation into two separate equations, based on the value of X~3~, where a value of 1 = Female and 0 = Male. Thus:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Female$$$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Male$$X~5~ is an interaction term between Gender and GPA, so if Gender = Male (that is to say X~3~ = 0) we can rewrite the above Male equation as:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~0~~~if~x_i~is~Male$$And the Female equation, where X~3~ = 1, becomes:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$Finally, we can move a few things around to get our final equations:$$\hat{y_i}~=~\hat{\beta_o}~+~X_1\left( \hat{\beta_1}~+~\hat{\beta_4}X_2 \right)~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$$$\hat{y_i}~=~\hat{\beta_o}~+~X_1\left(\hat{\beta_1}~+~\hat{\beta_4}X_2\right)~+~\hat{\beta_2}X_2~~~if~x_i~is~Male$$Simplified:
@@ -79,4 +80,273 @@ Using the test RSS, model~1~ (linear) would outperform model~2~ (cubic), because
 Given that the true relationship between X and Y is not linear, and we don't know how far from linear it is, once again, we would expect the cubic regression to have a lower training RSS than the simple linear model. The cubic (more flexible) learning method will be able to "predict" responses that are closer to the training responses because it doesn't make the assumption that the unknown *f(x)~true~* is linear.
 
 **D**.
-Given that the true relationship between X and Y is not linear, but we don't know how far it is from linear, we don't have enough information to definitively say which model will have a lower test RSS. Whichever model (simple linear regression or cubic regression) is closer to the true relationship between X and Y will have the lower test RSS, however since we don't know which is closer, we can't say (I image this is the main challenge of most statistical models.)
+Given that the true relationship between X and Y is not linear, and we don't know how far it is from linear, we don't have enough information to definitively say which model will have a lower test RSS. Whichever model (simple linear regression or cubic regression) is closer to the true relationship between X and Y will have the lower test RSS, however since we don't know which is closer, we can't say (I image this is the main challenge of most statistical models.)
+
+
+## 5
+
+$$\hat{y_i}~=~x_i\hat{\beta}~~~~~and~~~~~\hat{\beta}~=~\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}}$$
+$$\hat{y_i}~=~x_i\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}}$$
+$$\hat{y_i}~=~\left( \frac{x_i}{1} \right)\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}}$$
+
+$$\hat{y_i}~=~\sum_{i=1}^{n} \left( \frac{x_i}{1} \right)\left( \frac{\sum_{i=1}^{n} x_{i'}y_{i'} }{\sum_{k=1}^n x^2_{k}} \right)$$
+$$\hat{y_i}~=~\sum_{i=1}^{n} \left( \frac{x_i}{1} \right) \left( \frac{y_i}{1} \right)\left( \frac{\sum_{i=1}^{n} x_{i'} }{\sum_{k=1}^n x^2_{k}} \right)$$
+$$\hat{y_i}~=~\sum_{i=1}^{n} \left( \frac{y_i}{1} \right)\left( \frac{\sum_{i=1}^{n} x_ix_{i'}}{\sum_{k=1}^n x^2_{k}} \right)$$
+
+$$\hat{y_i}~=~\sum_{i=1}^{n} \left( \frac{\sum_{i=1}^{n} x_{i}x_{i'} }{\sum_{k=1}^n x^2_{k}} \right)y_{i'}$$
+$$\hat{y_i}~=~\sum_{i=1}^{n} a_{i'}y_{i'}~~~where~~~ a_{i'}~=~\left( \frac{\sum_{i=1}^{n} x_ix_{i'} }{\sum_{k=1}^n x^2_{k}} \right)$$
+
+## 6
+We start with the minimizers for $\hat{\beta_1}$ and $\hat{\beta_0}$ and the general structure of *f(x)* under the assumption of simple linear regression:
+$$\hat{\beta_0}~=~\bar{y}-\hat{\beta_1}\bar{x}$$
+$$\hat{y_i}~=~\hat{\beta_0}~+~\hat{\beta_1}x_i$$
+
+## 7
+
+
+
+# Applied
+
+## 8
+**A**.
+```{r}
+library(ISLR)
+attach(Auto)
+fit <- lm(mpg ~ horsepower)
+summary(fit)
+```
+
+* *i*
+With a P-value of $2\mathrm{e}{-16}$, we can say that there is a statistically significant relationship between horsepower and mpg.
+
+* *ii*
+While there is a relationship betweent the predictor and the response, it isn't overly strong; only 60% of the variance in mpg is explained by horsepower.
+
+* *iii*
+The relationship is negative
+```{r}
+coef(fit)[2]
+```
+
+* *iv*
+```{r}
+predict(fit, data.frame(horsepower = 98), interval = "confidence")
+predict(fit, data.frame(horsepower = 98), interval = "prediction")
+```
+
+**B**.
+```{r}
+plot(horsepower, mpg, pch = 16, col = "blue")
+abline(fit, lwd = 3, col = "red")
+```
+
+**C**.
+```{r}
+par(mfrow = c(2,2))
+plot(fit)
+```
+
+We can see from the Residuals vs. Leverage plot that no single observation has a huge amount of influence on the regression line; Cooks Distance is not observable within the plot. However, looking at the Residuals vs. Fitted, we can see some evidence of non-linearity; observations with low and high fitted values have positive residuals, while those in the middle of the fitted value scale tend to be negative. This suggests that a model that is quadratic to some degree might be a better model. Looking back at the plot in **B**, we can see that a quadratic fit does seem to fit the data better than a linear model.
+
+Looking at the Residuals vs. Fitted Values plot below (after adding a quadratic term to the model), this does seem to even out the Residuals to some extent
+
+```{r}
+par(mfrow = c(2,2))
+fit2 <- lm(mpg ~ horsepower + I(horsepower^2))
+plot(fit2)
+```
+
+
+## 9
+**A**.
+
+```{r}
+pairs(Auto, pch = 16)
+```
+
+**B**.
+```{r}
+dat <- subset(Auto, select = -name)
+cors <- cor(dat)
+cors
+```
+
+**C**.
+```{r}
+fit <- lm(mpg ~ ., data = dat)
+summary(fit)
+```
+
+* *i*
+Judging from the F-statisic of 252, and a corresponding P-value of effectively 0, we can say that there is a statistically significant relationship between the predictors (as a whole) and the response.
+
+* *ii*
+All variable except acceleration, horsepower and cylinders have statistically significant relationships with the response.
+
+* *iii*
+0.75, the coefficient for the year variable suggests that, *holding all other (measured) variables constant*, we would see a 0.75 increase in mpg with a one unit increase in year. In other words, we would expect a vehicle produced in 1981 to have a 0.75 increase in mpg over the exact same vehicle, but produced in 1980.
+
+**D**.
+```{r}
+par(mfrow = c(2,2))
+plot(fit)
+```
+
+Looking at the Residuals vs. Fitted Values plot, it seems that our model is a relatively good fit to the data; the smooth fit to the residuals is slightly concave, indicating there might be a quadratic relationship between one of the variables and the response. In addition, the residuals appear slightly heteroscedastic, which would require further investigation and a possible transformation of one of the variables.
+
+The Residual plots as well as the Normal Q-Q plot suggest that observations 326, 327 and 323 are outliers, having greater values than we might expect given the Normal assumption (the right tail of the residual distribution is heavier than we would expect under the Normal assumption). In addition, observation 14 has the highest leverage on our model, although not a huge amount of influence since the residual isn't overly extreme.
+
+**E**.
+```{r}
+fit3 <- lm(mpg ~ displacement*weight, data = dat)
+fit4 <- lm(mpg ~ horsepower*displacement, data = dat)
+summary(fit4)
+summary(fit3)
+par(mfrow = c(2,2))
+plot(fit4)
+```
+By building a couple models with interaction terms between some highly correlated variables, we can see that there is statistically significant evidence against the additive assumption of the linear model. The model with the interaction between displacement and horsepower explains more variance in mpg than the other model.
+
+**F**.
+Since there seems to be statistical evidence that the additve assumption of the linear model is incorrect, keeping the horsepower*displacement interaction term in our model would be prudent. In addition, there seems to be slight heteroscedasticity in our residuals. This can be seen by both the slight upward trend in the Scale-Location plot, as well as the increasing spread in the Residuals vs. Fitted Values plot.
+
+The final model includes all the variable except cyclinders, in addition tonthe horsepower*displacement interaction term. I used a log transformation of the response in an attempt to reduce the heteroscedasticity.
+
+(My understanding of the interpretation of the each $\hat{\beta_j}$ when a log transformation is used on the response variable is that a one unit increase in $X$ results in a $(100\hat{\beta_j})$% change in $Y$)
+```{r}
+par(mfrow = c(2,2))
+fit <- lm(log(mpg + 1) ~ horsepower*displacement + (.-cylinders), data = dat)
+summary(fit)
+plot(fit)
+```
+
+## 10
+**A**.
+```{r}
+fit <- lm(Sales ~ Price + Urban + US, data = Carseats)
+```
+
+**B**.
+
+* **Price** - The coefficient for Price can be interpreted as: A one unit increase in Price can be expected to result in a decrease in Sales of 54 units *on average*.
+
+* **UrbanYes** - The coefficient for UrbanYes can be interpreted as: If the store is located in an Urban area, there will be an expected decrease in Sales of 22 units *on average*.
+
+* **USYes** - The coefficient for USYes can be interpreted as: If the store is located in the US, there will be an expected increase in Sales of 1,201 units *on average*.
+
+```{r}
+summary(fit)
+```
+
+**C**.
+$$
+    \hat{y_i}~=~13.04~-~0.054Price\begin{cases}
+        ~-~0.022,~~~if~Urban~=~Yes~and~US~=~No\\
+        ~+~1.201,~~~if~Urban~=~No~and~US~=~Yes\\
+        ~-~0.022~+~1.201,~~~if~Urban~=~Yes~and~US~=~Yes\\
+        ~+~0,~~~~Otherwise\\
+        \end{cases}  
+$$
+**D**.
+Price and US have P-values low enough to suggest statistical significance, and therefore we can reject the null hypothesis for those predictors. However, Urban has a very high P-value, and therefore we can not reject the null hypothesis for that predictor.
+
+**E**.
+```{r}
+fit2 <- lm(Sales ~ Price + US, data = Carseats)
+```
+
+**F**.
+Both linear models fit the data very similarly, however relatively poorly; the $R^2$ value of 0.24 tells us that both models only explain 24% of the variation in the response. While the RSE is low at first glance, Sales are measured in *thousands* of units. Therefore, the RSE of roughly 2.47 translates to the predicted value of *Sales* being off by an average of 2,470 units.
+```{r}
+summary(fit)
+summary(fit2)
+```
+
+**G**.
+```{r}
+confint(fit2)
+```
+
+**H**.
+Observations 377 and 69 could be considered outliers under certain circumstances, however, considering the large scale of the residuals, in my opinion they aren't extreme enough to warrant removal from the data set. In addition, looking at the Residuals vs. Leverage plot, no observations seem to influence the regression line more than others.
+```{r}
+par(mfrow = c(2,2))
+plot(fit2)
+```
+
+## 11
+```{r}
+set.seed(1)
+x <- rnorm(100)
+y <- 2*x + rnorm(100)
+```
+
+**A**.
+```{r}
+fit <- lm(y ~ x + 0)
+summary(fit)
+```
+
+The P-value of the coefficient for $X$ suggest statistical significance, and the null hypthosis that $H_0:\beta~=~0$ is rejected.
+
+**B**.
+```{r}
+fit2 <- lm(x ~ y + 0)
+summary(fit2)
+```
+
+Looking at the model of $X$ regressed onto $Y$, once again the P-value suggests that there is statistical evidence of relationship between $Y$ and $X$, and the null hypothesis $H_0:\beta~=~0$ is rejected.
+
+**C**.
+The results from (a) and (b) show that the equation: $$\hat{y_i}~=~\hat{\beta_1}X_1~+~\epsilon~~~~~=~~~~~\hat{x_i}~=~\frac{1}{\hat{\beta_1}}\left( Y_1~-~\epsilon \right)$$
+
+**D**.
+Note: I'm doing this one step at a time, so the simplification will be long-winded.
+$$Given:~~~~~\hat{\beta}~=~\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}~~~~~and~~~~~SE(\beta)~=~\sqrt{\frac{ \sum_{i=1}^{n} \left( y_i - x_i\hat{\beta} \right)^2 }{\left( n - 1 \right) \sum_{i'=1}^{n} x^2_{i'}}}~~~~~and~~~~~t~=~\frac{\hat{\beta}} {SE\left( \hat{\beta} \right)}$$
+
+$$t~=~\left( \frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}} \right) / \left( \frac{\sqrt{ \sum_{i=1}^{n} \left( y_i - x_i\hat{\beta} \right)^2 }} {\sqrt{\left( n - 1 \right) \sum_{i'=1}^{n} x^2_{i'}}} \right)$$
+$$t~=~\left( \frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}} \right) \cdot \left( \frac{\sqrt{\left( n - 1 \right) \sum_{i'=1}^{n} x^2_{i'}}} {\sqrt{ \sum_{i=1}^{n} \left( y_i - x_i\hat{\beta} \right)^2 }} \right)$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n} \left( y_i - x_i\hat{\beta} \right)^2} \right)}$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n}  y_i^2 - 2\hat{\beta}x_iy_i + \hat{\beta^2}x_i^2 } \right)}$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n}  y_i^2 - 2\hat{\beta}\sum_{i=1}^{n}x_iy_i + \hat{\beta^2}\sum_{i=1}^{n}x_i^2 } \right)}$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n}  y_i^2 - 2\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}\sum_{i=1}^{n}x_iy_i + \left(\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}\right)^2\sum_{i=1}^{n}x_i^2 } \right)}$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n}  y_i^2 - 2\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}\sum_{i=1}^{n}x_iy_i + \frac{\left( \sum_{i=1}^{n} x_iy_i \right)^2 }{\left( \sum_{i'=1}^{n} x^2_{i'}\right)^2} \sum_{i=1}^{n}x_i^2 } \right)}$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n}  y_i^2 - 2\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}\sum_{i=1}^{n}x_iy_i + \frac{\left( \sum_{i=1}^{n} x_iy_i \right)^2 }{\sum_{i'=1}^{n} x^2_{i'}} } \right)}$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\frac{\sum_{i=1}^{n}y_i^2\sum_{i=1}^{n}x_i^2}{\sum_{i'=1}^{n}x_{i'}^2} - 2\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}\sum_{i=1}^{n}x_iy_i + \frac{\left( \sum_{i=1}^{n} x_iy_i \right)^2 }{\sum_{i'=1}^{n} x^2_{i'}} } \right)}$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\frac{\sum_{i=1}^{n}y_i^2\sum_{i=1}^{n}x_i^2 - 2\sum_{i=1}^{n} x_iy_i\sum_{i=1}^{n} x_iy_i + \left( \sum_{i=1}^{n}x_iy_i \right)^2 }{\sum_{i'=1}^{n}x_{i'}^2} } \right)}$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\frac{\sum_{i=1}^{n}y_i^2\sum_{i=1}^{n}x_i^2 - 2\left( \sum_{i=1}^{n} x_iy_i \right)^2\ + \left( \sum_{i=1}^{n}x_iy_i \right)^2 }{\sum_{i'=1}^{n}x_{i'}^2} } \right)}$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\frac{\sum_{i=1}^{n}y_i^2\sum_{i=1}^{n}x_i^2 - \left( \sum_{i=1}^{n} x_iy_i \right)^2\  }{\sum_{i'=1}^{n}x_{i'}^2} } \right)}$$
+$$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right)  \sqrt{\sum_{i=1}^{n}y_i^2\sum_{i=1}^{n}x_i^2 - \left( \sum_{i=1}^{n} x_iy_i \right)^2}}$$
+$$t~=~\frac{ \sum_{i=1}^{n} x_iy_i \left( \sqrt{ n - 1} \right) } {  \sqrt{\left( \sum_{i=1}^{n}y_i^2 \right) \left(\sum_{i=1}^{n}x_i^2 \right) - \left( \sum_{i=1}^{n} x_iy_i \right)^2} }$$
+```{r}
+new_t_numerator <- sum(x*y) * sqrt(length(x) - 1)
+new_t_denominator <- sqrt(sum(y*y) * sum(x*x) - sum(x*y)^2)
+new_t <- new_t_numerator/new_t_denominator
+round(new_t, digits = 2)
+```
+
+**E**.
+Given the above equation of:
+$$t~=~\frac{ \sum_{i=1}^{n} x_iy_i \left( \sqrt{ n - 1} \right) } {  \sqrt{\left( \sum_{i=1}^{n}y_i^2 \right) \left(\sum_{i=1}^{n}x_i^2 \right) - \left( \sum_{i=1}^{n} x_iy_i \right)^2} }$$
+it is clear to see that if I switch every $x_i$ with a $y_i$, and vice versa, the equation becomes:
+$$t~=~\frac{ \sum_{i=1}^{n} y_ix_i \left( \sqrt{ n - 1} \right) } {  \sqrt{\left( \sum_{i=1}^{n}x_i^2 \right) \left(\sum_{i=1}^{n}y_i^2 \right) - \left( \sum_{i=1}^{n} y_ix_i \right)^2} }$$
+We can then plug all the variable in using R and get the same result.
+```{r}
+new_t_numerator <- sum(y*x) * sqrt(length(y) - 1)
+new_t_denominator <- sqrt(sum(x*x) * sum(y*y) - sum(y*x)^2)
+new_t <- new_t_numerator/new_t_denominator
+round(new_t, digits = 2)
+```
+
+**F**.
+```{r}
+fit3 <- lm(y ~ x)
+fit4 <- lm(x ~ y)
+summary(fit3)$coef[2,3]
+summary(fit4)$coef[2,3]
+```
+
+
+
+
+
