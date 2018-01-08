@@ -205,6 +205,7 @@ summary(fit3)
 par(mfrow = c(2,2))
 plot(fit4)
 ```
+
 By building a couple models with interaction terms between some highly correlated variables, we can see that there is statistically significant evidence against the additive assumption of the linear model. The model with the interaction between displacement and horsepower explains more variance in mpg than the other model.
 
 **F**.
@@ -301,7 +302,7 @@ Looking at the model of $X$ regressed onto $Y$, once again the P-value suggests 
 The results from (a) and (b) show that the equation: $$\hat{y_i}~=~\hat{\beta_1}X_1~+~\epsilon~~~~~=~~~~~\hat{x_i}~=~\frac{1}{\hat{\beta_1}}\left( Y_1~-~\epsilon \right)$$
 
 **D**.
-Note: I'm doing this one step at a time, so the simplification will be long-winded.
+(Note: I'm doing this one step at a time, so the simplification will be long-winded.)
 $$Given:~~~~~\hat{\beta}~=~\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}~~~~~and~~~~~SE(\beta)~=~\sqrt{\frac{ \sum_{i=1}^{n} \left( y_i - x_i\hat{\beta} \right)^2 }{\left( n - 1 \right) \sum_{i'=1}^{n} x^2_{i'}}}~~~~~and~~~~~t~=~\frac{\hat{\beta}} {SE\left( \hat{\beta} \right)}$$
 
 $$t~=~\left( \frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}} \right) / \left( \frac{\sqrt{ \sum_{i=1}^{n} \left( y_i - x_i\hat{\beta} \right)^2 }} {\sqrt{\left( n - 1 \right) \sum_{i'=1}^{n} x^2_{i'}}} \right)$$
@@ -347,6 +348,151 @@ summary(fit4)$coef[2,3]
 ```
 
 
+## 12
+**A**.
+The coefficient estimate for $\hat{\beta}$ when $Y$ is regressed onto $X$ will be the same as the coefficient estimate for $\hat{\beta}$ when $X$ is regressed onto $Y$ only when the summation of the squares of $Y$ are equal to the summation of the squares of $X$.
+
+**B**.
+The coefficient $\hat{\beta}$ when $Y$ is regressed onto $X$ is 4.85 which does not equat the coefficient $\hat{\beta}$ when $X$ is regressed onto $Y$.
+```{r}
+x <- rnorm(100)
+y <- 5*x
+fit <- lm(y ~ x + 0)
+coef(fit)
+
+fit2 <- lm(x ~ y + 0)
+coef(fit2)
+```
+
+**C**.
+By building each $y_i$ so that some are the exact same as $x_i$, and others are the negative values of each $x_i$, we ensure that $X^2~=~Y^2$. This is shown below, also showing that the coefficients are the same.
+```{r}
+set.seed(10000)
+x <- rnorm(100)
+y_squared <- x^2
+y <- -(sqrt(y_squared))
+fit <- lm(y ~ x + 0)
+
+fit2 <- lm(x ~ y + 0)
+
+coef(fit)
+coef(fit2)
+sum(y^2)
+sum(x^2)
+```
 
 
+## 13
+**A**.
+```{r}
+set.seed(1)
+x <- rnorm(100)
+```
 
+**B**.
+```{r}
+eps <- rnorm(100, sd = sqrt(0.25))
+```
+
+**C**.
+The vector $Y$ will be 100 observations long (the same as $X$). In the model given, $\hat{\beta_0}~=~-1$ and $\hat{\beta_1}~=~0.5$
+
+```{r}
+y <- -1 + 0.5*x + eps
+```
+
+**D**.
+The plot below shows a scatterplot of $X$ and $Y$. While a linear relationship is known, and somewhat visible, we can see that there is a decent amount of variance in $Y$ for any given value of $X$.
+
+```{r}
+plot(x, y, pch = 16, col = "blue")
+```
+
+**E**.
+The estimates $\hat{\beta_0}$ and $\hat{\beta_1}$ are both very close to their true values; $\hat{\beta_0}$ (if rounded to three decimal places) is only 18 thousandth's off of its true value and $\hat{\beta_1}$ (also rounded to three decimal places) is only 1 thousandth off from its true value.
+
+```{r}
+fit <- lm(y ~ x)
+summary(fit)
+```
+
+**F**.
+```{r}
+plot(x, y, pch = 16, col = "blue")
+abline(fit, lwd = 3, col = "red")
+abline(a = -1, b = 0.5, lwd = 3, col = "green")
+legend(x = 1, y = -1.5, legend = c("Population Line", "Model Fit"), col = c("green", "red"), lwd = 3)
+```
+
+**G**.
+With a P-value of 0.164, there is no statistical evidence for the quadratic transformation of $X$ with an alpha level of even 0.1.
+
+```{r}
+fit2 <- lm(y ~ x + I(x^2))
+summary(fit2)
+```
+
+**H**.
+Comparing the results from summary(fit_less_noise) to summary(fit), we can see that, as expected, the coefficients become more accurate, their t-statistics more extreme and therefore their P-values more significant. In addition, reducing the error decreases the $RSE$, increases the $R^2$, and increases the extremity of the F-statistic.
+
+```{r}
+# A
+set.seed(1)
+x <- rnorm(100)
+
+# B
+eps_less <- rnorm(100, sd = 0.1)
+
+# C
+y_less <- -1 + 0.5*x + eps_less
+
+# D
+plot(x, y_less, pch = 16, col = "light green")
+
+# E
+fit_less_noise <- lm(y_less ~ x)
+summary(fit_less_noise)
+
+# F
+plot(x, y_less, pch = 16, col = "light green")
+abline(fit_less_noise, lwd = 3, col = "blue3")
+abline(a = -1, b = 0.5, lwd = 3, col = "red3")
+legend(x = 1, y = -1.5, legend = c("Population Line", "Model Fit"), col = c("blue3", "red3"), lwd = 3)
+
+```
+
+**I**.
+As expected, increasing the variance in the response makes the coefficients slightly further away from their true values, therefore increasing their P-values. The $RSE$ and the $R^2$ increase and decrease, respectively.
+```{r}
+# A
+set.seed(1)
+x <- rnorm(100)
+
+# B
+eps_more <- rnorm(100, sd = 2)
+
+# C
+y_more <- -1 + 0.5*x + eps_more
+
+# D
+plot(x, y_more, pch = 16, col = "black")
+
+# E
+fit_more_noise <- lm(y_more ~ x)
+summary(fit_more_noise)
+
+# F
+plot(x, y_more, pch = 16, col = "black")
+abline(fit_more_noise, lwd = 3, col = "purple")
+abline(a = -1, b = 0.5, lwd = 3, col = "turquoise")
+legend(x = 1, y = -1.5, legend = c("Population Line", "Model Fit"), col = c("purple", "turquoise"), lwd = 3)
+
+```
+
+**J**.
+As expected, the 95% confidence interval becomes increasingly wider as the variance in the error term increases.
+```{r}
+confint(fit_less_noise)
+confint(fit)
+confint(fit_more_noise)
+```
