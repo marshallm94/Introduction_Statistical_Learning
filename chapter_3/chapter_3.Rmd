@@ -496,3 +496,141 @@ confint(fit_less_noise)
 confint(fit)
 confint(fit_more_noise)
 ```
+
+
+## 14
+**A**.
+$$
+\beta_0~=~2,~\beta_1~=~2~~~and~~~\beta_2~=~0.3
+$$
+$$
+Y~=~2~+2X_1~+~0.3X_2~+~\epsilon
+$$
+
+```{r}
+set.seed(1)
+x1 <- runif(100)
+x2 <- 0.5*x1 + rnorm(100)/10
+y <- 2 + 2*x1 + 0.3*x2 + rnorm(100)
+```
+
+**B**.
+```{r}
+cor(x1,x2)
+plot(x1, x2, pch = 16, col = "blue")
+```
+
+**C**.
+Looking at the summary for the model fit to the data with the correlated terms, we can see that $\hat{\beta_0}$ is close to its true value (2) with a highly significant P-value. However, both $\hat{\beta_1}$ and $\hat{\beta_2}$ have increasingly less significant P-values, as expected in the presence of collinearity. While we can still reject that null hypothesis that $\hat{\beta_1}~=~0$, given an alpha level of 0.95, if we did not know that the true value for $\hat{\beta_2}~=~2$, and we were making decisions about our model based on the summary below, we would not be able reject the null hypothesis that  $H_0:~\hat{\beta_2}~=~0$.
+
+```{r}
+fit_cor <- lm(y ~ x1 + x2)
+summary(fit_cor)
+```
+
+**D**.
+In the absence of collinear terms, both the estimates for $\hat{\beta_0}$ and $\hat{\beta_1}$ are far closer to their true values. In addition, their P-values are far more significant, and the null hypothesis that $\hat{\beta_1}~=~0$ can be rejected.
+
+```{r}
+fit1 <- lm(y ~ x1)
+summary(fit1)
+```
+
+**E**.
+We can still reject the null hypothesis that $\hat{\beta_1}~=~0$.
+
+```{r}
+fit2 <- lm(y ~ x2)
+summary(fit2)
+```
+
+**F**.
+While the results do contradict each other (in the model with both terms, we would conclude that $\hat{\beta_2}$ does not have enough evidence to be included in the model, in the model with $X_2$ as the predictor, we **would** include it in the model), it is to be expected. When two collinear predictors are included in the model, it can be hard to tell *which* predictor is responible for the variance in the response, and therefore we (and our software), have less accurate estimates for the coefficients.
+
+**G**.
+```{r}
+x1 <- c(x1, 0.1)
+x2 <- c(x2, 0.8)
+y <- c(y, 6)
+```
+
+After adding the additional data point to the data set and re-fitting the models, the following changes occured in each of the models:
+
+* *fit1 (y ~ x1 + x2)* - The additional data point, being an outlier and having a lot of leverage on the regression line, had a large affect on the model with both $X_1$ and $X_2$ as predictors, as seen in the Residuals vs. Leverage plot below (point 101). In addition, we would now reject the null hypothesis that $\hat{\beta_2}~=~0$ and not be able to reject the null hypothesis that $\hat{\beta_1}~=~0$ (opposite of the model without the additional data point).
+
+```{r}
+fit1 <- lm(y ~ x1 + x2)
+par(mfrow = c(2,2))
+plot(fit1)
+summary(fit1)
+```
+
+* *fit2 (y ~ x1)* - In the model that only includes $X_1$ as a predictor, the new data point has significantly less influence than the model with both predictors. Again, looking at the Residual vs. Leverage plot, we can see that the smooth fit to the residuals starts to tilt slightly upward, however not to the extent that it did in the previous model. While the data point is an outlier in this model, it wouldn't quite be considered a high leverage point since there are a few other data points having higher leverage statistics than it does. 
+
+```{r}
+fit2 <- lm(y ~ x1)
+par(mfrow = c(2,2))
+plot(fit2)
+summary(fit2)
+```
+
+* *fit3 (y ~ x2)* - We can see that the new data point has a lot of leverage on the regression line with only $X_2$ as the predictor. However, since the residual isn't overly extreme, it doesn't influence the line that much.
+
+```{r}
+fit3 <- lm(y ~ x2)
+par(mfrow = c(2,2))
+plot(fit3)
+summary(fit3)
+```
+
+
+## 15
+**A**.
+When each predictor is used in simple linear regression, "chas" or "Charles River Dummy Variable" is the only predictor that does not have statistically significant evidence to reject the null hypothesis that $H_0:~~\hat{\beta_1}~=~0$. (I'm choosing to omit creating plots for each individual model in order to avoid the report being too long)
+
+```{r}
+library(MASS)
+attach(Boston)
+
+for (i in 1:ncol(Boston)) {
+    print(names(Boston)[i])
+    print(summary(lm(crim ~ Boston[[i]])))
+}
+```
+
+**B**.
+When a multiple linear regression model is fit using all of the variable to predict "crim,"  the only variables for which we can reject the null hypothesis that $H_0:~~\hat{\beta_j}~=~0$ are zn, nox, dis, rad, black, lstat and medv. Since this contradicts the results when each predictor is used separately, I would bet that some of the variables are collinear.
+
+```{r}
+multi_fit <- lm(crim ~ ., data = Boston)
+summary(multi_fit)
+```
+
+**C**.
+As you can see from the plot below, almost all of the variables have relatively similar values for their coefficient pairs; the x-axis value corresponds to the predictor's coefficient when used in simple linear regression and the y-axis value corresponds to its coefficient when all the variables are used to predict crim, the response. The only variable that has a drastic difference in the values for its coefficient is "nox," which has a negative value ( -10.3) when fit with all other variables and a positive value (31) when fit alone.
+
+```{r}
+library(ggplot2)
+x <- NULL
+for (i in 1:ncol(Boston)) {
+    fit <- lm(crim ~ Boston[[i]])
+    summary(fit)
+    x1 <- coef(fit)[[2]]
+    x <- c(x, x1)
+}
+
+coef_df <- data.frame(variable = names(multi_fit$coefficients),x = x, y = multi_fit$coefficients)
+coef_df <- coef_df[2:nrow(coef_df),]
+
+qplot(x,y, data = coef_df, col = variable)
+```
+
+**D**.
+There seems to be statistically significant evidence that indus, nox, age, dis, ptratio and medv all have a non-linear relationship with the response, crim, based on the P-values for their respective quadratic and cubic terms.
+
+```{r}
+for (i in 1:ncol(Boston)) {
+    print(names(Boston)[i])
+    print(summary(lm(crim ~ Boston[[i]] + I(Boston[[i]]^2) + I(Boston[[i]]^3))))
+}
+```
