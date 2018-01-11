@@ -97,11 +97,77 @@ $$\hat{y_i}~=~\sum_{i=1}^{n} \left( \frac{\sum_{i=1}^{n} x_{i}x_{i'} }{\sum_{k=1
 $$\hat{y_i}~=~\sum_{i=1}^{n} a_{i'}y_{i'}~~~where~~~ a_{i'}~=~\left( \frac{\sum_{i=1}^{n} x_ix_{i'} }{\sum_{k=1}^n x^2_{k}} \right)$$
 
 ## 6
-We start with the minimizers for $\hat{\beta_1}$ and $\hat{\beta_0}$ and the general structure of *f(x)* under the assumption of simple linear regression:
+We start with the minimizers for $\hat{\beta_1}$ and $\hat{\beta_0}$ and the general structure of *f(x)* under the simple linear regression model:
 $$\hat{\beta_0}~=~\bar{y}-\hat{\beta_1}\bar{x}$$
 $$\hat{y_i}~=~\hat{\beta_0}~+~\hat{\beta_1}x_i$$
+Re-arranging the equation for $\hat{\beta_0}$ in order to solve for $\bar{x}$ we get:
+$$\bar{x}~=~\frac{-\hat{\beta_0}~+~\bar{y}}{\hat{\beta_1}}$$
+Substituting $\bar{x}$ in for $x_i$, we can re-write the general structure of *f(x)* as:
+$$\hat{y_i}~=~\hat{\beta_0}~+~\hat{\beta_1}\left( \frac{-\hat{\beta_0}~+~\bar{y}}{\hat{\beta_1}} \right)$$
+We can then cancel the $\hat{\beta_1}$'s and simply to:
+$$\hat{y_i}~=~\hat{\beta_0}~+~\left(-\hat{\beta_0}~+~\bar{y} \right)$$
+Which then simplifies to show us that:
+$$\hat{y_i}~=~\bar{y}$$
+Where $\bar{y}~=~0$.
 
 ## 7
+**All summations are from $i=1~~to~~n$**
+$$
+Given:~~R^2~=~\frac{\sum (y_i - y_i)^2 - \sum (y_i - \hat{y_i})^2}{\sum (y_i - y_i)^2}~~~and~~~Cor(X,Y)~=~\frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum(x_i - \bar{x})^2}\sqrt{\sum(y_i - \bar{y})^2}}
+$$
+Looking at the numerator of $R^2$, we also know that the total sum of squares $SS_{tot}$ is equal to the residual sum of squares $SS_{res}$ plus the regression sum of squares $SS_{reg}$ (an incredible graphic illustrating this can be found on the fourth slide at [this link][http://www.stat.columbia.edu/~fwood/Teaching/w4315/Fall2009/lecture_6.pdf]):
+$$
+SS_{tot}~=~SS_{res}~+~SS_{reg}
+$$
+Which can be re-written as:
+$$
+\sum(y_i - \bar{y})^2~=~\sum(y_i - \hat{y_i})^2~+~\sum(\hat{y_i} - \bar{y})^2
+$$
+Which can the be re-arranged as:
+$$
+\sum(y_i - \bar{y})^2~-~\sum(y_i - \hat{y_i})^2~=~\sum(\hat{y_i} - \bar{y})^2
+$$
+The left side of the above equation is the same as the numerator in $R^2$, so we can substitute in the right side and begin the proof:
+$$
+R^2~=~\frac{\sum(\hat{y_i} - \bar{y})^2}{\sum (y_i - y_i)^2}
+$$
+We also know the equation for $\hat{y_i}$ as:
+$$
+\hat{y_i}~=~\hat{\beta_0}~+~\hat{\beta_1}x_i
+$$
+Which, substituted in for $\hat{y_i}$ is:
+$$
+R^2~=~\frac{\sum(\hat{\beta_0}~+~\hat{\beta_1}x_i - \bar{y})^2}{\sum (y_i - y_i)^2}
+$$
+We know the minimizers for $\hat{\beta_0}$ and $\hat{\beta_1}$ to be:
+$$\hat{\beta_0}~=~\bar{y}-\hat{\beta_1}\bar{x}~~~and~~~\hat{\beta_1}~=~\frac{\sum(x_i - \bar{x} )(y_i - \bar{y})}{\sum(x_i - \bar{x})^2}$$
+Which can be substituted in to get:
+$$
+R^2~=~\frac{\sum(\bar{y}-\hat{\beta_1}\bar{x}~+~\hat{\beta_1}x_i - \bar{y})^2}{\sum (y_i - y_i)^2}
+$$
+$$
+R^2~=~\frac{\sum(\hat{\beta_1}x_i~-~\hat{\beta_1}\bar{x_i})^2}{\sum (y_i - y_i)^2}
+$$
+$$
+R^2~=~\frac{\sum(\hat{\beta_1}^2x_i^2~-~2\hat{\beta_1}^2\bar{x}x_i~+~\hat{\beta_1}^2\bar{x_i}^2)}{\sum (y_i - y_i)^2}
+$$
+$$
+R^2~=~\frac{\hat{\beta_1}^2\sum(x_i^2~-~2\bar{x}x_i~+~\bar{x_i}^2)}{\sum (y_i - y_i)^2}
+$$
+$$
+R^2~=~\frac{\hat{\beta_1}^2\sum(x_i - \bar{x})^2}{\sum (y_i - y_i)^2}
+$$
+Substitute in $\hat{\beta_1}$ squared to get:
+$$
+R^2~=~\frac{\left( \sum(x_i - \bar{x} )(y_i - \bar{y}) \right)^2\sum(x_i - \bar{x})^2}{\left( \sum(x_i - \bar{x})^2 \right)^2\sum (y_i - y_i)^2}
+$$
+$$
+R^2~=~\frac{\left( \sum(x_i - \bar{x} )(y_i - \bar{y})\right)^2}{\sum(x_i - \bar{x})^2\sum (y_i - y_i)^2}
+$$
+Which, if we square $Cor(X,Y)$, is now equal to the above equation:
+$$
+Cor(X,Y)^2~=~\left( \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum(x_i - \bar{x})^2}\sqrt{\sum(y_i - \bar{y})^2}} \right)^2~~~=~~~\frac{\left( \sum(x_i - \bar{x} )(y_i - \bar{y})\right)^2}{\sum(x_i - \bar{x})^2\sum (y_i - y_i)^2}~=~R^2
+$$
 
 
 
@@ -288,7 +354,7 @@ fit <- lm(y ~ x + 0)
 summary(fit)
 ```
 
-The P-value of the coefficient for $X$ suggest statistical significance, and the null hypthosis that $H_0:\beta~=~0$ is rejected.
+The P-value of the coefficient for $X$ suggests statistical significance, and the null hypthosis that $H_0:\beta~=~0$ is rejected.
 
 **B**.
 ```{r}
