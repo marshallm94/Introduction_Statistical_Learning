@@ -3,9 +3,9 @@
 ## 1
 
 The null hypothesis that the P-values in Table 3.4 (reproduced below) are calculated on is that at least one of the coefficients to all the variables in the model (TV, Radio and Newspaper) are zero. That is... $$H_0:~~\beta_{tv},~\beta_{radio}~or~\beta_{newspaper} = 0$$
-and the alternate hypothesis is at least one of the coefficients is non-zero... $$H_A:~~\beta_{tv},~~\beta_{radio}~~or~~\beta_{newspaper} ≠ 0$$
+and the alternate hypothesis is that at least one of the coefficients is non-zero... $$H_A:~~\beta_{tv},~~\beta_{radio}~~or~~\beta_{newspaper} ≠ 0$$
 
-The conclusions that can be drawn from the P-values in the table are that *TV* and *Radio* have some relationship with *Sales* with practically complete certainty (the probability of observing those t-statistic's by chance given the null hypotheis is less than 0.01%). On the other hand, given the null hypothesis, we would expect to observe a t-statistic greater than or equal to that of *Newspaper's* 85.99% of the time, and thus we fail to reject the null hypothesis that *Newspaper* has any effect on *Sales.*
+The conclusions that can be drawn from the P-values in the table are that *TV* and *Radio* have some relationship with *Sales* with practically complete certainty (the probability of observing those t-statistic's by chance under the null hypotheis is less than 0.01%). On the other hand, we would expect to observe a t-statistic greater than or equal to that of *Newspaper's* 85.99% of the time, and thus we fail to reject the null hypothesis that *Newspaper* has any effect on *Sales.*
 
 
 ```{r, echo = FALSE}
@@ -71,7 +71,7 @@ False. Without knowing the standard error for the GPA/IQ interaction coefficient
 
 ## 4
 **A**.
-Given the true relationship between X and Y is linear, and two models are fit (model~1~ being simple linear regression and model~2~ being cubic regression), we would expect model~2~ to have a lower (better) RSS on the training data, since the more there is a negative linear relationship between the flexibility in learning methods used, and the training error rate (the more flexible the model, the more of the irreducible error will be explained away in the training data, masking itself as a better model).
+Given the true relationship between X and Y is linear, and two models are fit (model~1~ being simple linear regression and model~2~ being cubic regression), we would expect model~2~ to have a lower (better) RSS on the training data, since there is a negative linear relationship between the flexibility in learning methods used, and the training error rate (the more flexible the model, the more of the irreducible error will be explained away in the training data, masking itself as a better model).
 
 **B**.
 Using the test RSS, model~1~ (linear) would outperform model~2~ (cubic), because, in this case, model~1~ represents the true relationship between X and Y perfectly, and the only variance left is that of the irreducible error, which can't be predicted, so the model is "perfect" in the sense that everything that can be modeled is accounted for.
@@ -108,14 +108,14 @@ We can then cancel the $\hat{\beta_1}$'s and simply to:
 $$\hat{y_i}~=~\hat{\beta_0}~+~\left(-\hat{\beta_0}~+~\bar{y} \right)$$
 Which then simplifies to show us that:
 $$\hat{y_i}~=~\bar{y}$$
-Where $\bar{y}~=~0$.
+Where $\bar{y}~=~0~=~y_i$.
 
 ## 7
 **All summations are from $i=1~~to~~n$**
 $$
 Given:~~R^2~=~\frac{\sum (y_i - y_i)^2 - \sum (y_i - \hat{y_i})^2}{\sum (y_i - y_i)^2}~~~and~~~Cor(X,Y)~=~\frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum(x_i - \bar{x})^2}\sqrt{\sum(y_i - \bar{y})^2}}
 $$
-Looking at the numerator of $R^2$, we also know that the total sum of squares $SS_{tot}$ is equal to the residual sum of squares $SS_{res}$ plus the regression sum of squares $SS_{reg}$ (an incredible graphic illustrating this can be found on the fourth slide at [this link][http://www.stat.columbia.edu/~fwood/Teaching/w4315/Fall2009/lecture_6.pdf]):
+Looking at the numerator of $R^2$, we also know that the total sum of squares $SS_{tot}$ is equal to the residual sum of squares $SS_{res}$ plus the regression sum of squares $SS_{reg}$ (an incredible graphic illustrating this can be found on the fourth slide at [this link](http://www.stat.columbia.edu/~fwood/Teaching/w4315/Fall2009/lecture_6.pdf)):
 $$
 SS_{tot}~=~SS_{res}~+~SS_{reg}
 $$
@@ -175,6 +175,7 @@ $$
 
 ## 8
 **A**.
+
 ```{r}
 library(ISLR)
 attach(Auto)
@@ -214,7 +215,7 @@ plot(fit)
 
 We can see from the Residuals vs. Leverage plot that no single observation has a huge amount of influence on the regression line; Cooks Distance is not observable within the plot. However, looking at the Residuals vs. Fitted, we can see some evidence of non-linearity; observations with low and high fitted values have positive residuals, while those in the middle of the fitted value scale tend to be negative. This suggests that a model that is quadratic to some degree might be a better model. Looking back at the plot in **B**, we can see that a quadratic fit does seem to fit the data better than a linear model.
 
-Looking at the Residuals vs. Fitted Values plot below (after adding a quadratic term to the model), this does seem to even out the Residuals to some extent
+Looking at the Residuals vs. Fitted Values plot below (after adding a quadratic term to the model), this does seem to even out the Residuals to some extent.
 
 ```{r}
 par(mfrow = c(2,2))
@@ -247,7 +248,7 @@ summary(fit)
 Judging from the F-statisic of 252, and a corresponding P-value of effectively 0, we can say that there is a statistically significant relationship between the predictors (as a whole) and the response.
 
 * *ii*
-All variable except acceleration, horsepower and cylinders have statistically significant relationships with the response.
+All variables except acceleration, horsepower and cylinders have statistically significant relationships with the response.
 
 * *iii*
 0.75, the coefficient for the year variable suggests that, *holding all other (measured) variables constant*, we would see a 0.75 increase in mpg with a one unit increase in year. In other words, we would expect a vehicle produced in 1981 to have a 0.75 increase in mpg over the exact same vehicle, but produced in 1980.
@@ -275,11 +276,11 @@ plot(fit4)
 By building a couple models with interaction terms between some highly correlated variables, we can see that there is statistically significant evidence against the additive assumption of the linear model. The model with the interaction between displacement and horsepower explains more variance in mpg than the other model.
 
 **F**.
-Since there seems to be statistical evidence that the additve assumption of the linear model is incorrect, keeping the horsepower*displacement interaction term in our model would be prudent. In addition, there seems to be slight heteroscedasticity in our residuals. This can be seen by both the slight upward trend in the Scale-Location plot, as well as the increasing spread in the Residuals vs. Fitted Values plot.
+Since there seems to be statistical evidence that the additve assumption of the linear model is incorrect, keeping the horsepower and displacement interaction term in our model would be prudent. In addition, there seems to be slight heteroscedasticity in our residuals. This can be seen by both the slight upward trend in the Scale-Location plot, as well as the increasing spread in the Residuals vs. Fitted Values plot.
 
-The final model includes all the variable except cyclinders, in addition tonthe horsepower*displacement interaction term. I used a log transformation of the response in an attempt to reduce the heteroscedasticity.
+The final model includes all the variable except cyclinders, in addition to the horsepower and displacement interaction term. I used a log transformation of the response in an attempt to reduce the heteroscedasticity.
 
-(My understanding of the interpretation of the each $\hat{\beta_j}$ when a log transformation is used on the response variable is that a one unit increase in $X$ results in a $(100\hat{\beta_j})$% change in $Y$)
+(My understanding of the interpretation of the each $\hat{\beta_j}$ when a log transformation is used on the response variable is that a one unit increase in $X$ results in a $(100~*~\hat{\beta_j})$% change in $Y$)
 ```{r}
 par(mfrow = c(2,2))
 fit <- lm(log(mpg + 1) ~ horsepower*displacement + (.-cylinders), data = dat)
@@ -289,6 +290,7 @@ plot(fit)
 
 ## 10
 **A**.
+
 ```{r}
 fit <- lm(Sales ~ Price + Urban + US, data = Carseats)
 ```
@@ -318,12 +320,14 @@ $$
 Price and US have P-values low enough to suggest statistical significance, and therefore we can reject the null hypothesis for those predictors. However, Urban has a very high P-value, and therefore we can not reject the null hypothesis for that predictor.
 
 **E**.
+
 ```{r}
 fit2 <- lm(Sales ~ Price + US, data = Carseats)
 ```
 
 **F**.
-Both linear models fit the data very similarly, however relatively poorly; the $R^2$ value of 0.24 tells us that both models only explain 24% of the variation in the response. While the RSE is low at first glance, Sales are measured in *thousands* of units. Therefore, the RSE of roughly 2.47 translates to the predicted value of *Sales* being off by an average of 2,470 units.
+Both linear models fit the data very similarly, however relatively poorly; the $R^2$ value of 0.24 tells us that both models only explain 24% of the variation in the response. While the RSE is low at first glance, Sales are measured in *thousands* of units. Therefore, the RSE of roughly 2.47 translates to the predicted value of *Sales* being off by an average of 2,470 units *on average*.
+
 ```{r}
 summary(fit)
 summary(fit2)
@@ -419,7 +423,8 @@ summary(fit4)$coef[2,3]
 The coefficient estimate for $\hat{\beta}$ when $Y$ is regressed onto $X$ will be the same as the coefficient estimate for $\hat{\beta}$ when $X$ is regressed onto $Y$ only when the summation of the squares of $Y$ are equal to the summation of the squares of $X$.
 
 **B**.
-The coefficient $\hat{\beta}$ when $Y$ is regressed onto $X$ is 4.85 which does not equat the coefficient $\hat{\beta}$ when $X$ is regressed onto $Y$.
+The coefficient $\hat{\beta}$ when $Y$ is regressed onto $X$ is 4.85 which does not equal the coefficient $\hat{\beta}$ when $X$ is regressed onto $Y$.
+
 ```{r}
 x <- rnorm(100)
 y <- 5*x
@@ -432,6 +437,7 @@ coef(fit2)
 
 **C**.
 By building each $y_i$ so that some are the exact same as $x_i$, and others are the negative values of each $x_i$, we ensure that $X^2~=~Y^2$. This is shown below, also showing that the coefficients are the same.
+
 ```{r}
 set.seed(10000)
 x <- rnorm(100)
@@ -450,12 +456,14 @@ sum(x^2)
 
 ## 13
 **A**.
+
 ```{r}
 set.seed(1)
 x <- rnorm(100)
 ```
 
 **B**.
+
 ```{r}
 eps <- rnorm(100, sd = sqrt(0.25))
 ```
@@ -483,6 +491,7 @@ summary(fit)
 ```
 
 **F**.
+
 ```{r}
 plot(x, y, pch = 16, col = "blue")
 abline(fit, lwd = 3, col = "red")
@@ -652,7 +661,7 @@ summary(fit3)
 
 ## 15
 **A**.
-When each predictor is used in simple linear regression, "chas" or "Charles River Dummy Variable" is the only predictor that does not have statistically significant evidence to reject the null hypothesis that $H_0:~~\hat{\beta_1}~=~0$. (I'm choosing to omit creating plots for each individual model in order to avoid the report being too long)
+When each predictor is used in simple linear regression, "chas" or "Charles River Dummy Variable" is the only predictor that does not have statistically significant evidence to reject the null hypothesis that $H_0:~\hat{\beta_1}~=~0$. (I'm choosing to omit creating plots for each individual model in order to avoid the report being too long)
 
 ```{r}
 library(MASS)
@@ -665,7 +674,7 @@ for (i in 1:ncol(Boston)) {
 ```
 
 **B**.
-When a multiple linear regression model is fit using all of the variable to predict "crim,"  the only variables for which we can reject the null hypothesis that $H_0:~~\hat{\beta_j}~=~0$ are zn, nox, dis, rad, black, lstat and medv. Since this contradicts the results when each predictor is used separately, I would bet that some of the variables are collinear.
+When a multiple linear regression model is fit using all of the variable to predict "crim,"  the only variables for which we can reject the null hypothesis that $H_0:~\hat{\beta_j}~=~0$ are zn, nox, dis, rad, black, lstat and medv. Since this contradicts the results when each predictor is used separately, I would bet that some of the variables are collinear.
 
 ```{r}
 multi_fit <- lm(crim ~ ., data = Boston)
