@@ -75,4 +75,12 @@ lda_cm == lag_1_2_cm
 accuracy(lda_cm)
 
 # Quadratic Discriminant Analysis
-
+mod_qda <- qda(Direction ~ Lag1 + Lag2, data=Smarket, subset=train)
+qda_class <- predict(mod_qda, Smarket.2005)$class
+qda_cm <- table(qda_class, Direction.2005)
+accuracy(qda_cm)
+# Since the quadratic discriminant analysis has a higher accuracy than both of 
+# the other two models (linear discriminant analysis and logistic regression), it 
+# is reasonable to assume that the true decision boundary is non-linear
+ 
+# KNN
