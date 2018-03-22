@@ -144,19 +144,56 @@ P(X)~=~\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1~+~\epsilon^{\beta_0~+~\beta_1X_
 </div>
 <div id="section-1" class="section level2">
 <h2>2</h2>
-<p>Prove that maximizing the equation <span class="math display">\[
+<p>Prove that maximizing the equation</p>
+<p><span class="math display">\[
 p_k(x)~=~\frac{\pi_k\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}} {\sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}}
-\]</span> for <span class="math inline">\(k\)</span>, is equivalent to maximizing the equation <span class="math display">\[
+\]</span> for <span class="math inline">\(k\)</span>, is equivalent to maximizing the equation</p>
+<p><span class="math display">\[
 \delta_k(x)~=~\frac{x\mu_k}{\sigma^2}~-~\frac{\mu_k^3}{2\sigma^2}~+~log(\pi_k)
 \]</span> for <span class="math inline">\(k\)</span>.</p>
-<p>As the text says, taking the <span class="math inline">\(log\)</span> of the first equation will get us started. <span class="math display">\[
+<p>As the text says, taking the <span class="math inline">\(log\)</span> of the first equation will get us started.</p>
+<p><span class="math display">\[
 log\left( p_k(x) \right)~=~log\left( \frac{\pi_k\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}} {\sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}}\right)
 \]</span></p>
 <p><span class="math display">\[
 log\left( p_k(x) \right) ~=~ 
 log(\pi_k) ~+~ 
-log\left( \frac{1} {\sqrt2\pi\sigma} \right) ~-~
+log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
 \frac{1}{2\sigma^2}\left( x~-~\mu_k^2 \right) ~-~
+log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
+\]</span> Expanding the third term in the equation we get</p>
+<p><span class="math display">\[
+log\left( p_k(x) \right) ~=~ 
+log(\pi_k) ~+~ 
+log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
+\frac{1}{2\sigma^2}\left( x^2~-~2x\mu_k~+~\mu_k^2 \right) ~-~
+log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
+\]</span> Once again expanding the third term, this time multiplying the <span class="math inline">\(~-~\frac{1}{\sqrt{2\sigma62}}\)</span> with all terms within the parenthesis, we get</p>
+<p><span class="math display">\[
+log\left( p_k(x) \right) ~=~ 
+log(\pi_k) ~+~ 
+log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
+\frac{x^2} {2\sigma^2} ~+~
+\frac{2x\mu_k} {2\sigma^2} ~-~
+\frac{\mu_k^2}{2\sigma^2} ~-~
+log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
+\]</span> simplifying what is now the fourth term in equation, we get</p>
+<p><span class="math display">\[
+log\left( p_k(x) \right) ~=~ 
+log(\pi_k) ~+~ 
+log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
+\frac{x^2} {2\sigma^2} ~+~
+\frac{x\mu_k} {\sigma^2} ~-~
+\frac{\mu_k^2}{2\sigma^2} ~-~
+log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
+\]</span> <em>Since we are maximizing the equation</em> <strong>over all possible classes of <span class="math inline">\(k\)</span></strong>, <em>we can eliminate any terms that are indepedent of <span class="math inline">\(k\)</span>.</em></p>
+<p><span class="math display">\[
+log\left( p_k(x) \right) ~=~ 
+log(\pi_k) ~+~ 
+log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
+\frac{x^2} {2\sigma^2} ~+~
+\frac{x\mu_k} {\sigma^2} ~-~
+\frac{\mu_k^2}{2\sigma^2} ~-~
 log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
 \]</span></p>
 </div>

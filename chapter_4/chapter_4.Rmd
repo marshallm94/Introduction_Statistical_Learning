@@ -68,6 +68,32 @@ $$
 log\left( p_k(x) \right) ~=~ 
 log(\pi_k) ~+~ 
 log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
-\frac{1}{2\sigma^2}\left( x^2~-~2x\mu_k~+~\mu_k^2 \right) ~-~
+\frac{x^2} {2\sigma^2} ~+~
+\frac{2x\mu_k} {2\sigma^2} ~-~
+\frac{\mu_k^2}{2\sigma^2} ~-~
 log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
+$$
+simplifying what is now the fourth term in equation, we get
+
+$$
+log\left( p_k(x) \right) ~=~ 
+log(\pi_k) ~+~ 
+log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
+\frac{x^2} {2\sigma^2} ~+~
+\frac{x\mu_k} {\sigma^2} ~-~
+\frac{\mu_k^2}{2\sigma^2} ~-~
+log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
+$$
+*Since we are maximizing the equation* **over all possible classes of $k$**, *we can eliminate any terms that are indepedent of $k$.* This leaves us with
+
+$$
+log\left( p_k(x) \right) ~=~ 
+log(\pi_k) ~+~ 
+\frac{x\mu_k} {\sigma^2} ~-~
+\frac{\mu_k^2}{2\sigma^2}
+$$
+which, when we rearrange the terms slightly, proves that maximizing the two equations are equivalent.
+
+$$
+log\left( p_k(x) \right)~=~\frac{x\mu_k}{\sigma^2}~-~\frac{\mu_k^3}{2\sigma^2}~+~log(\pi_k)~=~\delta_k(x)
 $$
