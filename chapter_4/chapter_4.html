@@ -144,8 +144,20 @@ P(X)~=~\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1~+~\epsilon^{\beta_0~+~\beta_1X_
 </div>
 <div id="section-1" class="section level2">
 <h2>2</h2>
-<p>Given that <span class="math display">\[
-p_k(x)~=~\frac{\pi_k\cdot\epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}} {2}
+<p>Prove that maximizing the equation <span class="math display">\[
+p_k(x)~=~\frac{\pi_k\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}} {\sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}}
+\]</span> for <span class="math inline">\(k\)</span>, is equivalent to maximizing the equation <span class="math display">\[
+\delta_k(x)~=~\frac{x\mu_k}{\sigma^2}~-~\frac{\mu_k^3}{2\sigma^2}~+~log(\pi_k)
+\]</span> for <span class="math inline">\(k\)</span>.</p>
+<p>As the text says, taking the <span class="math inline">\(log\)</span> of the first equation will get us started. <span class="math display">\[
+log\left( p_k(x) \right)~=~log\left( \frac{\pi_k\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}} {\sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}}\right)
+\]</span></p>
+<p><span class="math display">\[
+log\left( p_k(x) \right) ~=~ 
+log(\pi_k) ~+~ 
+log\left( \frac{1} {\sqrt2\pi\sigma} \right) ~-~
+\frac{1}{2\sigma^2}\left( x~-~\mu_k^2 \right) ~-~
+log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
 \]</span></p>
 </div>
 </div>

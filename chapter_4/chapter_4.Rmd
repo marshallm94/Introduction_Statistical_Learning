@@ -28,8 +28,46 @@ $$
 
 ## 2
 
-Given that 
+Prove that maximizing the equation
+
 $$
-p_k(x)~=~\frac{\pi_k\cdot\epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}} {2}
+p_k(x)~=~\frac{\pi_k\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}} {\sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}}
+$$
+for $k$, is equivalent to maximizing the equation
+
+$$
+\delta_k(x)~=~\frac{x\mu_k}{\sigma^2}~-~\frac{\mu_k^3}{2\sigma^2}~+~log(\pi_k)
+$$
+for $k$.
+
+As the text says, taking the $log$ of the first equation will get us started.
+
+$$
+log\left( p_k(x) \right)~=~log\left( \frac{\pi_k\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}} {\sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}}\right)
 $$
 
+$$
+log\left( p_k(x) \right) ~=~ 
+log(\pi_k) ~+~ 
+log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
+\frac{1}{2\sigma^2}\left( x~-~\mu_k^2 \right) ~-~
+log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
+$$
+Expanding the third term in the equation we get
+
+$$
+log\left( p_k(x) \right) ~=~ 
+log(\pi_k) ~+~ 
+log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
+\frac{1}{2\sigma^2}\left( x^2~-~2x\mu_k~+~\mu_k^2 \right) ~-~
+log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
+$$
+Once again expanding the third term, this time multiplying the $~-~\frac{1}{\sqrt{2\sigma62}}$ with all terms within the parenthesis, we get
+
+$$
+log\left( p_k(x) \right) ~=~ 
+log(\pi_k) ~+~ 
+log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
+\frac{1}{2\sigma^2}\left( x^2~-~2x\mu_k~+~\mu_k^2 \right) ~-~
+log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
+$$
