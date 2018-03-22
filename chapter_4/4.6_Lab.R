@@ -94,3 +94,50 @@ set.seed(1)
 knn_predictions <- knn(train.X, test.X, train.Direction, k=3)
 knn_cm <- table(knn_predictions, Direction.2005)
 accuracy(knn_cm)
+
+################################################################################
+######################## CARAVAN DATA SET APPLICATION ##########################
+################################################################################
+
+attach(Caravan)
+summary(Purchase)[2] / sum(summary(Purchase))
+# Note that since only ~6% of the our observations would be considered a success
+# (success = 1 = purchased caravan insurance), some sort of sampling procedure 
+# should be considered (undersampling, oversampling, SMOAT) for deeper analysis
+stand.X <- scale(Caravan[, -86])
+test = 1:1000
+train.X <- stand.X[-test, ]
+test.X <- stand.X[test, ]
+train.Y <- Purchase[-test]
+test.Y <- Purchase[test]
+set.seed(1)
+# k = 1
+knn_predictions <- knn(train.X, test.X, train.Y, k = 1)
+knn_cm <- table(knn_predictions, test.Y)
+knn_cm
+accuracy(knn_cm)
+recall(knn_cm)
+precision(knn_cm)
+# k = 3
+knn_predictions <- knn(train.X, test.X, train.Y, k = 3)
+knn_cm <- table(knn_predictions, test.Y)
+knn_cm
+accuracy(knn_cm)
+recall(knn_cm)
+precision(knn_cm)
+# k = 5
+knn_predictions <- knn(train.X, test.X, train.Y, k = 5)
+knn_cm <- table(knn_predictions, test.Y)
+knn_cm
+accuracy(knn_cm)
+recall(knn_cm)
+precision(knn_cm)
+# Logistic Regression
+log_mod <- glm(Purchase ~ ., data=Caravan, family = "binomial", subset = -test)
+log_mod_probs <- predict(log_mod, Caravan[test, ], type="response")
+log_mod_predictions <- rep("No", 1000)
+log_mod_predictions[log_mod_probs > 0.25] <- "Yes"
+logistic_cm <- table(log_mod_predictions, test.Y)
+accuracy(logistic_cm)
+recall(logistic_cm)
+precision(logistic_cm)
