@@ -186,16 +186,19 @@ log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
 \frac{x\mu_k} {\sigma^2} ~-~
 \frac{\mu_k^2}{2\sigma^2} ~-~
 log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
-\]</span> <em>Since we are maximizing the equation</em> <strong>over all possible classes of <span class="math inline">\(k\)</span></strong>, <em>we can eliminate any terms that are indepedent of <span class="math inline">\(k\)</span>.</em></p>
+\]</span> <em>Since we are maximizing the equation</em> <strong>over all possible classes of <span class="math inline">\(k\)</span></strong>, <em>we can eliminate any terms that are indepedent of <span class="math inline">\(k\)</span>.</em> This leaves us with</p>
 <p><span class="math display">\[
 log\left( p_k(x) \right) ~=~ 
 log(\pi_k) ~+~ 
-log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
-\frac{x^2} {2\sigma^2} ~+~
 \frac{x\mu_k} {\sigma^2} ~-~
-\frac{\mu_k^2}{2\sigma^2} ~-~
-log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
+\frac{\mu_k^2}{2\sigma^2}
+\]</span> which, when we rearrange the terms slightly, proves that maximizing the two equations are equivalent.</p>
+<p><span class="math display">\[
+log\left( p_k(x) \right)~=~\frac{x\mu_k}{\sigma^2}~-~\frac{\mu_k^3}{2\sigma^2}~+~log(\pi_k)~=~\delta_k(x)
 \]</span></p>
+</div>
+<div id="section-2" class="section level2">
+<h2>3</h2>
 </div>
 </div>
 

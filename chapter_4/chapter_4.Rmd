@@ -95,5 +95,8 @@ $$
 which, when we rearrange the terms slightly, proves that maximizing the two equations are equivalent.
 
 $$
-log\left( p_k(x) \right)~=~\frac{x\mu_k}{\sigma^2}~-~\frac{\mu_k^3}{2\sigma^2}~+~log(\pi_k)~=~\delta_k(x)
+log\left( p_k(x) \right)~=~\frac{x\mu_k}{\sigma^2}~-~\frac{\mu_k^2}{2\sigma^2}~+~log(\pi_k)~=~\delta_k(x)
 $$
+
+
+## 3
