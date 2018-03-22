@@ -1,0 +1,35 @@
+# Conceptual
+
+## 1
+
+$$
+P(X)~=~\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1~+~\epsilon^{\beta_0~+~\beta_1X_1}}~~~and~~~\epsilon^{\beta_0~+~\beta_1X_1}~=~\frac{P(X)} {1~-~P(X)}
+$$
+$$
+\epsilon^{\beta_0~+~\beta_1X_1}~=~\frac{\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1~+~\epsilon^{\beta_0~+~\beta_1X_1}}} {1~-~\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1 + \epsilon^{\beta_0~+~\beta_1X_1}}}
+$$
+$$
+\epsilon^{\beta_0~+~\beta_1X_1}~=~\frac{\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1~+~\epsilon^{\beta_0~+~\beta_1X_1}}} {\frac {1~+~\epsilon^{\beta_0~+~\beta_1X_1}} {1~+~\epsilon^{\beta_0~+~\beta_1X_1}}~-~\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1 + \epsilon^{\beta_0~+~\beta_1X_1}}}
+$$
+$$
+\epsilon^{\beta_0~+~\beta_1X_1}~=~\frac{\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1~+~\epsilon^{\beta_0~+~\beta_1X_1}}} {\frac {1~+~\epsilon^{\beta_0~+~\beta_1X_1}} {1~+~\epsilon^{\beta_0~+~\beta_1X_1}}~-~\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1 + \epsilon^{\beta_0~+~\beta_1X_1}}}
+$$
+
+
+$$
+\epsilon^{\beta_0~+~\beta_1X_1}~=~\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1~+~\epsilon^{\beta_0~+~\beta_1X_1}}~\dot~\frac {1~+~\epsilon^{\beta_0~+~\beta_1X_1}} {1}
+$$
+$$
+\epsilon^{\beta_0~+~\beta_1X_1}~=~\frac{\epsilon^{\beta_0~+~\beta_1X_1}} {1}
+$$
+$$
+\epsilon^{\beta_0~+~\beta_1X_1}~=~\epsilon^{\beta_0~+~\beta_1X_1}
+$$
+
+## 2
+
+Given that 
+$$
+p_k(x)~=~\frac{\pi_k\cdot\epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}} {2}
+$$
+
