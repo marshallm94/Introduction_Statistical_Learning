@@ -2,6 +2,7 @@ install.packages("ISLR")
 install.packages("MASS")
 library(ISLR)
 library(MASS)
+library(class)
 names(Smarket)
 head(Smarket)
 cor(Smarket[,-9])
@@ -81,6 +82,15 @@ qda_cm <- table(qda_class, Direction.2005)
 accuracy(qda_cm)
 # Since the quadratic discriminant analysis has a higher accuracy than both of 
 # the other two models (linear discriminant analysis and logistic regression), it 
-# is reasonable to assume that the true decision boundary is non-linear
+# is reasonable to assume that the true decision boundary is non-linear (although
+# a hypothesis would be necessary to prove a statistically significant difference
+# between the accuracy of the two models)
  
 # KNN
+train.X <- cbind(Lag1, Lag2)[train,]
+test.X <- cbind(Lag1, Lag2)[!train,]
+train.Direction <- Direction[train]
+set.seed(1)
+knn_predictions <- knn(train.X, test.X, train.Direction, k=3)
+knn_cm <- table(knn_predictions, Direction.2005)
+accuracy(knn_cm)
