@@ -1,5 +1,7 @@
 install.packages("ISLR")
+install.packages("MASS")
 library(ISLR)
+library(MASS)
 names(Smarket)
 head(Smarket)
 cor(Smarket[,-9])
@@ -59,6 +61,18 @@ recall(lag_1_2_cm)
 predict(lag_1_and_2_fit, newdata=data.frame(Lag1=c(1.2, 1.5), Lag2=c(1.1, -0.8)),
         type = 'response')
 
-#
+# Linear Discriminant Analysis
+mod_lda <- lda(Direction ~ Lag1 + Lag2, data=Smarket, subset=train)
+lda_predictions <- predict(mod_lda, Smarket.2005)
+names(lda_predictions)
+# note that the number of columns in the posterior will equal the number of classes
+# possible, and the sum of all the probabilities will be equal to one
+lda_predictions_class = lda_predictions$class
+lda_cm <- table(lda_predictions_class, Direction.2005)
+lda_cm == lag_1_2_cm
+# note that the model produced by linear discriminant analysis and that produced
+# by logistic regression are equal
+accuracy(lda_cm)
 
+# Quadratic Discriminant Analysis
 
