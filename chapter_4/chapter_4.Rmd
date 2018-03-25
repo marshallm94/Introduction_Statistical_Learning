@@ -123,8 +123,21 @@ $$
 
 * **E**. If we would like to create a hypercube that has a sample space equal to 10% of the observations "nearest" to a test observation $x_i$, the length of each side of the hypercube will be equal to $0.1^{\frac{1}{p}}$, where $p$ is the number of predictors. The intution behind this, **given that we want the "size" (for lack of a more dimension-expansive term) of our our sample space to remain constant at 0.1**, is as follows; 
 
-    * With $p$ being equal to 1, this will just be a vector of length 0.1, meaning that roughly 10% of our observations would be within 10% of the range of $X_1$closest to the test observation $x_i$
+    * With $p$ being equal to 1, this will just be a vector of length 0.1, meaning that roughly 10% of our observations would be within 10% of the range of $X_1$closest to the test observation $x_i$.
 
     * For 2 dimensions, aka 2 predictors, our sample space is an area, and the formula for area is $A~=~l^2$ (given that we want the length of both vectors to be the same). Thus, the length of our vectors is equal to $l~=~\sqrt{0.1}~=~0.1^{\frac{1}{2}}~=~0.32$. This means that roughly 32% of the observations would be within 10% of the range of **one** of the predictors $X_1~or~X_2$ closest to the test observation, but still only 10% would be would be within 10% of the range of **both** predictors closest to the test observation.
 
-    * We can see that as our number of dimensions/predictors increases, in order for our sample space to remain constant at 0.1, the length of each vector of the hypercube asymptotically approaches 1. Since *each vector represents a predictor*, and **the length of each vector represents the percent of the observations that are within 10% of the range of ONE of the predictors $X_j$ closest to the test observation**, we can see that as $p$ increases, the percent of observations that are "close" to the test observation with respect to ONE of the predictors increases, yet the percent of observations that are "close" to the test observation with respect to ALL the predictors decreases.
+    * We can see (below) that as our number of dimensions/predictors increases, in order for our sample space to remain constant at 0.1, the length of each vector of the hypercube asymptotically approaches 1. Since *each vector represents a predictor*, and **the length of each vector represents the percent of the observations that are within 10% of the range of ONE of the predictors $X_j$ closest to the test observation**, we can see that as $p$ increases, the percent of observations that are "close" to the test observation with respect to ONE of the predictors increases, yet the percent of observations that are "close" to the test observation with respect to ALL the predictors decreases.
+    
+    * In more broad terms, as the number of dimensions increases, the percent of observations that are "close" to one value of a test observation increases, but the percent of observations that are "close" to all values of a test observation decreases.
+    
+```{r}
+# percent of observations that are close to ONE value of a test observation approaching 1
+percents <- NULL
+for (i in 1:100) {
+    percent <- 0.1**(1/i)
+    percents <- c(percents, percent)
+}
+print(percents[1:10])
+```
+    
