@@ -110,12 +110,13 @@ log\left( \frac{1} {\sqrt{2\pi\sigma_k}} \right) ~-~
 \frac{x\mu_k} {\sigma_k^2} ~-~
 \frac{\mu_k^2}{2\sigma_k^2}
 $$
+
 ## 4
 
-**A**. Considering the fact that the variable $X$ is Uniformly Distributed, if we use observations that are within 0.10 of a test observation $x_i$, then, on average we will be using 10% of the observations (ignoring cases where $0.05\ge x_i\ge0.95$ for the sake of simplicity).
+* **A**. Considering the fact that the variable $X$ is Uniformly Distributed, if we use observations that are within 0.10 of a test observation $x_i$, then, on average we will be using 10% of the observations (ignoring cases where $0.05\ge x_i\ge0.95$ for the sake of simplicity).
 
-**B**. Given that we would like to use observations that are within 10% a test observation $x_i$ on both predictors $X_1$ and $X_2$, both of which are Uniformly Distributed over [0, 1], then on average we would only be using $0.1^2~=~0.01$ 1% of our observations.
+* **B**. Given that we would like to use observations that are within 10% a test observation $x_i$ on both predictors $X_1$ and $X_2$, both of which are Uniformly Distributed over [0, 1], then on average we would only be using $0.1^2~=~0.01$ 1% of our observations.
 
-**C**. Following the logical flow from the previous two question, if we have 100 predictors, all Uniformly Distributed over [0, 1], then the probability $P\left( (x_{i, j}~-~0.05) \ge X_j \ge (x_{i, j}~+~0.05) \right)~=~0.1$ for each predictor. Therefore, we would use roughly $0.1^{100}~=~1.00E^{-100}$ percent of our observations.
+* **C**. Following the logical flow from the previous two question, if we have 100 predictors, all Uniformly Distributed over [0, 1], then the probability $P\left( (x_{i, j}~-~0.05) \ge X_j \ge (x_{i, j}~+~0.05) \right)~=~0.1$ for each predictor. Therefore, we would use roughly $0.1^{100}~=~1.00E^{-100}$ percent of our observations.
 
-**D**. 
+* **D**. As we can see from parts **A** - **C**, as the number of predictors $p$ increases, the number of observations that we would consider "near" our test observations $x_i$ decreases drastically. Therefore, when using KNN for example, more likely than not there aren't going to be any observations that fit our definition of "near." More probable is that some of our observations will be "near" out test observation *with respect to some predictors*, and rather far away from our test observation with respect to other predictors, which then begs the question of whether we should use those "not-so-near" when predicting a quantitative or qualitative response of our test observation.

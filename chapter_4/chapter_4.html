@@ -208,6 +208,15 @@ log\left( \frac{1} {\sqrt{2\pi\sigma_k}} \right) ~-~
 \frac{\mu_k^2}{2\sigma_k^2}
 \]</span></p>
 </div>
+<div id="section-3" class="section level2">
+<h2>4</h2>
+<ul>
+<li><p><strong>A</strong>. Considering the fact that the variable <span class="math inline">\(X\)</span> is Uniformly Distributed, if we use observations that are within 0.10 of a test observation <span class="math inline">\(x_i\)</span>, then, on average we will be using 10% of the observations (ignoring cases where <span class="math inline">\(0.05\ge x_i\ge0.95\)</span> for the sake of simplicity).</p></li>
+<li><p><strong>B</strong>. Given that we would like to use observations that are within 10% a test observation <span class="math inline">\(x_i\)</span> on both predictors <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>, both of which are Uniformly Distributed over [0, 1], then on average we would only be using <span class="math inline">\(0.1^2~=~0.01\)</span> 1% of our observations.</p></li>
+<li><p><strong>C</strong>. Following the logical flow from the previous two question, if we have 100 predictors, all Uniformly Distributed over [0, 1], then the probability <span class="math inline">\(P\left( (x_{i, j}~-~0.05) \ge X_j \ge (x_{i, j}~+~0.05) \right)~=~0.1\)</span> for each predictor. Therefore, we would use roughly <span class="math inline">\(0.1^{100}~=~1.00E^{-100}\)</span> percent of our observations.</p></li>
+<li><p><strong>D</strong>. As we can see from parts <strong>A</strong> - <strong>C</strong>, as the number of predictors <span class="math inline">\(p\)</span> increases, the number of observations that we would consider “near” our test observations <span class="math inline">\(x_i\)</span> decreases drastically. Therefore, when using KNN for example, more likely than not there aren’t going to be any observations that fit our definition of “near.” More probable is that some of our observations will be “near” out test observation <em>with respect to some predictors</em>, and rather far away from our test observation with respect to other predictors.</p></li>
+</ul>
+</div>
 </div>
 
 
