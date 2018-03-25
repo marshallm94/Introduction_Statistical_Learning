@@ -110,3 +110,6 @@ log\left( \frac{1} {\sqrt{2\pi\sigma_k}} \right) ~-~
 \frac{x\mu_k} {\sigma_k^2} ~-~
 \frac{\mu_k^2}{2\sigma_k^2}
 $$
+## 4
+
+**A**. Considering the fact that the variable $X$ is Uniformly Distributed, if we use observations that are within 0.10 of a test observation $x_i$, then, on average we will be using 10% of the observations (ignoring cases where $0.05\le x_i\ge0.95$ for the sake of simplicity).

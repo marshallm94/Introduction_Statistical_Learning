@@ -199,6 +199,14 @@ log\left( p_k(x) \right)~=~\frac{x\mu_k}{\sigma^2}~-~\frac{\mu_k^2}{2\sigma^2}~+
 </div>
 <div id="section-2" class="section level2">
 <h2>3</h2>
+<p>Following the exact same logic as the proof from question 2, we get to the point where we are looking to reduce the terms that are dependent on <span class="math inline">\(k\)</span>. However, with Quadratic Discriminant Analysis, <strong>we aren’t making the assumption that there is a constant variance <span class="math inline">\(\sigma^2\)</span> across all classes of <span class="math inline">\(k\)</span>.</strong> Therefore, we can only eliminate the last term (normalizing constant), since all the other terms depend on <span class="math inline">\(k\)</span>. Thus, the equation we are left with (shown below) is the final equation. The third term in the equation shows us that the entire formula does not change in a linear fashion as <span class="math inline">\(x\)</span> changes. <span class="math display">\[
+~\delta_k(x) ~=~ 
+log(\pi_k) ~+~ 
+log\left( \frac{1} {\sqrt{2\pi\sigma_k}} \right) ~-~
+\frac{x^2} {2\sigma_k^2} ~+~
+\frac{x\mu_k} {\sigma_k^2} ~-~
+\frac{\mu_k^2}{2\sigma_k^2}
+\]</span></p>
 </div>
 </div>
 
