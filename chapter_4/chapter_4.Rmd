@@ -112,8 +112,10 @@ log\left( \frac{1} {\sqrt{2\pi\sigma_k}} \right) ~-~
 $$
 ## 4
 
-**A**. Considering the fact that the variable $X$ is Uniformly Distributed, if we use observations that are within 0.10 of a test observation $x_i$, then, on average we will be using 10% of the observations (ignoring cases where $0.05\le x_i\ge0.95$ for the sake of simplicity).
+**A**. Considering the fact that the variable $X$ is Uniformly Distributed, if we use observations that are within 0.10 of a test observation $x_i$, then, on average we will be using 10% of the observations (ignoring cases where $0.05\ge x_i\ge0.95$ for the sake of simplicity).
 
 **B**. Given that we would like to use observations that are within 10% a test observation $x_i$ on both predictors $X_1$ and $X_2$, both of which are Uniformly Distributed over [0, 1], then on average we would only be using $0.1^2~=~0.01$ 1% of our observations.
 
-**C**. 
+**C**. Following the logical flow from the previous two question, if we have 100 predictors, all Uniformly Distributed over [0, 1], then the probability $P\left( (x_{i, j}~-~0.05) \ge X_j \ge (x_{i, j}~+~0.05) \right)~=~0.1$ for each predictor. Therefore, we would use roughly $0.1^{100}~=~1.00E^{-100}$ percent of our observations.
+
+**D**. 
