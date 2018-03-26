@@ -233,6 +233,15 @@ print(percents[1:10])</code></pre>
 <pre><code>##  [1] 0.1000000 0.3162278 0.4641589 0.5623413 0.6309573 0.6812921 0.7196857
 ##  [8] 0.7498942 0.7742637 0.7943282</code></pre>
 </div>
+<div id="section-4" class="section level2">
+<h2>5</h2>
+<ul>
+<li><p><strong>A</strong>. If the true Bayes decision boundary is linear, we would expect Linear Discriminant Analysis (LDA) to outperform Quadratic Discriminant Analysis (QDA) on both the training and test sets.</p></li>
+<li><p><strong>B</strong>. If the true Bayes decision boundary is non-linear, we would expect QDA to outperform LDA on both the training and test sets.</p></li>
+<li><p><strong>C</strong>. As the sample size <span class="math inline">\(n\)</span> increases, we would expect QDA to outperform LDA. The reason for this is that when the sample size is small, using LDA reduces the variance of the classifier far more than QDA, making it more generalizable to new data. With larger data sets, since reducing the <strong>bias</strong> is more important that reducing the variance, QDA will usually produce a better model.</p></li>
+<li><p><strong>D</strong>. The blanket statement that QDA will outperform LDA, or more generally, more flexible methods will outperform less flexible methods <strong>all</strong> the time is false. QDA will have a lower test error rate <em>when it doesn’t overfit the data</em>. As stated in my previous answer, if the sample size is small, the QDA is likely to overfit the data, and therefore have an inferior test error rate that LDA.</p></li>
+</ul>
+</div>
 </div>
 
 
