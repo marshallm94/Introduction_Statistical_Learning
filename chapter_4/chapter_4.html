@@ -273,6 +273,14 @@ print(percents[1:10])</code></pre>
 <p><span class="math display">\[log(1)~+~2.5=0.05(hours~studied)\]</span></p>
 <p><span class="math display">\[\frac{log(1)~+~2.5}{0.05}=hours~studied~=~50\]</span></p>
 </div>
+<div id="section-6" class="section level2">
+<h2>7</h2>
+<p>Outlining the problem, the goal is to find the probability of company <span class="math inline">\(X\)</span> distributing a dividend given it had a 4% profit last year. This can be expressed as <span class="math inline">\(P(~Div~|~4~)\)</span>. Bayes’ Theorem can then be rewritten in the context of the problem as:</p>
+<p><span class="math display">\[P(~Div~|~4~)~=~\frac{P(~4~|~Div~)P(~Div~)}{P(4)}\]</span></p>
+<p><span class="math display">\[P(~Div~|~4~)~=~\frac{P(~4~|~Div~)P(~Div~)}{P(~4~|~Div~)P(~Div~)~+~P(~4~|~No~Div~)P(~No~Div~)}\]</span></p>
+<p>The probability of a company returning a dividend <span class="math inline">\(P(~Div~)~=~0.8\)</span>, therefore the probability that a company doesn’t return a dividend is <span class="math inline">\(P(~No~Div~)~=~0.2\)</span>. To find the probability that a company had a 4% profit last year given it did (and did not) return a dividend, we use the mean % profit of those that did return a dividend (10) and those that did not (0), and the standard deviation that defines the distributions (<span class="math inline">\(\sqrt{36}~=~6\)</span>). Assuming a Normal distribution, the probability that a company had a 4% profit last year given they returned a dividend, <span class="math inline">\(P(~4~|~Div~)\)</span>, is <code>dnorm(4, 10, 6) = 0.04032845</code>. The probability a company had a 4% profit given they did <em>not</em> return a dividend, <span class="math inline">\(P(~4~|~No~Div~)\)</span>, is <code>dnorm(4, 0, 6) = 0.05324133</code>. Putting all these numbers into the above equation:</p>
+<p><span class="math display">\[P(~Div~|~4~)~=~\frac{(0.04032845)(0.8)}{(0.04032845)(0.8)~+~(0.05324133)(0.2)}~=~0.7518525~=~75.2\%\]</span></p>
+</div>
 </div>
 
 
