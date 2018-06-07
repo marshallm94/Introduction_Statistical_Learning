@@ -239,8 +239,39 @@ print(percents[1:10])</code></pre>
 <li><p><strong>A</strong>. If the true Bayes decision boundary is linear, we would expect Linear Discriminant Analysis (LDA) to outperform Quadratic Discriminant Analysis (QDA) on both the training and test sets.</p></li>
 <li><p><strong>B</strong>. If the true Bayes decision boundary is non-linear, we would expect QDA to outperform LDA on both the training and test sets.</p></li>
 <li><p><strong>C</strong>. As the sample size <span class="math inline">\(n\)</span> increases, we would expect QDA to outperform LDA. The reason for this is that when the sample size is small, using LDA reduces the variance of the classifier far more than QDA, making it more generalizable to new data. With larger data sets, since reducing the <strong>bias</strong> is more important that reducing the variance, QDA will usually produce a better model.</p></li>
-<li><p><strong>D</strong>. The blanket statement that QDA will outperform LDA, or more generally, more flexible methods will outperform less flexible methods <strong>all</strong> the time is false. QDA will have a lower test error rate <em>when it doesn’t overfit the data</em>. As stated in my previous answer, if the sample size is small, the QDA is likely to overfit the data, and therefore have an inferior test error rate that LDA.</p></li>
+<li><p><strong>D</strong>. The blanket statement that QDA will outperform LDA, or more generally, more flexible methods will outperform less flexible methods <strong>all</strong> the time is false. Broadly speaking, when modeling data, you are trying to model the true relationship between a set of variables and a target variable. Therefore, the <strong>best</strong> model will be the model that most closely follows this true relationship. So, when the Bayes Decision Boundary is is truly linear, then QDA will not outperform LDA because QDA assumes the decision boundary is quadratic.</p></li>
 </ul>
+</div>
+<div id="section-5" class="section level2">
+<h2>6</h2>
+<p>Since Logistic Regression follows the linear model, where the output <span class="math inline">\(Y\)</span> is the log odds of a success, defining the equation in terms of the problem context is step one.</p>
+<p><span class="math display">\[Y~=~\beta_0~+~\beta_1X_1~+~\beta_2X_2\]</span></p>
+<p><span class="math display">\[Recieve~an~A~=~intercept~+~\beta_1(hours~studied)~+~\beta_2(undergrad~GPA)\]</span></p>
+<p>The estimates for <span class="math inline">\(\beta_0,~\beta_1~and~\beta_2\)</span> being equal to -6, 0.05 and 1, respectively. To get the <em>probability</em> that a student will recieve an A is a matter of plugging these coefficients into the equation, along with the values for hours studied and undergrad GPA for the student, and then converting the output into a probability.</p>
+<p><span class="math display">\[Recieve~an~A~=~-6~+~0.05(hours~studied)~+~1(undergrad~GPA)\]</span></p>
+<ul>
+<li><strong>A</strong>. <span class="math display">\[Recieve~an~A~=~-6~+~0.05(40)~+~1(3.5)~=~-0.5\]</span></li>
+</ul>
+<p><span class="math display">\[-0.5~=~Log~Odds~of~Success\]</span></p>
+<p><span class="math display">\[\epsilon^{-0.5}~=Odds~of~Success\]</span></p>
+<p><span class="math display">\[Probability(Success)~=~\frac{\epsilon^{-0.5}}{1~+~\epsilon^{-0.5}}~=~0.3775407~=~37.75\%\]</span></p>
+<ul>
+<li><strong>B</strong>. To find the number of hours a student with a 3.5 GPA would need to have a 50% change of getting an A, re-working the equation is all that is needed.</li>
+</ul>
+<p><span class="math display">\[Log~Odds~(A)~=~-6~+~0.05(hours~studied)~+~1(3.5)\]</span></p>
+<p><span class="math display">\[Odds~(A)~=~\epsilon^{-6~+~0.05(hours~studied)~+~3.5}\]</span></p>
+<p><span class="math display">\[P(A)~=~\frac{\epsilon^{-6~+~0.05(hours~studied)~+~3.5}}{1~+~\epsilon^{-6~+~0.05(hours~studied)~+~3.5}}\]</span></p>
+<p><span class="math display">\[0.5~=~\frac{\epsilon^{-6~+~0.05(hours~studied)~+~3.5}}{1~+~\epsilon^{-6~+~0.05(hours~studied)~+~3.5}}\]</span></p>
+<p><span class="math display">\[0.5(1~+~\epsilon^{-6~+~0.05(hours~studied)~+~3.5})~=\epsilon^{-6~+~0.05(hours~studied)~+~3.5}\]</span></p>
+<p><span class="math display">\[0.5(1~+~\epsilon^{-2.5~+~0.05(hours~studied)})~=\epsilon^{-2.5+~0.05(hours~studied)}\]</span></p>
+<p><span class="math display">\[0.5~+~0.5(\epsilon^{-2.5~+~0.05(hours~studied)})~=\epsilon^{-2.5+~0.05(hours~studied)}\]</span></p>
+<p><span class="math display">\[0.5~+~0.5Z~=Z~where~Z~=~\epsilon^{-2.5~+~0.05(hours~studied)}\]</span></p>
+<p><span class="math display">\[0.5=0.5Z~where~Z~=~\epsilon^{-2.5~+~0.05(hours~studied)}\]</span></p>
+<p><span class="math display">\[0.5=0.5(\epsilon^{-2.5~+~0.05(hours~studied)})\]</span></p>
+<p><span class="math display">\[1=\epsilon^{-2.5~+~0.05(hours~studied)}\]</span></p>
+<p><span class="math display">\[log(1)=-2.5~+~0.05(hours~studied)\]</span></p>
+<p><span class="math display">\[log(1)~+~2.5=0.05(hours~studied)\]</span></p>
+<p><span class="math display">\[\frac{log(1)~+~2.5}{0.05}=hours~studied~=~50\]</span></p>
 </div>
 </div>
 

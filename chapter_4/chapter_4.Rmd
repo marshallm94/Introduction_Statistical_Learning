@@ -149,4 +149,55 @@ print(percents[1:10])
 
 * **C**. As the sample size $n$ increases, we would expect QDA to outperform LDA. The reason for this is that when the sample size is small, using LDA reduces the variance of the classifier far more than QDA, making it more generalizable to new data. With larger data sets, since reducing the **bias** is more important that reducing the variance, QDA will usually produce a better model.
 
-* **D**. The blanket statement that QDA will outperform LDA, or more generally, more flexible methods will outperform less flexible methods **all** the time is false. QDA will have a lower test error rate *when it doesn't overfit the data*. As stated in my previous answer, if the sample size is small, the QDA is likely to overfit the data, and therefore have an inferior test error rate that LDA.
+* **D**. The blanket statement that QDA will outperform LDA, or more generally, more flexible methods will outperform less flexible methods **all** the time is false. Broadly speaking, when modeling data, you are trying to model the true relationship between a set of variables and a target variable. Therefore, the **best** model will be the model that most closely follows this true relationship. So, when the Bayes Decision Boundary is is truly linear, then QDA will not outperform LDA because QDA assumes the decision boundary is quadratic.
+
+## 6
+
+Since Logistic Regression follows the linear model, where the output $Y$ is the log odds of a success, defining the equation in terms of the problem context is step one.
+
+$$Y~=~\beta_0~+~\beta_1X_1~+~\beta_2X_2$$
+
+$$Recieve~an~A~=~intercept~+~\beta_1(hours~studied)~+~\beta_2(undergrad~GPA)$$
+
+The estimates for $\beta_0,~\beta_1~and~\beta_2$ being equal to -6, 0.05 and 1, respectively. To get the *probability* that a student will recieve an A is a matter of plugging these coefficients into the equation, along with the values for hours studied and undergrad GPA for the student, and then converting the output into a probability.
+
+$$Recieve~an~A~=~-6~+~0.05(hours~studied)~+~1(undergrad~GPA)$$
+
+* **A**. 
+$$Recieve~an~A~=~-6~+~0.05(40)~+~1(3.5)~=~-0.5$$
+
+$$-0.5~=~Log~Odds~of~Success$$
+
+$$\epsilon^{-0.5}~=Odds~of~Success$$
+
+$$Probability(Success)~=~\frac{\epsilon^{-0.5}}{1~+~\epsilon^{-0.5}}~=~0.3775407~=~37.75\%$$
+
+* **B**. To find the number of hours a student with a 3.5 GPA would need to have a 50% change of getting an A, re-working the equation is all that is needed.
+
+$$Log~Odds~(A)~=~-6~+~0.05(hours~studied)~+~1(3.5)$$
+
+$$Odds~(A)~=~\epsilon^{-6~+~0.05(hours~studied)~+~3.5}$$
+
+$$P(A)~=~\frac{\epsilon^{-6~+~0.05(hours~studied)~+~3.5}}{1~+~\epsilon^{-6~+~0.05(hours~studied)~+~3.5}}$$
+
+$$0.5~=~\frac{\epsilon^{-6~+~0.05(hours~studied)~+~3.5}}{1~+~\epsilon^{-6~+~0.05(hours~studied)~+~3.5}}$$
+
+$$0.5(1~+~\epsilon^{-6~+~0.05(hours~studied)~+~3.5})~=\epsilon^{-6~+~0.05(hours~studied)~+~3.5}$$
+
+$$0.5(1~+~\epsilon^{-2.5~+~0.05(hours~studied)})~=\epsilon^{-2.5+~0.05(hours~studied)}$$
+
+$$0.5~+~0.5(\epsilon^{-2.5~+~0.05(hours~studied)})~=\epsilon^{-2.5+~0.05(hours~studied)}$$
+
+$$0.5~+~0.5Z~=Z~where~Z~=~\epsilon^{-2.5~+~0.05(hours~studied)}$$
+
+$$0.5=0.5Z~where~Z~=~\epsilon^{-2.5~+~0.05(hours~studied)}$$
+
+$$0.5=0.5(\epsilon^{-2.5~+~0.05(hours~studied)})$$
+
+$$1=\epsilon^{-2.5~+~0.05(hours~studied)}$$
+
+$$log(1)=-2.5~+~0.05(hours~studied)$$
+
+$$log(1)~+~2.5=0.05(hours~studied)$$
+
+$$\frac{log(1)~+~2.5}{0.05}=hours~studied~=~50$$
