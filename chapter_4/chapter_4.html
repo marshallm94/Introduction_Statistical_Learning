@@ -281,6 +281,33 @@ print(percents[1:10])</code></pre>
 <p>The probability of a company returning a dividend <span class="math inline">\(P(~Div~)~=~0.8\)</span>, therefore the probability that a company doesn’t return a dividend is <span class="math inline">\(P(~No~Div~)~=~0.2\)</span>. To find the probability that a company had a 4% profit last year given it did (and did not) return a dividend, we use the mean % profit of those that did return a dividend (10) and those that did not (0), and the standard deviation that defines the distributions (<span class="math inline">\(\sqrt{36}~=~6\)</span>). Assuming a Normal distribution, the probability that a company had a 4% profit last year given they returned a dividend, <span class="math inline">\(P(~4~|~Div~)\)</span>, is <code>dnorm(4, 10, 6) = 0.04032845</code>. The probability a company had a 4% profit given they did <em>not</em> return a dividend, <span class="math inline">\(P(~4~|~No~Div~)\)</span>, is <code>dnorm(4, 0, 6) = 0.05324133</code>. Putting all these numbers into the above equation:</p>
 <p><span class="math display">\[P(~Div~|~4~)~=~\frac{(0.04032845)(0.8)}{(0.04032845)(0.8)~+~(0.05324133)(0.2)}~=~0.7518525~=~75.2\%\]</span></p>
 </div>
+<div id="section-7" class="section level2">
+<h2>8</h2>
+<p>Since the true evaluation of a model will always be on unseen data, otherwise known as the testing set, we need to compare the testing error rates of the two classification methods. The testing error rate for Logistic Regression is given as 30%.</p>
+<p>To find the testing error rate using KNN where K = 1, a deconstruction of a weighted average is needed. However, since the training and testing data sets are equally divided (so their weights would both be 0.5), this will be equal to the arithmetic mean. When K = 1, the nearest neighbor to any given point is itself, and therefore the training error is 0%. So, to find <span class="math inline">\(testing~error\)</span> in <span class="math inline">\(\bar{x}~=\frac{~training~error~+~testing~error}{2}\)</span>, when the known numbers are plugged in, <span class="math inline">\(18~=\frac{0~+~testing~error}{2}\)</span>, the testing error comes out to be 36%. Therefore, since 30% &lt; 36%, using Logistic Regression would provide a lower error rate on new observations.</p>
+</div>
+<div id="section-8" class="section level2">
+<h2>9</h2>
+<p><span class="math display">\[Odds~=~\frac{P}{1~-~P}~~~and~~~Probability~=~\frac{Odds}{1~+~Odds}\]</span></p>
+<ul>
+<li><strong>A</strong>.</li>
+</ul>
+<p><span class="math display">\[Odds~=~\frac{P}{1~-~P}\]</span></p>
+<p><span class="math display">\[0.37~=~\frac{P}{1~-~P}\]</span></p>
+<p><span class="math display">\[0.37(1~-~P)~=~P\]</span></p>
+<p><span class="math display">\[0.37~-~0.37P~=~P\]</span></p>
+<p><span class="math display">\[0.37=~1.37P\]</span></p>
+<p><span class="math display">\[\frac{0.37}{1.37}=~P~=~0.270073~=~27\%\]</span></p>
+<ul>
+<li><strong>B</strong>.</li>
+</ul>
+<p><span class="math display">\[P~=~\frac{Odds}{1~+~Odds}\]</span></p>
+<p><span class="math display">\[0.16~=~\frac{Odds}{1~+~Odds}\]</span></p>
+<p><span class="math display">\[0.16(1~+~Odds)~=~Odds\]</span></p>
+<p><span class="math display">\[0.16~+~0.16(Odds)~=~Odds\]</span></p>
+<p><span class="math display">\[0.16~=~0.84(Odds)\]</span></p>
+<p><span class="math display">\[\frac{0.16}{0.84}~=~Odds~=~0.1904762~=~0.19\]</span></p>
+</div>
 </div>
 
 
