@@ -252,3 +252,106 @@ $$0.16~+~0.16(Odds)~=~Odds$$
 $$0.16~=~0.84(Odds)$$
 
 $$\frac{0.16}{0.84}~=~Odds~=~0.1904762~=~0.19$$
+
+
+# Applied
+
+## 10
+
+* **A**. Looking at the plot below, it is clear that the trend in trading volume is exponentially increasing over time. In addition, since each year has 52 data points associated with it, the spread of the data points as time goes on indicates an increase in the variance of trading volume from year to year. This is confirmed in the second plot, showing a large increase in the standard deviation of trading volume after 2005. Lastly by looking at a table of the counts of weeks that had a positive or negative return per year, there doesn't seem to be a noticeable pattern in the number of positive or negative week over time. This is confirmed with a Chi-squared Test of Independence, returning a P-Value of 0.4266
+
+```{r}
+library(ISLR)
+library(dplyr)
+library(ggplot2)
+library(caret)
+library(e1071)
+
+ggplot(data = Weekly, aes(x = Year, y = Volume)) +
+    geom_point(color = 'blue', alpha = 0.5) +
+    labs(x = 'Year', y = "Volume (Billions)", title = 'Exponential Growth in Trading Volume')
+
+by_year <- Weekly %>% group_by(Year)
+year_df <- as.data.frame(by_year %>% summarize(stand_dev = sd(Volume)*1000000000))
+
+ggplot(year_df, aes(x = Year, y = stand_dev)) +
+    geom_line(color = 'orange') +
+    labs(x = 'Year', y = 'Standard Deviation', title = 'Trading Volume Variance Increases')
+
+
+direction_year_table <- with(Weekly, table(Direction, Year))
+direction_year_table
+chisq.test(direction_year_table)
+```
+
+* **B**. The only variable that has a statistically significant coefficient is Lag2, the percentage return two weeks previous to the present week.
+
+```{r}
+fit <- glm(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume, Weekly, family = 'binomial')
+summary(fit)
+```
+
+* **C**. With a Sensitivity (recall) of 92.07%, it is fair to say that this model is pretty good at correctly classifying a positive return when it is in fact a week with a positive return. However, simply looking at the Confusion Matrix shows that this model **tends to simply predict a positive response no matter what**. For example, given that a week returned a negative return, this model would correctly classify that week as having a negative return only 11.15% of the time.
+
+```{r}
+week_copy <- Weekly
+week_copy$predict_probabilities <- predict(fit, type = 'response')
+week_copy$prediction <- 'Down'
+week_copy$prediction[week_copy$predict_probabilities >= 0.5] <- 'Up'
+week_copy$prediction <- as.factor(week_copy$prediction)
+confusionMatrix(week_copy$prediction, week_copy$Direction, 'Up')
+```
+
+* **D**.
+
+```{r}
+train <- subset(Weekly, Year <= 2008)
+test <- subset(Weekly, Year >= 2009)
+
+fit <- glm(Direction ~ Lag2, train, family = 'binomial')
+
+get_accuracy <- function(model, test_data=test) {
+    test_data$probs <- predict(model, newdata = test_data, type = 'response')
+    test_data$prediction <- 'Down'
+    test_data$prediction[test_data$probs >= 0.5] <- 'Up'
+    cf <- confusionMatrix(factor(test_data$prediction), factor(test_data$Direction), 'Up')
+    return(list(cf$table, cf$overall[1]))
+}
+get_accuracy(fit)
+```
+
+* **E**.
+
+```{r}
+library(MASS)
+lda <- lda(Direction ~ Lag2, train)
+test$prediction <- predict(lda, newdata = test, type = 'response')$class
+cf <- confusionMatrix(factor(test$prediction), factor(test$Direction), 'Up')
+cf$table
+cf$overall[1]
+```
+
+* **F**.
+
+```{r}
+library(MASS)
+qda <- qda(Direction ~ Lag2, train)
+test$prediction <- predict(qda, newdata = test, type = 'response')$class
+cf <- confusionMatrix(factor(test$prediction), factor(test$Direction), 'Up')
+cf$table
+cf$overall[1]
+```
+
+* **G**.
+
+```{r}
+library(class)
+test <- subset(test, select = -prediction)
+nearest_neighbors <- knn(data.frame(train$Lag2), data.frame(test$Lag2),
+                         train$Direction)
+cf <- confusionMatrix(factor(test$Direction), nearest_neighbors, 'Up')
+cf$table
+cf$overall[1]
+```
+
+* **H**. Both Logistic Regression and Linear Discriminant Analysis had equal accuracy at 62.5%. **This is a good indication that the Bayes Decision Boundary is truly linear, in some manner**. However, it is important to note that Quadratic Discriminant Analysis simply classified all weeks as having a positive return and still got 58.65% accuracy. So, the "best" models in this scenario are only 4% better than a rather unintelligent model.
