@@ -1,9 +1,5 @@
 # Conceptual
 
-```{r setup, include=FALSE}
-library(knitr)
-knitr::opts_chunk$set(echo = FALSE, include = TRUE)
-```
 
 ## 1
 
@@ -329,8 +325,8 @@ get_accuracy(fit)
 
 ```{r}
 library(MASS)
-lda <- lda(Direction ~ Lag2, train)
-test$prediction <- predict(lda, newdata = test, type = 'response')$class
+lda_fit <- lda(Direction ~ Lag2, train)
+test$prediction <- predict(lda_fit, newdata = test, type = 'response')$class
 cf <- confusionMatrix(factor(test$prediction), factor(test$Direction), 'Up')
 cf$table
 cf$overall[1]
@@ -340,8 +336,8 @@ cf$overall[1]
 
 ```{r}
 library(MASS)
-qda <- qda(Direction ~ Lag2, train)
-test$prediction <- predict(qda, newdata = test, type = 'response')$class
+qda_fit <- qda(Direction ~ Lag2, train)
+test$prediction <- predict(qda_fit, newdata = test, type = 'response')$class
 cf <- confusionMatrix(factor(test$prediction), factor(test$Direction), 'Up')
 cf$table
 cf$overall[1]
@@ -383,18 +379,18 @@ models <- list(one_var, two_var, three_var, four_var, five_var, six_var, seven_v
 results_df <- NULL
 for (model in models) {
     # logistic regression
-    fit <- glm(model, train, family = 'binomial')
-    lr_acc <- get_accuracy(fit)[[2]]
+    lr_fit <- glm(model, train, family = 'binomial')
+    lr_acc <- get_accuracy(lr_fit)[[2]]
     
     # LDA
-    lda <- lda(model, train)
-    lda_y_hat <- predict(lda, newdata = test, type = 'response')$class
+    lda_fit <- lda(model, train)
+    lda_y_hat <- predict(lda_fit, newdata = test, type = 'response')$class
     cf <- confusionMatrix(factor(lda_y_hat), factor(test$Direction), 'Up')
     lda_acc <- cf$overall[1]
     
     # QDA
-    qda <- qda(model, train)
-    qda_y_hat <- predict(qda, newdata = test, type = 'response')$class
+    qda_fit <- qda(model, train)
+    qda_y_hat <- predict(qda_fit, newdata = test, type = 'response')$class
     cf <- confusionMatrix(factor(qda_y_hat), factor(test$Direction), 'Up')
     qda_acc <- cf$overall[1]
     
@@ -416,3 +412,122 @@ rownames(results_df) <- c("Direction ~ Lag1",
 knitr::kable(results_df)
 ```
 
+
+## 11
+
+* **A**.
+
+```{r}
+df <- Auto
+df$mpg01 <- 0
+df$mpg01[df$mpg > median(df$mpg)] <- 1
+```
+
+
+* **B**.
+
+```{r}
+ggplot(df, aes(y = cylinders,
+               x = factor(cylinders))) +
+    geom_bar(aes(y=..prop.., group=mpg01,
+                 fill = factor(..x..))) +
+    facet_grid(~factor(mpg01, labels = c('Under Median','Above Median'))) +
+    scale_y_continuous(labels = scales::percent) +
+    scale_fill_discrete(guide = FALSE) +
+    labs(x = 'Cylinders', y = 'Proportion', title = "Most Vehicles Above Median Have 4 Cylinders")
+
+ggplot(df, aes(y = mpg01,
+               x = factor(mpg01))) +
+    geom_bar(aes(y=..prop.., group=cylinders,
+                 fill = factor(..x..))) +
+    facet_grid(~factor(cylinders)) +
+    scale_y_continuous(labels = scales::percent) +
+    scale_fill_discrete(name = "Median Status", labels = c('Under Median','Above Median')) +
+    labs(x = 'Median Status', y = 'Proportion', title = "Higher Cylinder Vehicles Have Higher Proportion Over Median")
+
+ggplot(df, aes(y = origin,
+               x = factor(origin, labels = c('American','European','Japanese')))) +
+    geom_bar(aes(y=..prop.., group=mpg01,
+                 fill = factor(..x..))) +
+    facet_grid(~factor(mpg01, labels = c('Under Median','Above Median'))) +
+    scale_y_continuous(labels = scales::percent) +
+    scale_fill_discrete(guide = FALSE) +
+    labs(x = 'Country of Manufacture', y = 'Proportion', title = "Most Vehicles Under Median Made in US")
+
+ggplot(df, aes(y = mpg01,
+               x = factor(mpg01, labels = c('Under Median','Above Median')))) +
+    geom_bar(aes(y=..prop.., group=origin,
+                 fill = factor(..x..))) +
+    facet_grid(~factor(origin, labels = c('American','European','Japanese'))) +
+    scale_y_continuous(labels = scales::percent) +
+    scale_fill_discrete(guide = FALSE) +
+    labs(x = 'Country of Manufacture', y = 'Proportion', title = "Most Vehicles Made in Europe or Japan Above Median")
+```
+
+* **C**.
+
+```{r}
+set.seed(5)
+sample_size <- floor(0.75*nrow(df))
+train_idx <- sample(seq_len(nrow(df)), size = sample_size)
+train <- df[train_idx,]
+test <- df[-train_idx,]
+```
+
+* **D**. Using only the $Cylinders$ and $Origin$ columns, an accuracy of 90.82% is achieved, corresponding to a testing error rate of 9.18%.
+
+```{r}
+lda_model <- lda(mpg01 ~ cylinders + factor(origin), train)
+
+discriminant_analysis_acc <- function(model, newdata=test) {
+    y_hat <- predict(model, newdata = newdata, type = 'response')$class
+    cf <- confusionMatrix(factor(y_hat), factor(newdata$mpg01), '1')
+    model_accuracy <- cf$overall[1]
+    print(cf$table)
+    model_accuracy
+}
+
+discriminant_analysis_acc(lda_model)
+```
+
+
+* **E**. Performing QDA with the same variables as LDA, the same accuracy and error are returned, 90.82% and 9.18% respectively.
+
+```{r}
+qda_model <- qda(mpg01 ~ cylinders + factor(origin), train)
+discriminant_analysis_acc(qda_model)
+```
+
+* **F**. Logistic Regression has the same accuracy and error rate as QDA and LDA. **Its important to note that this is happening because the "model" is just a series of conditional probabilities**. For example, $P(~MPG_{01}~=~1~|~Origin~=~US~\&~Cylinders~=8~)~=~0.016$ and thus the prediction for all vehicles that have 8 cylinders and were made in the US will be predicted to be below the median. Each combination of country of manufacture and number of cylinders will have its own predicted probability.
+
+```{r}
+lr_model <- glm(mpg01 ~ cylinders + factor(origin), train, family = 'binomial')
+probs <- predict(lr_model, newdata = test, type = 'response')
+y_hat <- rep(0, length(probs))
+y_hat[probs >= 0.5] <- 1
+cf <- confusionMatrix(factor(y_hat), factor(test$mpg01), '1')
+cf$table
+cf$overall[1]
+```
+
+* **G**. Once again the accuracy and testing error rate are the same as the other algorithms, regardless of $K$. However, with the other algorithms there were 6 False Positives and 3 False Negatives and with KNN has the opposite, 3 False Positives and 6 False Negatives.
+
+```{r}
+knn_train <- cbind(train$cylinders, train$origin)
+knn_test <- cbind(test$cylinders, test$origin)
+
+nn_train <- function(k) {
+    nearest_neighbors <- knn(data.frame(knn_train),
+                             data.frame(knn_test),
+                             train$mpg01,
+                             k=k)
+    cf <- confusionMatrix(factor(test$mpg01), nearest_neighbors, '1')
+    print(cf$table)
+    print(cf$overall[1])
+}
+
+nn_train(2)
+nn_train(10)
+nn_train(15)
+
+```
