@@ -1,5 +1,10 @@
 # Conceptual
 
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE, include = TRUE)
+```
+
 ## 1
 
 $$
@@ -355,3 +360,59 @@ cf$overall[1]
 ```
 
 * **H**. Both Logistic Regression and Linear Discriminant Analysis had equal accuracy at 62.5%. **This is a good indication that the Bayes Decision Boundary is truly linear, in some manner**. However, it is important to note that Quadratic Discriminant Analysis simply classified all weeks as having a positive return and still got 58.65% accuracy. So, the "best" models in this scenario are only 4% better than a rather unintelligent model.
+
+* **I**. Since there is some evidence that the Bayes Decision Boundary is somewhat linear, and there are only 8 possible variables with which Direction can be predicted, this provides a good opportunity to practice Best Subset Selection, introduced in Chapter 6 of ISLR. The leaps package has a function `regsubsets` that allows the user to perform multiple subset selection methods, including Best, Forward and Backward. Initially including all the variables led to $Today$ being included in every model, however looking at the documentation for the Weekly data set shows that the $Today$ column is "Percentage return for this week"; in other words a direct proxy for our response variable, Direction. Since this is some form of data leakage I will perform best subset selection without this variable. The results are shown below.
+
+```{r}
+library(leaps)
+best_subset_selection <- regsubsets(Direction ~ . - Today, data = train, method = 'exhaustive', nvmax = dim(train)[2] - 2)
+summary(best_subset_selection)
+```
+
+```{r}
+one_var <- as.formula("Direction ~ Lag1")
+two_var <- as.formula("Direction ~ Lag1 + Lag2")
+three_var <- as.formula("Direction ~ Lag1 + Lag2 + Volume")
+four_var <- as.formula("Direction ~ Lag1 + Lag2 + Volume + Lag5")
+five_var <- as.formula("Direction ~ Lag1 + Lag2 + Volume + Lag5 + Lag4")
+six_var <- as.formula("Direction ~ Lag1 + Lag2 + Volume + Lag5 + Lag4 + Lag3")
+seven_var <- as.formula("Direction ~ Lag1 + Lag2 + Volume + Lag5 + Lag4 + Lag3 + Year")
+
+models <- list(one_var, two_var, three_var, four_var, five_var, six_var, seven_var)
+
+results_df <- NULL
+for (model in models) {
+    # logistic regression
+    fit <- glm(model, train, family = 'binomial')
+    lr_acc <- get_accuracy(fit)[[2]]
+    
+    # LDA
+    lda <- lda(model, train)
+    lda_y_hat <- predict(lda, newdata = test, type = 'response')$class
+    cf <- confusionMatrix(factor(lda_y_hat), factor(test$Direction), 'Up')
+    lda_acc <- cf$overall[1]
+    
+    # QDA
+    qda <- qda(model, train)
+    qda_y_hat <- predict(qda, newdata = test, type = 'response')$class
+    cf <- confusionMatrix(factor(qda_y_hat), factor(test$Direction), 'Up')
+    qda_acc <- cf$overall[1]
+    
+    df <- data.frame("Logistic_Regression_Acc" = lr_acc,
+                        "LDA_Acc" = lda_acc,
+                        "QDA_Acc" = qda_acc)
+    
+    results_df <- rbind(results_df, df)
+}
+
+rownames(results_df) <- c("Direction ~ Lag1",
+                          "Direction ~ Lag1 + Lag2",
+                          "Direction ~ Lag1 + Lag2 + Volume",
+                          "Direction ~ Lag1 + Lag2 + Volume + Lag5",
+                          "Direction ~ Lag1 + Lag2 + Volume + Lag5 + Lag4",
+                          "Direction ~ Lag1 + Lag2 + Volume + Lag5 + Lag4 + Lag3",
+                          "Direction ~ Lag1 + Lag2 + Volume + Lag5 + Lag4 + Lag3 + Year")
+
+knitr::kable(results_df)
+```
+
