@@ -529,5 +529,62 @@ nn_train <- function(k) {
 nn_train(2)
 nn_train(10)
 nn_train(15)
-
 ```
+
+## 12
+
+* **A**.
+
+```{r}
+Power <- function() {
+    print(2^3)
+}
+Power()
+```
+
+* **B**.
+
+```{r}
+Power2 <- function(x, a) {
+    print(x^a)
+}
+Power2(3,8)
+```
+
+* **C**. 
+
+```{r}
+Power2(10, 3)
+Power2(8, 17)
+Power2(131, 3)
+```
+
+* **D**. 
+
+```{r}
+Power3 <- function(x, a) {
+    return(x^a)
+}
+```
+
+* **E**.
+
+```{r}
+x <- 1:10
+y <- Power3(x, 2)
+qplot(x, y, xlab = 'X', ylab = 'Y', main = 'Exponential Growth')
+```
+
+* **F**.
+
+```{r}
+PlotPower <- function(x_range, a) {
+    y <- Power3(x_range, a)
+    title <- paste("X^", as.character(a), sep = "")
+    return(qplot(x_range, y, xlab = 'X', ylab = 'Y', main = title))
+}
+first_plot <- PlotPower(1:10, 3)
+first_plot
+```
+
+
