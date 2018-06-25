@@ -422,13 +422,13 @@ for (model in models) {
     results_df <- rbind(results_df, df)
 }
 
-rownames(results_df) <- c("One Variable",
-                          "Two Variables",
-                          "Three Variables",
-                          "Four Variables",
-                          "Five Variables",
-                          "Six Variables",
-                          "Seven Variables")
+rownames(results_df) <- c("One Variable Model",
+                          "Two Variables Model",
+                          "Three Variables Model",
+                          "Four Variables Model",
+                          "Five Variables Model",
+                          "Six Variables Model",
+                          "Seven Variables Model")
 
 knitr::kable(results_df, col.names = c('Logistic Regression Accuracy',
                                        'LDA Accuracy',
