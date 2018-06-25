@@ -1,3 +1,15 @@
+---
+title: "ISLR | Chapter 4 Exercises"
+author: "Marshall McQuillen"
+date: "6/25/2018"
+output: pdf_document
+---
+
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 # Conceptual
 
 
@@ -262,22 +274,26 @@ $$\frac{0.16}{0.84}~=~Odds~=~0.1904762~=~0.19$$
 * **A**. Looking at the plot below, it is clear that the trend in trading volume is exponentially increasing over time. In addition, since each year has 52 data points associated with it, the spread of the data points as time goes on indicates an increase in the variance of trading volume from year to year. This is confirmed in the second plot, showing a large increase in the standard deviation of trading volume after 2005. Lastly by looking at a table of the counts of weeks that had a positive or negative return per year, there doesn't seem to be a noticeable pattern in the number of positive or negative week over time. This is confirmed with a Chi-squared Test of Independence, returning a P-Value of 0.4266
 
 ```{r}
-library(ISLR)
-library(dplyr)
-library(ggplot2)
-library(caret)
-library(e1071)
+suppressPackageStartupMessages(library(ISLR))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(caret))
+suppressPackageStartupMessages(library(e1071))
 
 ggplot(data = Weekly, aes(x = Year, y = Volume)) +
     geom_point(color = 'blue', alpha = 0.5) +
-    labs(x = 'Year', y = "Volume (Billions)", title = 'Exponential Growth in Trading Volume')
+    labs(x = 'Year',
+         y = "Volume (Billions)",
+         title = 'Exponential Growth in Trading Volume')
 
 by_year <- Weekly %>% group_by(Year)
 year_df <- as.data.frame(by_year %>% summarize(stand_dev = sd(Volume)*1000000000))
 
 ggplot(year_df, aes(x = Year, y = stand_dev)) +
     geom_line(color = 'orange') +
-    labs(x = 'Year', y = 'Standard Deviation', title = 'Trading Volume Variance Increases')
+    labs(x = 'Year',
+         y = 'Standard Deviation',
+         title = 'Trading Volume Variance Increases')
 
 
 direction_year_table <- with(Weekly, table(Direction, Year))
@@ -288,7 +304,9 @@ chisq.test(direction_year_table)
 * **B**. The only variable that has a statistically significant coefficient is Lag2, the percentage return two weeks previous to the present week.
 
 ```{r}
-fit <- glm(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume, Weekly, family = 'binomial')
+fit <- glm(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume,
+           Weekly,
+           family = 'binomial')
 summary(fit)
 ```
 
@@ -361,7 +379,10 @@ cf$overall[1]
 
 ```{r}
 library(leaps)
-best_subset_selection <- regsubsets(Direction ~ . - Today, data = train, method = 'exhaustive', nvmax = dim(train)[2] - 2)
+best_subset_selection <- regsubsets(Direction ~ . - Today,
+                                    data = train,
+                                    method = 'exhaustive',
+                                    nvmax = dim(train)[2] - 2)
 summary(best_subset_selection)
 ```
 
@@ -401,15 +422,17 @@ for (model in models) {
     results_df <- rbind(results_df, df)
 }
 
-rownames(results_df) <- c("Direction ~ Lag1",
-                          "Direction ~ Lag1 + Lag2",
-                          "Direction ~ Lag1 + Lag2 + Volume",
-                          "Direction ~ Lag1 + Lag2 + Volume + Lag5",
-                          "Direction ~ Lag1 + Lag2 + Volume + Lag5 + Lag4",
-                          "Direction ~ Lag1 + Lag2 + Volume + Lag5 + Lag4 + Lag3",
-                          "Direction ~ Lag1 + Lag2 + Volume + Lag5 + Lag4 + Lag3 + Year")
+rownames(results_df) <- c("One Variable",
+                          "Two Variables",
+                          "Three Variables",
+                          "Four Variables",
+                          "Five Variables",
+                          "Six Variables",
+                          "Seven Variables")
 
-knitr::kable(results_df)
+knitr::kable(results_df, col.names = c('Logistic Regression Accuracy',
+                                       'LDA Accuracy',
+                                       'QDA Accuracy'))
 ```
 
 
@@ -434,7 +457,9 @@ ggplot(df, aes(y = cylinders,
     facet_grid(~factor(mpg01, labels = c('Under Median','Above Median'))) +
     scale_y_continuous(labels = scales::percent) +
     scale_fill_discrete(guide = FALSE) +
-    labs(x = 'Cylinders', y = 'Proportion', title = "Most Vehicles Above Median Have 4 Cylinders")
+    labs(x = 'Cylinders',
+         y = 'Proportion',
+         title = "Most Vehicles Above Median Have 4 Cylinders")
 
 ggplot(df, aes(y = mpg01,
                x = factor(mpg01))) +
@@ -442,8 +467,11 @@ ggplot(df, aes(y = mpg01,
                  fill = factor(..x..))) +
     facet_grid(~factor(cylinders)) +
     scale_y_continuous(labels = scales::percent) +
-    scale_fill_discrete(name = "Median Status", labels = c('Under Median','Above Median')) +
-    labs(x = 'Median Status', y = 'Proportion', title = "Higher Cylinder Vehicles Have Higher Proportion Over Median")
+    scale_fill_discrete(name = "Median Status",
+                        labels = c('Under Median','Above Median')) +
+    labs(x = 'Median Status',
+         y = 'Proportion',
+         title = "Higher Cylinder Vehicles Have Higher Proportion Over Median")
 
 ggplot(df, aes(y = origin,
                x = factor(origin, labels = c('American','European','Japanese')))) +
@@ -452,7 +480,9 @@ ggplot(df, aes(y = origin,
     facet_grid(~factor(mpg01, labels = c('Under Median','Above Median'))) +
     scale_y_continuous(labels = scales::percent) +
     scale_fill_discrete(guide = FALSE) +
-    labs(x = 'Country of Manufacture', y = 'Proportion', title = "Most Vehicles Under Median Made in US")
+    labs(x = 'Country of Manufacture',
+         y = 'Proportion',
+         title = "Most Vehicles Under Median Made in US")
 
 ggplot(df, aes(y = mpg01,
                x = factor(mpg01, labels = c('Under Median','Above Median')))) +
@@ -461,7 +491,9 @@ ggplot(df, aes(y = mpg01,
     facet_grid(~factor(origin, labels = c('American','European','Japanese'))) +
     scale_y_continuous(labels = scales::percent) +
     scale_fill_discrete(guide = FALSE) +
-    labs(x = 'Country of Manufacture', y = 'Proportion', title = "Most Vehicles Made in Europe or Japan Above Median")
+    labs(x = 'Country of Manufacture',
+         y = 'Proportion', title =
+             "Most Vehicles Made in Europe or Japan Above Median")
 ```
 
 * **C**.
@@ -510,7 +542,7 @@ cf$table
 cf$overall[1]
 ```
 
-* **G**. Once again the accuracy and testing error rate are the same as the other algorithms, regardless of $K$. However, with the other algorithms there were 6 False Positives and 3 False Negatives and with KNN has the opposite, 3 False Positives and 6 False Negatives.
+* **G**. Once again the accuracy and testing error rate are the same as the other algorithms, regardless of $K$.
 
 ```{r}
 knn_train <- cbind(train$cylinders, train$origin)
@@ -521,7 +553,7 @@ nn_train <- function(k) {
                              data.frame(knn_test),
                              train$mpg01,
                              k=k)
-    cf <- confusionMatrix(factor(test$mpg01), nearest_neighbors, '1')
+    cf <- confusionMatrix(nearest_neighbors, factor(test$mpg01), '1')
     print(cf$table)
     print(cf$overall[1])
 }
@@ -585,6 +617,65 @@ PlotPower <- function(x_range, a) {
 }
 first_plot <- PlotPower(1:10, 3)
 first_plot
+```
+
+## 13
+
+After performing logistic regression with all the variables (excluding $crim$ to prevent any data leakage), I removed the three variable with the least significant P-Values, rm (average number of rooms per dwelling), indus (proportion of non-retail business acres per town), and age (proportion of owner-occupied units built prior to 1940). This only reduced the accuracy from ~86% to 83.33%, not a bad tradeoff considering the reduction in dimension size. I used this same model for LDA, QDA and KNN with K ranging from 1 to 25. Both LDA and QDA outperformed logistic regression, however, KNN outperformed all other models. The plot on the last page shows a relatively consistent decrease in accuracy as K increases.
+
+```{r}
+library(MASS)
+df <- Boston
+df$crim01 <- 0
+df$crim01[df$crim > median(df$crim)] <- 1
+
+# train test split
+set.seed(5)
+sample_size <- floor(0.75*nrow(df))
+train_idx <- sample(seq_len(nrow(df)), size = sample_size)
+df.train <- df[train_idx,]
+df.test <- df[-train_idx,]
+
+# logistic regression
+lr_model <- glm(crim01 ~ . - crim - rm - indus - age, df.train, family = 'binomial')
+probs <- predict(lr_model, newdata = df.test, type = 'response')
+y_hat <- 0
+y_hat[probs >= 0.5] <- 1
+confusionMatrix(factor(y_hat), factor(df.test$crim01), '1')
+
+# lda
+lda_model <- lda(crim01 ~ . - crim - rm - indus - age, df.train)
+y_hat <- predict(lda_model, newdata = df.test)$class
+confusionMatrix(factor(y_hat), factor(df.test$crim01), '1')
+
+# qda
+qda_model <- qda(crim01 ~ . - crim - rm - indus - age, df.train)
+y_hat <- predict(qda_model, newdata = df.test)$class
+confusionMatrix(factor(y_hat), factor(df.test$crim01), '1')
+
+# knn
+knn_train <- subset(df.train, select = - c(crim, crim01, rm, indus, age))
+knn_test <- subset(df.test, select = - c(crim, crim01, rm, indus, age))
+
+knn_accuracy <- function(k_range) {
+    accuracy_vector <- c()
+    for (k in k_range) {
+        nearest_neighbors <- knn(knn_train,
+                             knn_test,
+                             df.train$crim01,
+                             k = k)
+        cf <- confusionMatrix(nearest_neighbors, factor(df.test$crim01), '1')
+        accuracy_vector <- c(accuracy_vector, cf$overall[1])
+    }
+    return(accuracy_vector)
+}
+k_range <- 1:25
+k_range_acc <- knn_accuracy(k_range)
+results_df <- data.frame(k_range, k_range_acc)
+ggplot(results_df, aes(x = k_range, y = k_range_acc)) +
+    geom_point(color = 'blue') +
+    geom_line(color = 'red') +
+    labs(x = 'K', y = 'KNN Accuracy', title = 'KNN Testing Error Rates for Various K')
 ```
 
 
