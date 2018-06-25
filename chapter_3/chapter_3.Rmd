@@ -1,3 +1,12 @@
+---
+title: "ISLR | Chapter 3 Exercises"
+author: "Marshall McQuillen"
+date: "1/11/2018"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
 # Conceptual
 
 ## 1
@@ -46,7 +55,22 @@ Mathematically, *KNN classification* takes the K nearest training observations t
 
 ## 3
 
-To answer this question, the first step I took was to write out and simplify the model:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_4~+~\hat{\beta_5}X_5$$Which, rewritten to express the interaction terms is:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3$$Now, X~3~ is a binary variable, which means we can "split" this equation into two separate equations, based on the value of X~3~, where a value of 1 = Female and 0 = Male. Thus:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Female$$$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Male$$X~5~ is an interaction term between Gender and GPA, so if Gender = Male (that is to say X~3~ = 0) we can rewrite the above Male equation as:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~0~~~if~x_i~is~Male$$And the Female equation, where X~3~ = 1, becomes:$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$Finally, we can move a few things around to get our final equations:$$\hat{y_i}~=~\hat{\beta_o}~+~X_1\left( \hat{\beta_1}~+~\hat{\beta_4}X_2 \right)~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$$$\hat{y_i}~=~\hat{\beta_o}~+~X_1\left(\hat{\beta_1}~+~\hat{\beta_4}X_2\right)~+~\hat{\beta_2}X_2~~~if~x_i~is~Male$$Simplified:
+To answer this question, the first step I took was to write out and simplify the model:
+$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_4~+~\hat{\beta_5}X_5$$
+Which, rewritten to express the interaction terms is:
+$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3$$
+Now, X~3~ is a binary variable, which means we can "split" this equation into two separate equations, based on the value of X~3~, where a value of 1 = Female and 0 = Male. Thus:
+$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Female$$
+
+$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Male$$
+X~5~ is an interaction term between Gender and GPA, so if Gender = Male (that is to say X~3~ = 0) we can rewrite the above Male equation as:
+$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~0~~~if~x_i~is~Male$$
+And the Female equation, where X~3~ = 1, becomes:
+$$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$
+Finally, we can move a few things around to get our final equations:
+$$\hat{y_i}~=~\hat{\beta_o}~+~X_1\left( \hat{\beta_1}~+~\hat{\beta_4}X_2 \right)~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$
+$$\hat{y_i}~=~\hat{\beta_o}~+~X_1\left(\hat{\beta_1}~+~\hat{\beta_4}X_2\right)~+~\hat{\beta_2}X_2~~~if~x_i~is~Male$$
+Simplified:
 $$
     \hat{y_i}~=~\begin{cases}
         \hat{\beta_o}~+~\tilde{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_5}X_1,~~~if~x_i~=~Female\\

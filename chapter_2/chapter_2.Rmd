@@ -1,3 +1,11 @@
+---
+title: "ISLR | Chapter 2 Exercises"
+author: "Marshall McQuillen"
+date: "11/13/2017"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
 # Conceptual
 
 ## 1
@@ -27,7 +35,7 @@ Interest in prediction, and since metric of interest is quantitative, this would
 
 ## 3
 **A**.
-(see graphic)
+![](chapter_2_q3a.png)
 
 **B**.
 
