@@ -16,7 +16,6 @@ and the alternate hypothesis is that at least one of the coefficients is non-zer
 
 The conclusions that can be drawn from the P-values in the table are that *TV* and *Radio* have some relationship with *Sales* with practically complete certainty (the probability of observing those t-statistic's by chance under the null hypotheis is less than 0.01%). On the other hand, we would expect to observe a t-statistic greater than or equal to that of *Newspaper's* 85.99% of the time, and thus we fail to reject the null hypothesis that *Newspaper* has any effect on *Sales.*
 
-
 ```{r, echo = FALSE}
 library(knitr)
 df <-  data.frame(Variable = c("Intercept",
@@ -43,7 +42,6 @@ df <-  data.frame(Variable = c("Intercept",
 kable(df)
 ```
 
-
 ## 2
 
 The main difference between the *KNN classifier* and *KNN regression* methods is that the *KNN classifier* outputs a qualitative prediction and *KNN regression* ouputs a quantitative prediction.
@@ -52,25 +50,38 @@ Mathematically, *KNN classification* takes the K nearest training observations t
 
 *KNN regression* takes the *average* of the K nearest neighbors' *quantitative output*. For example, again using the example where *K = 5*, if the 5 training observations closest to x~0~ have respective response values of 16, 22, 14, 24 and 18, then *KNN regression* takes their average and gives the test observation x~0~ that value...$$\frac{16+22+14+24+18}{5} = 18.8 = y_0$$
 
-
 ## 3
 
 To answer this question, the first step I took was to write out and simplify the model:
+
 $$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_4~+~\hat{\beta_5}X_5$$
+
 Which, rewritten to express the interaction terms is:
+
 $$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}X_3~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3$$
+
 Now, X~3~ is a binary variable, which means we can "split" this equation into two separate equations, based on the value of X~3~, where a value of 1 = Female and 0 = Male. Thus:
+
 $$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Female$$
 
 $$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1X_3~~~if~x_i~is~Male$$
+
 X~5~ is an interaction term between Gender and GPA, so if Gender = Male (that is to say X~3~ = 0) we can rewrite the above Male equation as:
+
 $$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~0~+~\hat{\beta_4}X_1X_2~+~0~~~if~x_i~is~Male$$
+
 And the Female equation, where X~3~ = 1, becomes:
+
 $$\hat{y_i}~=~\hat{\beta_o}~+~\hat{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_4}X_1X_2~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$
+
 Finally, we can move a few things around to get our final equations:
+
 $$\hat{y_i}~=~\hat{\beta_o}~+~X_1\left( \hat{\beta_1}~+~\hat{\beta_4}X_2 \right)~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_5}X_1~~~if~x_i~is~Female$$
+
 $$\hat{y_i}~=~\hat{\beta_o}~+~X_1\left(\hat{\beta_1}~+~\hat{\beta_4}X_2\right)~+~\hat{\beta_2}X_2~~~if~x_i~is~Male$$
+
 Simplified:
+
 $$
     \hat{y_i}~=~\begin{cases}
         \hat{\beta_o}~+~\tilde{\beta_1}X_1~+~\hat{\beta_2}X_2~+~\hat{\beta_3}~+~\hat{\beta_5}X_1,~~~if~x_i~=~Female\\
@@ -78,127 +89,168 @@ $$
         \end{cases} ~where~\tilde{\beta_1}~=~\hat{\beta_1}~+~\hat{\beta_4}X_2  
 $$
 
-**A**.
+* **A**.
+
 $$
     \hat{y_i}~=~\begin{cases}
         50~+~\tilde{\beta_1}X_1~+~0.07X_2~+~35~+~(-10)X_1,~~~if~x_i~=~Female\\
         50~+~\tilde{\beta_1}X_1~+~0.07X_2,~~~if~x_i~=~Male  
         \end{cases} ~where~\tilde{\beta_1}~=~20~+~0.01X_2  
 $$
+
 Once simplified down to the above two equations, it isn't necessary to put in multiple testing values to see that the correct answer is *iii:* **for a fixed value of IQ and GPA, males earn more on average than females provided that the GPA is high enough.** This is easy to see because the equations have the exact same ouput through the third term in the equation (0.07X~2~). The caveat *..provided that the GPA is high enough.* is necessary because GPA (X~1~) needs to be high enough (> 3.5, to be exact) in order to offset addition of 35 in the female equation. If GPA < 3.5, the prediction for females will be 25, 15 and 5 higher than males for GPA values of 1, 2 and 3 respectively. However, for GPA values that are greater than 3.5, the fifth term in the Female equation becomes greater than the fourth term (35), leading to a decrease in the Female prediction relative to the Male prediction.
 
-**B**.
-$$\hat{y_i}~=~50~+~(4)\left(20~+~0.01(110)\right)~+~0.07(110)~+~35~+~(-10)(4)~=~137.1~(~137,100~dollars~)$$
-**C**.
-False. Without knowing the standard error for the GPA/IQ interaction coefficient, we can't say that there is little evidence for the interaction. The value of the coefficent itself does not lend any information about how confident we are in that value. In order to find this out, we would use the standard error of the coefficient to construct a confidence interval for said coefficient. If that confidence interval contains 0, than there might not be an interaction at all.
+* **B**.
 
+$$\hat{y_i}~=~50~+~(4)\left(20~+~0.01(110)\right)~+~0.07(110)~+~35~+~(-10)(4)~=~137.1~(~137,100~dollars~)$$
+
+* **C**. False. Without knowing the standard error for the GPA/IQ interaction coefficient, we can't say that there is little evidence for the interaction. The value of the coefficent itself does not lend any information about how confident we are in that value. In order to find this out, we would use the standard error of the coefficient to construct a confidence interval for said coefficient. If that confidence interval contains 0, than there might not be an interaction at all.
 
 ## 4
-**A**.
-Given the true relationship between X and Y is linear, and two models are fit (model~1~ being simple linear regression and model~2~ being cubic regression), we would expect model~2~ to have a lower (better) RSS on the training data, since there is a negative linear relationship between the flexibility in learning methods used, and the training error rate (the more flexible the model, the more of the irreducible error will be explained away in the training data, masking itself as a better model).
 
-**B**.
-Using the test RSS, model~1~ (linear) would outperform model~2~ (cubic), because, in this case, model~1~ represents the true relationship between X and Y perfectly, and the only variance left is that of the irreducible error, which can't be predicted, so the model is "perfect" in the sense that everything that can be modeled is accounted for.
+* **A**. Given the true relationship between X and Y is linear, and two models are fit (model~1~ being simple linear regression and model~2~ being cubic regression), we would expect model~2~ to have a lower (better) RSS on the training data, since there is a negative linear relationship between the flexibility in learning methods used, and the training error rate (the more flexible the model, the more of the irreducible error will be explained away in the training data, masking itself as a better model).
 
-**C**.
-Given that the true relationship between X and Y is not linear, and we don't know how far from linear it is, once again, we would expect the cubic regression to have a lower training RSS than the simple linear model. The cubic (more flexible) learning method will be able to "predict" responses that are closer to the training responses because it doesn't make the assumption that the unknown *f(x)~true~* is linear.
+* **B**. Using the test RSS, model~1~ (linear) would outperform model~2~ (cubic), because, in this case, model~1~ represents the true relationship between X and Y perfectly, and the only variance left is that of the irreducible error, which can't be predicted, so the model is "perfect" in the sense that everything that can be modeled is accounted for.
 
-**D**.
-Given that the true relationship between X and Y is not linear, and we don't know how far it is from linear, we don't have enough information to definitively say which model will have a lower test RSS. Whichever model (simple linear regression or cubic regression) is closer to the true relationship between X and Y will have the lower test RSS, however since we don't know which is closer, we can't say (I image this is the main challenge of most statistical models.)
+* **C**. Given that the true relationship between X and Y is not linear, and we don't know how far from linear it is, once again, we would expect the cubic regression to have a lower training RSS than the simple linear model. The cubic (more flexible) learning method will be able to "predict" responses that are closer to the training responses because it doesn't make the assumption that the unknown *f(x)~true~* is linear.
 
+* **D**. Given that the true relationship between X and Y is not linear, and we don't know how far it is from linear, we don't have enough information to definitively say which model will have a lower test RSS. Whichever model (simple linear regression or cubic regression) is closer to the true relationship between X and Y will have the lower test RSS, however since we don't know which is closer, we can't say (I image this is the main challenge of most statistical models.)
 
 ## 5
 
 $$\hat{y_i}~=~x_i\hat{\beta}~~~~~and~~~~~\hat{\beta}~=~\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}}$$
+
 $$\hat{y_i}~=~x_i\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}}$$
+
 $$\hat{y_i}~=~\left( \frac{x_i}{1} \right)\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}}$$
 
 $$\hat{y_i}~=~\sum_{i=1}^{n} \left( \frac{x_i}{1} \right)\left( \frac{\sum_{i=1}^{n} x_{i'}y_{i'} }{\sum_{k=1}^n x^2_{k}} \right)$$
+
 $$\hat{y_i}~=~\sum_{i=1}^{n} \left( \frac{x_i}{1} \right) \left( \frac{y_i}{1} \right)\left( \frac{\sum_{i=1}^{n} x_{i'} }{\sum_{k=1}^n x^2_{k}} \right)$$
+
 $$\hat{y_i}~=~\sum_{i=1}^{n} \left( \frac{y_i}{1} \right)\left( \frac{\sum_{i=1}^{n} x_ix_{i'}}{\sum_{k=1}^n x^2_{k}} \right)$$
 
 $$\hat{y_i}~=~\sum_{i=1}^{n} \left( \frac{\sum_{i=1}^{n} x_{i}x_{i'} }{\sum_{k=1}^n x^2_{k}} \right)y_{i'}$$
+
 $$\hat{y_i}~=~\sum_{i=1}^{n} a_{i'}y_{i'}~~~where~~~ a_{i'}~=~\left( \frac{\sum_{i=1}^{n} x_ix_{i'} }{\sum_{k=1}^n x^2_{k}} \right)$$
 
 ## 6
+
 We start with the minimizers for $\hat{\beta_1}$ and $\hat{\beta_0}$ and the general structure of *f(x)* under the simple linear regression model:
+
 $$\hat{\beta_0}~=~\bar{y}-\hat{\beta_1}\bar{x}$$
+
 $$\hat{y_i}~=~\hat{\beta_0}~+~\hat{\beta_1}x_i$$
+
 Re-arranging the equation for $\hat{\beta_0}$ in order to solve for $\bar{x}$ we get:
+
 $$\bar{x}~=~\frac{-\hat{\beta_0}~+~\bar{y}}{\hat{\beta_1}}$$
+
 Substituting $\bar{x}$ in for $x_i$, we can re-write the general structure of *f(x)* as:
+
 $$\hat{y_i}~=~\hat{\beta_0}~+~\hat{\beta_1}\left( \frac{-\hat{\beta_0}~+~\bar{y}}{\hat{\beta_1}} \right)$$
+
 We can then cancel the $\hat{\beta_1}$'s and simply to:
+
 $$\hat{y_i}~=~\hat{\beta_0}~+~\left(-\hat{\beta_0}~+~\bar{y} \right)$$
+
 Which then simplifies to show us that:
+
 $$\hat{y_i}~=~\bar{y}$$
+
 Where $\bar{y}~=~0~=~y_i$.
 
 ## 7
+
 **All summations are from $i=1~~to~~n$**
+
 $$
 Given:~~R^2~=~\frac{\sum (y_i - y_i)^2 - \sum (y_i - \hat{y_i})^2}{\sum (y_i - y_i)^2}~~~and~~~Cor(X,Y)~=~\frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum(x_i - \bar{x})^2}\sqrt{\sum(y_i - \bar{y})^2}}
 $$
+
 Looking at the numerator of $R^2$, we also know that the total sum of squares $SS_{tot}$ is equal to the residual sum of squares $SS_{res}$ plus the regression sum of squares $SS_{reg}$ (an incredible graphic illustrating this can be found on the fourth slide at [this link](http://www.stat.columbia.edu/~fwood/Teaching/w4315/Fall2009/lecture_6.pdf)):
+
 $$
 SS_{tot}~=~SS_{res}~+~SS_{reg}
 $$
+
 Which can be re-written as:
+
 $$
 \sum(y_i - \bar{y})^2~=~\sum(y_i - \hat{y_i})^2~+~\sum(\hat{y_i} - \bar{y})^2
 $$
+
 Which can the be re-arranged as:
+
 $$
 \sum(y_i - \bar{y})^2~-~\sum(y_i - \hat{y_i})^2~=~\sum(\hat{y_i} - \bar{y})^2
 $$
+
 The left side of the above equation is the same as the numerator in $R^2$, so we can substitute in the right side and begin the proof:
+
 $$
 R^2~=~\frac{\sum(\hat{y_i} - \bar{y})^2}{\sum (y_i - y_i)^2}
 $$
+
 We also know the equation for $\hat{y_i}$ as:
+
 $$
 \hat{y_i}~=~\hat{\beta_0}~+~\hat{\beta_1}x_i
 $$
+
 Which, substituted in for $\hat{y_i}$ is:
+
 $$
 R^2~=~\frac{\sum(\hat{\beta_0}~+~\hat{\beta_1}x_i - \bar{y})^2}{\sum (y_i - y_i)^2}
 $$
+
 We know the minimizers for $\hat{\beta_0}$ and $\hat{\beta_1}$ to be:
+
 $$\hat{\beta_0}~=~\bar{y}-\hat{\beta_1}\bar{x}~~~and~~~\hat{\beta_1}~=~\frac{\sum(x_i - \bar{x} )(y_i - \bar{y})}{\sum(x_i - \bar{x})^2}$$
+
 Which can be substituted in to get:
+
 $$
 R^2~=~\frac{\sum(\bar{y}-\hat{\beta_1}\bar{x}~+~\hat{\beta_1}x_i - \bar{y})^2}{\sum (y_i - y_i)^2}
 $$
+
 $$
 R^2~=~\frac{\sum(\hat{\beta_1}x_i~-~\hat{\beta_1}\bar{x_i})^2}{\sum (y_i - y_i)^2}
 $$
+
 $$
 R^2~=~\frac{\sum(\hat{\beta_1}^2x_i^2~-~2\hat{\beta_1}^2\bar{x}x_i~+~\hat{\beta_1}^2\bar{x_i}^2)}{\sum (y_i - y_i)^2}
 $$
+
 $$
 R^2~=~\frac{\hat{\beta_1}^2\sum(x_i^2~-~2\bar{x}x_i~+~\bar{x_i}^2)}{\sum (y_i - y_i)^2}
 $$
+
 $$
 R^2~=~\frac{\hat{\beta_1}^2\sum(x_i - \bar{x})^2}{\sum (y_i - y_i)^2}
 $$
+
 Substitute in $\hat{\beta_1}$ squared to get:
+
 $$
 R^2~=~\frac{\left( \sum(x_i - \bar{x} )(y_i - \bar{y}) \right)^2\sum(x_i - \bar{x})^2}{\left( \sum(x_i - \bar{x})^2 \right)^2\sum (y_i - y_i)^2}
 $$
+
 $$
 R^2~=~\frac{\left( \sum(x_i - \bar{x} )(y_i - \bar{y})\right)^2}{\sum(x_i - \bar{x})^2\sum (y_i - y_i)^2}
 $$
+
 Which, if we square $Cor(X,Y)$, is now equal to the above equation:
+
 $$
 Cor(X,Y)^2~=~\left( \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum(x_i - \bar{x})^2}\sqrt{\sum(y_i - \bar{y})^2}} \right)^2~~~=~~~\frac{\left( \sum(x_i - \bar{x} )(y_i - \bar{y})\right)^2}{\sum(x_i - \bar{x})^2\sum (y_i - y_i)^2}~=~R^2
 $$
 
-
-
 # Applied
 
 ## 8
-**A**.
+
+* **A**.
 
 ```{r}
 library(ISLR)
@@ -207,31 +259,32 @@ fit <- lm(mpg ~ horsepower)
 summary(fit)
 ```
 
-* *i*
-With a P-value of $2\mathrm{e}{-16}$, we can say that there is a statistically significant relationship between horsepower and mpg.
+* *A-1*. With a P-value of $2\mathrm{e}{-16}$, we can say that there is a statistically significant relationship between horsepower and mpg.
 
-* *ii*
-While there is a relationship betweent the predictor and the response, it isn't overly strong; only 60% of the variance in mpg is explained by horsepower.
+* *A-2*. While there is a relationship betweent the predictor and the response, it isn't overly strong; only 60% of the variance in mpg is explained by horsepower.
 
-* *iii*
-The relationship is negative
+* *A-3*. The relationship is negative
+
 ```{r}
 coef(fit)[2]
 ```
 
-* *iv*
+* *A-4*.
+
 ```{r}
 predict(fit, data.frame(horsepower = 98), interval = "confidence")
 predict(fit, data.frame(horsepower = 98), interval = "prediction")
 ```
 
-**B**.
+* **B**.
+
 ```{r}
 plot(horsepower, mpg, pch = 16, col = "blue")
 abline(fit, lwd = 3, col = "red")
 ```
 
-**C**.
+* **C**.
+
 ```{r}
 par(mfrow = c(2,2))
 plot(fit)
@@ -247,37 +300,37 @@ fit2 <- lm(mpg ~ horsepower + I(horsepower^2))
 plot(fit2)
 ```
 
-
 ## 9
-**A**.
+
+* **A**.
 
 ```{r}
 pairs(Auto, pch = 16)
 ```
 
-**B**.
+* **B**.
+
 ```{r}
 dat <- subset(Auto, select = -name)
 cors <- cor(dat)
 cors
 ```
 
-**C**.
+* **C**.
+
 ```{r}
 fit <- lm(mpg ~ ., data = dat)
 summary(fit)
 ```
 
-* *i*
-Judging from the F-statisic of 252, and a corresponding P-value of effectively 0, we can say that there is a statistically significant relationship between the predictors (as a whole) and the response.
+* *C-1*. Judging from the F-statisic of 252, and a corresponding P-value of effectively 0, we can say that there is a statistically significant relationship between the predictors (as a whole) and the response.
 
-* *ii*
-All variables except acceleration, horsepower and cylinders have statistically significant relationships with the response.
+* *C-2*. All variables except acceleration, horsepower and cylinders have statistically significant relationships with the response.
 
-* *iii*
-0.75, the coefficient for the year variable suggests that, *holding all other (measured) variables constant*, we would see a 0.75 increase in mpg with a one unit increase in year. In other words, we would expect a vehicle produced in 1981 to have a 0.75 increase in mpg over the exact same vehicle, but produced in 1980.
+* *C-3*. 0.75, the coefficient for the year variable suggests that, *holding all other (measured) variables constant*, we would see a 0.75 increase in mpg with a one unit increase in year. In other words, we would expect a vehicle produced in 1981 to have a 0.75 increase in mpg over the exact same vehicle, but produced in 1980.
 
-**D**.
+* **D**.
+
 ```{r}
 par(mfrow = c(2,2))
 plot(fit)
@@ -287,7 +340,8 @@ Looking at the Residuals vs. Fitted Values plot, it seems that our model is a re
 
 The Residual plots as well as the Normal Q-Q plot suggest that observations 326, 327 and 323 are outliers, having greater values than we might expect given the Normal assumption (the right tail of the residual distribution is heavier than we would expect under the Normal assumption). In addition, observation 14 has the highest leverage on our model, although not a huge amount of influence since the residual isn't overly extreme.
 
-**E**.
+* **E**.
+
 ```{r}
 fit3 <- lm(mpg ~ displacement*weight, data = dat)
 fit4 <- lm(mpg ~ horsepower*displacement, data = dat)
@@ -299,12 +353,12 @@ plot(fit4)
 
 By building a couple models with interaction terms between some highly correlated variables, we can see that there is statistically significant evidence against the additive assumption of the linear model. The model with the interaction between displacement and horsepower explains more variance in mpg than the other model.
 
-**F**.
-Since there seems to be statistical evidence that the additve assumption of the linear model is incorrect, keeping the horsepower and displacement interaction term in our model would be prudent. In addition, there seems to be slight heteroscedasticity in our residuals. This can be seen by both the slight upward trend in the Scale-Location plot, as well as the increasing spread in the Residuals vs. Fitted Values plot.
+* **F**. Since there seems to be statistical evidence that the additve assumption of the linear model is incorrect, keeping the horsepower and displacement interaction term in our model would be prudent. In addition, there seems to be slight heteroscedasticity in our residuals. This can be seen by both the slight upward trend in the Scale-Location plot, as well as the increasing spread in the Residuals vs. Fitted Values plot.
 
 The final model includes all the variable except cyclinders, in addition to the horsepower and displacement interaction term. I used a log transformation of the response in an attempt to reduce the heteroscedasticity.
 
 (My understanding of the interpretation of the each $\hat{\beta_j}$ when a log transformation is used on the response variable is that a one unit increase in $X$ results in a $(100~*~\hat{\beta_j})$% change in $Y$)
+
 ```{r}
 par(mfrow = c(2,2))
 fit <- lm(log(mpg + 1) ~ horsepower*displacement + (.-cylinders), data = dat)
@@ -313,25 +367,27 @@ plot(fit)
 ```
 
 ## 10
-**A**.
+
+* **A**.
 
 ```{r}
 fit <- lm(Sales ~ Price + Urban + US, data = Carseats)
 ```
 
-**B**.
+* **B**.
 
-* **Price** - The coefficient for Price can be interpreted as: A one unit increase in Price can be expected to result in a decrease in Sales of 54 units *on average*.
+* *Price* - The coefficient for Price can be interpreted as: A one unit increase in Price can be expected to result in a decrease in Sales of 54 units *on average*.
 
-* **UrbanYes** - The coefficient for UrbanYes can be interpreted as: If the store is located in an Urban area, there will be an expected decrease in Sales of 22 units *on average*.
+* *UrbanYes* - The coefficient for UrbanYes can be interpreted as: If the store is located in an Urban area, there will be an expected decrease in Sales of 22 units *on average*.
 
-* **USYes** - The coefficient for USYes can be interpreted as: If the store is located in the US, there will be an expected increase in Sales of 1,201 units *on average*.
+* *USYes* - The coefficient for USYes can be interpreted as: If the store is located in the US, there will be an expected increase in Sales of 1,201 units *on average*.
 
 ```{r}
 summary(fit)
 ```
 
-**C**.
+* **C**.
+
 $$
     \hat{y_i}~=~13.04~-~0.054Price\begin{cases}
         ~-~0.022,~~~if~Urban~=~Yes~and~US~=~No\\
@@ -340,43 +396,45 @@ $$
         ~+~0,~~~~Otherwise\\
         \end{cases}  
 $$
-**D**.
-Price and US have P-values low enough to suggest statistical significance, and therefore we can reject the null hypothesis for those predictors. However, Urban has a very high P-value, and therefore we can not reject the null hypothesis for that predictor.
 
-**E**.
+* **D**. Price and US have P-values low enough to suggest statistical significance, and therefore we can reject the null hypothesis for those predictors. However, Urban has a very high P-value, and therefore we can not reject the null hypothesis for that predictor.
+
+* **E**.
 
 ```{r}
 fit2 <- lm(Sales ~ Price + US, data = Carseats)
 ```
 
-**F**.
-Both linear models fit the data very similarly, however relatively poorly; the $R^2$ value of 0.24 tells us that both models only explain 24% of the variation in the response. While the RSE is low at first glance, Sales are measured in *thousands* of units. Therefore, the RSE of roughly 2.47 translates to the predicted value of *Sales* being off by an average of 2,470 units *on average*.
+* **F**. Both linear models fit the data very similarly, however relatively poorly; the $R^2$ value of 0.24 tells us that both models only explain 24% of the variation in the response. While the RSE is low at first glance, Sales are measured in *thousands* of units. Therefore, the RSE of roughly 2.47 translates to the predicted value of *Sales* being off by an average of 2,470 units *on average*.
 
 ```{r}
 summary(fit)
 summary(fit2)
 ```
 
-**G**.
+* **G**.
+
 ```{r}
 confint(fit2)
 ```
 
-**H**.
-Observations 377 and 69 could be considered outliers under certain circumstances, however, considering the large scale of the residuals, in my opinion they aren't extreme enough to warrant removal from the data set. In addition, looking at the Residuals vs. Leverage plot, no observations seem to influence the regression line more than others.
+* **H**. Observations 377 and 69 could be considered outliers under certain circumstances, however, considering the large scale of the residuals, in my opinion they aren't extreme enough to warrant removal from the data set. In addition, looking at the Residuals vs. Leverage plot, no observations seem to influence the regression line more than others.
+
 ```{r}
 par(mfrow = c(2,2))
 plot(fit2)
 ```
 
 ## 11
+
 ```{r}
 set.seed(1)
 x <- rnorm(100)
 y <- 2*x + rnorm(100)
 ```
 
-**A**.
+* **A**.
+
 ```{r}
 fit <- lm(y ~ x + 0)
 summary(fit)
@@ -384,7 +442,8 @@ summary(fit)
 
 The P-value of the coefficient for $X$ suggests statistical significance, and the null hypthosis that $H_0:\beta~=~0$ is rejected.
 
-**B**.
+* **B**.
+
 ```{r}
 fit2 <- lm(x ~ y + 0)
 summary(fit2)
@@ -392,27 +451,42 @@ summary(fit2)
 
 Looking at the model of $X$ regressed onto $Y$, once again the P-value suggests that there is statistical evidence of relationship between $Y$ and $X$, and the null hypothesis $H_0:\beta~=~0$ is rejected.
 
-**C**.
-The results from (a) and (b) show that the equation: $$\hat{y_i}~=~\hat{\beta_1}X_1~+~\epsilon~~~~~=~~~~~\hat{x_i}~=~\frac{1}{\hat{\beta_1}}\left( Y_1~-~\epsilon \right)$$
+* **C**. The results from (a) and (b) show that the equation: 
 
-**D**.
-(Note: I'm doing this one step at a time, so the simplification will be long-winded.)
+$$\hat{y_i}~=~\hat{\beta_1}X_1~+~\epsilon~~~~~=~~~~~\hat{x_i}~=~\frac{1}{\hat{\beta_1}}\left( Y_1~-~\epsilon \right)$$
+
+* **D**. (Note: I'm doing this one step at a time, so the simplification will be long-winded.)
+
 $$Given:~~~~~\hat{\beta}~=~\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}~~~~~and~~~~~SE(\beta)~=~\sqrt{\frac{ \sum_{i=1}^{n} \left( y_i - x_i\hat{\beta} \right)^2 }{\left( n - 1 \right) \sum_{i'=1}^{n} x^2_{i'}}}~~~~~and~~~~~t~=~\frac{\hat{\beta}} {SE\left( \hat{\beta} \right)}$$
 
 $$t~=~\left( \frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}} \right) / \left( \frac{\sqrt{ \sum_{i=1}^{n} \left( y_i - x_i\hat{\beta} \right)^2 }} {\sqrt{\left( n - 1 \right) \sum_{i'=1}^{n} x^2_{i'}}} \right)$$
+
 $$t~=~\left( \frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^n x^2_{i'}} \right) \cdot \left( \frac{\sqrt{\left( n - 1 \right) \sum_{i'=1}^{n} x^2_{i'}}} {\sqrt{ \sum_{i=1}^{n} \left( y_i - x_i\hat{\beta} \right)^2 }} \right)$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n} \left( y_i - x_i\hat{\beta} \right)^2} \right)}$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n}  y_i^2 - 2\hat{\beta}x_iy_i + \hat{\beta^2}x_i^2 } \right)}$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n}  y_i^2 - 2\hat{\beta}\sum_{i=1}^{n}x_iy_i + \hat{\beta^2}\sum_{i=1}^{n}x_i^2 } \right)}$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n}  y_i^2 - 2\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}\sum_{i=1}^{n}x_iy_i + \left(\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}\right)^2\sum_{i=1}^{n}x_i^2 } \right)}$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n}  y_i^2 - 2\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}\sum_{i=1}^{n}x_iy_i + \frac{\left( \sum_{i=1}^{n} x_iy_i \right)^2 }{\left( \sum_{i'=1}^{n} x^2_{i'}\right)^2} \sum_{i=1}^{n}x_i^2 } \right)}$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\sum_{i=1}^{n}  y_i^2 - 2\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}\sum_{i=1}^{n}x_iy_i + \frac{\left( \sum_{i=1}^{n} x_iy_i \right)^2 }{\sum_{i'=1}^{n} x^2_{i'}} } \right)}$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\frac{\sum_{i=1}^{n}y_i^2\sum_{i=1}^{n}x_i^2}{\sum_{i'=1}^{n}x_{i'}^2} - 2\frac{\sum_{i=1}^{n} x_iy_i}{\sum_{i'=1}^{n} x^2_{i'}}\sum_{i=1}^{n}x_iy_i + \frac{\left( \sum_{i=1}^{n} x_iy_i \right)^2 }{\sum_{i'=1}^{n} x^2_{i'}} } \right)}$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\frac{\sum_{i=1}^{n}y_i^2\sum_{i=1}^{n}x_i^2 - 2\sum_{i=1}^{n} x_iy_i\sum_{i=1}^{n} x_iy_i + \left( \sum_{i=1}^{n}x_iy_i \right)^2 }{\sum_{i'=1}^{n}x_{i'}^2} } \right)}$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\frac{\sum_{i=1}^{n}y_i^2\sum_{i=1}^{n}x_i^2 - 2\left( \sum_{i=1}^{n} x_iy_i \right)^2\ + \left( \sum_{i=1}^{n}x_iy_i \right)^2 }{\sum_{i'=1}^{n}x_{i'}^2} } \right)}$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right) \left( \sqrt{\frac{\sum_{i=1}^{n}y_i^2\sum_{i=1}^{n}x_i^2 - \left( \sum_{i=1}^{n} x_iy_i \right)^2\  }{\sum_{i'=1}^{n}x_{i'}^2} } \right)}$$
+
 $$t~=~\frac{\left( \sum_{i=1}^{n} x_iy_i \right) \left( \sqrt{ n - 1} \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right) \left( \sqrt{ \sum_{i'=1}^{n} x^2_{i'} } \right)} {\left( \sum_{i'=1}^n x^2_{i'} \right)  \sqrt{\sum_{i=1}^{n}y_i^2\sum_{i=1}^{n}x_i^2 - \left( \sum_{i=1}^{n} x_iy_i \right)^2}}$$
+
 $$t~=~\frac{ \sum_{i=1}^{n} x_iy_i \left( \sqrt{ n - 1} \right) } {  \sqrt{\left( \sum_{i=1}^{n}y_i^2 \right) \left(\sum_{i=1}^{n}x_i^2 \right) - \left( \sum_{i=1}^{n} x_iy_i \right)^2} }$$
+
 ```{r}
 new_t_numerator <- sum(x*y) * sqrt(length(x) - 1)
 new_t_denominator <- sqrt(sum(y*y) * sum(x*x) - sum(x*y)^2)
@@ -420,12 +494,16 @@ new_t <- new_t_numerator/new_t_denominator
 round(new_t, digits = 2)
 ```
 
-**E**.
-Given the above equation of:
+* **E**. Given the above equation of:
+
 $$t~=~\frac{ \sum_{i=1}^{n} x_iy_i \left( \sqrt{ n - 1} \right) } {  \sqrt{\left( \sum_{i=1}^{n}y_i^2 \right) \left(\sum_{i=1}^{n}x_i^2 \right) - \left( \sum_{i=1}^{n} x_iy_i \right)^2} }$$
+
 it is clear to see that if I switch every $x_i$ with a $y_i$, and vice versa, the equation becomes:
+
 $$t~=~\frac{ \sum_{i=1}^{n} y_ix_i \left( \sqrt{ n - 1} \right) } {  \sqrt{\left( \sum_{i=1}^{n}x_i^2 \right) \left(\sum_{i=1}^{n}y_i^2 \right) - \left( \sum_{i=1}^{n} y_ix_i \right)^2} }$$
+
 We can then plug all the variable in using R and get the same result.
+
 ```{r}
 new_t_numerator <- sum(y*x) * sqrt(length(y) - 1)
 new_t_denominator <- sqrt(sum(x*x) * sum(y*y) - sum(y*x)^2)
@@ -433,7 +511,8 @@ new_t <- new_t_numerator/new_t_denominator
 round(new_t, digits = 2)
 ```
 
-**F**.
+* **F**.
+
 ```{r}
 fit3 <- lm(y ~ x)
 fit4 <- lm(x ~ y)
@@ -441,13 +520,11 @@ summary(fit3)$coef[2,3]
 summary(fit4)$coef[2,3]
 ```
 
-
 ## 12
-**A**.
-The coefficient estimate for $\hat{\beta}$ when $Y$ is regressed onto $X$ will be the same as the coefficient estimate for $\hat{\beta}$ when $X$ is regressed onto $Y$ only when the summation of the squares of $Y$ are equal to the summation of the squares of $X$.
 
-**B**.
-The coefficient $\hat{\beta}$ when $Y$ is regressed onto $X$ is 4.85 which does not equal the coefficient $\hat{\beta}$ when $X$ is regressed onto $Y$.
+* **A**. The coefficient estimate for $\hat{\beta}$ when $Y$ is regressed onto $X$ will be the same as the coefficient estimate for $\hat{\beta}$ when $X$ is regressed onto $Y$ only when the summation of the squares of $Y$ are equal to the summation of the squares of $X$.
+
+* **B**. The coefficient $\hat{\beta}$ when $Y$ is regressed onto $X$ is 4.85 which does not equal the coefficient $\hat{\beta}$ when $X$ is regressed onto $Y$.
 
 ```{r}
 x <- rnorm(100)
@@ -459,8 +536,7 @@ fit2 <- lm(x ~ y + 0)
 coef(fit2)
 ```
 
-**C**.
-By building each $y_i$ so that some are the exact same as $x_i$, and others are the negative values of each $x_i$, we ensure that $X^2~=~Y^2$. This is shown below, also showing that the coefficients are the same.
+* **C**. By building each $y_i$ so that some are the exact same as $x_i$, and others are the negative values of each $x_i$, we ensure that $X^2~=~Y^2$. This is shown below, also showing that the coefficients are the same.
 
 ```{r}
 set.seed(10000)
@@ -477,62 +553,58 @@ sum(y^2)
 sum(x^2)
 ```
 
-
 ## 13
-**A**.
+
+* **A**.
 
 ```{r}
 set.seed(1)
 x <- rnorm(100)
 ```
 
-**B**.
+* **B**.
 
 ```{r}
 eps <- rnorm(100, sd = sqrt(0.25))
 ```
 
-**C**.
-The vector $Y$ will be 100 observations long (the same as $X$). In the model given, $\hat{\beta_0}~=~-1$ and $\hat{\beta_1}~=~0.5$
+* **C**. The vector $Y$ will be 100 observations long (the same as $X$). In the model given, $\hat{\beta_0}~=~-1$ and $\hat{\beta_1}~=~0.5$
 
 ```{r}
 y <- -1 + 0.5*x + eps
 ```
 
-**D**.
-The plot below shows a scatterplot of $X$ and $Y$. While a linear relationship is known, and somewhat visible, we can see that there is a decent amount of variance in $Y$ for any given value of $X$.
+* **D**. The plot below shows a scatterplot of $X$ and $Y$. While a linear relationship is known, and somewhat visible, we can see that there is a decent amount of variance in $Y$ for any given value of $X$.
 
 ```{r}
 plot(x, y, pch = 16, col = "blue")
 ```
 
-**E**.
-The estimates $\hat{\beta_0}$ and $\hat{\beta_1}$ are both very close to their true values; $\hat{\beta_0}$ (if rounded to three decimal places) is only 18 thousandth's off of its true value and $\hat{\beta_1}$ (also rounded to three decimal places) is only 1 thousandth off from its true value.
+* **E**. The estimates $\hat{\beta_0}$ and $\hat{\beta_1}$ are both very close to their true values; $\hat{\beta_0}$ (if rounded to three decimal places) is only 18 thousandth's off of its true value and $\hat{\beta_1}$ (also rounded to three decimal places) is only 1 thousandth off from its true value.
 
 ```{r}
 fit <- lm(y ~ x)
 summary(fit)
 ```
 
-**F**.
+* **F**.
 
 ```{r}
 plot(x, y, pch = 16, col = "blue")
 abline(fit, lwd = 3, col = "red")
 abline(a = -1, b = 0.5, lwd = 3, col = "green")
-legend(x = 1, y = -1.5, legend = c("Population Line", "Model Fit"), col = c("green", "red"), lwd = 3)
+legend(x = 1, y = -1.5, legend = c("Population Line", "Model Fit"),
+       col = c("green", "red"), lwd = 3)
 ```
 
-**G**.
-With a P-value of 0.164, there is no statistical evidence for the quadratic transformation of $X$ with an alpha level of even 0.1.
+* **G**. With a P-value of 0.164, there is no statistical evidence for the quadratic transformation of $X$ with an alpha level of even 0.1.
 
 ```{r}
 fit2 <- lm(y ~ x + I(x^2))
 summary(fit2)
 ```
 
-**H**.
-Comparing the results from summary(fit_less_noise) to summary(fit), we can see that, as expected, the coefficients become more accurate, their t-statistics more extreme and therefore their P-values more significant. In addition, reducing the error decreases the $RSE$, increases the $R^2$, and increases the extremity of the F-statistic.
+* **H**. Comparing the results from summary(fit_less_noise) to summary(fit), we can see that, as expected, the coefficients become more accurate, their t-statistics more extreme and therefore their P-values more significant. In addition, reducing the error decreases the $RSE$, increases the $R^2$, and increases the extremity of the F-statistic.
 
 ```{r}
 # A
@@ -556,12 +628,12 @@ summary(fit_less_noise)
 plot(x, y_less, pch = 16, col = "light green")
 abline(fit_less_noise, lwd = 3, col = "blue3")
 abline(a = -1, b = 0.5, lwd = 3, col = "red3")
-legend(x = 1, y = -1.5, legend = c("Population Line", "Model Fit"), col = c("blue3", "red3"), lwd = 3)
-
+legend(x = 1, y = -1.5, legend = c("Population Line", "Model Fit"),
+       col = c("blue3", "red3"), lwd = 3)
 ```
 
-**I**.
-As expected, increasing the variance in the response makes the coefficients slightly further away from their true values, therefore increasing their P-values. The $RSE$ and the $R^2$ increase and decrease, respectively.
+* **I**. As expected, increasing the variance in the response makes the coefficients slightly further away from their true values, therefore increasing their P-values. The $RSE$ and the $R^2$ increase and decrease, respectively.
+
 ```{r}
 # A
 set.seed(1)
@@ -584,24 +656,26 @@ summary(fit_more_noise)
 plot(x, y_more, pch = 16, col = "black")
 abline(fit_more_noise, lwd = 3, col = "purple")
 abline(a = -1, b = 0.5, lwd = 3, col = "turquoise")
-legend(x = 1, y = -1.5, legend = c("Population Line", "Model Fit"), col = c("purple", "turquoise"), lwd = 3)
-
+legend(x = 1, y = -1.5, legend = c("Population Line", "Model Fit"),
+       col = c("purple", "turquoise"), lwd = 3)
 ```
 
-**J**.
-As expected, the 95% confidence interval becomes increasingly wider as the variance in the error term increases.
+* **J**. As expected, the 95% confidence interval becomes increasingly wider as the variance in the error term increases.
+
 ```{r}
 confint(fit_less_noise)
 confint(fit)
 confint(fit_more_noise)
 ```
 
-
 ## 14
-**A**.
+
+* **A**.
+
 $$
 \beta_0~=~2,~\beta_1~=~2~~~and~~~\beta_2~=~0.3
 $$
+
 $$
 Y~=~2~+2X_1~+~0.3X_2~+~\epsilon
 $$
@@ -613,40 +687,38 @@ x2 <- 0.5*x1 + rnorm(100)/10
 y <- 2 + 2*x1 + 0.3*x2 + rnorm(100)
 ```
 
-**B**.
+* **B**.
+
 ```{r}
 cor(x1,x2)
 plot(x1, x2, pch = 16, col = "blue")
 ```
 
-**C**.
-Looking at the summary for the model fit to the data with the correlated terms, we can see that $\hat{\beta_0}$ is close to its true value (2) with a highly significant P-value. However, both $\hat{\beta_1}$ and $\hat{\beta_2}$ have increasingly less significant P-values, as expected in the presence of collinearity. While we can still reject that null hypothesis that $\hat{\beta_1}~=~0$, given an alpha level of 0.95, if we did not know that the true value for $\hat{\beta_2}~=~2$, and we were making decisions about our model based on the summary below, we would not be able reject the null hypothesis that  $H_0:~\hat{\beta_2}~=~0$.
+* **C**. Looking at the summary for the model fit to the data with the correlated terms, we can see that $\hat{\beta_0}$ is close to its true value (2) with a highly significant P-value. However, both $\hat{\beta_1}$ and $\hat{\beta_2}$ have increasingly less significant P-values, as expected in the presence of collinearity. While we can still reject that null hypothesis that $\hat{\beta_1}~=~0$, given an alpha level of 0.95, if we did not know that the true value for $\hat{\beta_2}~=~2$, and we were making decisions about our model based on the summary below, we would not be able reject the null hypothesis that  $H_0:~\hat{\beta_2}~=~0$.
 
 ```{r}
 fit_cor <- lm(y ~ x1 + x2)
 summary(fit_cor)
 ```
 
-**D**.
-In the absence of collinear terms, both the estimates for $\hat{\beta_0}$ and $\hat{\beta_1}$ are far closer to their true values. In addition, their P-values are far more significant, and the null hypothesis that $\hat{\beta_1}~=~0$ can be rejected.
+* **D**. In the absence of collinear terms, both the estimates for $\hat{\beta_0}$ and $\hat{\beta_1}$ are far closer to their true values. In addition, their P-values are far more significant, and the null hypothesis that $\hat{\beta_1}~=~0$ can be rejected.
 
 ```{r}
 fit1 <- lm(y ~ x1)
 summary(fit1)
 ```
 
-**E**.
-We can still reject the null hypothesis that $\hat{\beta_1}~=~0$.
+* **E**. We can still reject the null hypothesis that $\hat{\beta_1}~=~0$.
 
 ```{r}
 fit2 <- lm(y ~ x2)
 summary(fit2)
 ```
 
-**F**.
-While the results do contradict each other (in the model with both terms, we would conclude that $\hat{\beta_2}$ does not have enough evidence to be included in the model, in the model with $X_2$ as the predictor, we **would** include it in the model), it is to be expected. When two collinear predictors are included in the model, it can be hard to tell *which* predictor is responible for the variance in the response, and therefore we (and our software), have less accurate estimates for the coefficients.
+* **F**. While the results do contradict each other (in the model with both terms, we would conclude that $\hat{\beta_2}$ does not have enough evidence to be included in the model, in the model with $X_2$ as the predictor, we **would** include it in the model), it is to be expected. When two collinear predictors are included in the model, it can be hard to tell *which* predictor is responible for the variance in the response, and therefore we (and our software), have less accurate estimates for the coefficients.
 
-**G**.
+* **G**.
+
 ```{r}
 x1 <- c(x1, 0.1)
 x2 <- c(x2, 0.8)
@@ -682,10 +754,9 @@ plot(fit3)
 summary(fit3)
 ```
 
-
 ## 15
-**A**.
-When each predictor is used in simple linear regression, "chas" or "Charles River Dummy Variable" is the only predictor that does not have statistically significant evidence to reject the null hypothesis that $H_0:~\hat{\beta_1}~=~0$. (I'm choosing to omit creating plots for each individual model in order to avoid the report being too long)
+
+* **A**. When each predictor is used in simple linear regression, "chas" or "Charles River Dummy Variable" is the only predictor that does not have statistically significant evidence to reject the null hypothesis that $H_0:~\hat{\beta_1}~=~0$. (I'm choosing to omit creating plots for each individual model in order to avoid the report being too long)
 
 ```{r}
 library(MASS)
@@ -697,16 +768,14 @@ for (i in 1:ncol(Boston)) {
 }
 ```
 
-**B**.
-When a multiple linear regression model is fit using all of the variable to predict "crim,"  the only variables for which we can reject the null hypothesis that $H_0:~\hat{\beta_j}~=~0$ are zn, nox, dis, rad, black, lstat and medv. Since this contradicts the results when each predictor is used separately, I would bet that some of the variables are collinear.
+* **B**. When a multiple linear regression model is fit using all of the variable to predict "crim,"  the only variables for which we can reject the null hypothesis that $H_0:~\hat{\beta_j}~=~0$ are zn, nox, dis, rad, black, lstat and medv. Since this contradicts the results when each predictor is used separately, I would bet that some of the variables are collinear.
 
 ```{r}
 multi_fit <- lm(crim ~ ., data = Boston)
 summary(multi_fit)
 ```
 
-**C**.
-As you can see from the plot below, almost all of the variables have relatively similar values for their coefficient pairs; the x-axis value corresponds to the predictor's coefficient when used in simple linear regression and the y-axis value corresponds to its coefficient when all the variables are used to predict crim, the response. The only variable that has a drastic difference in the values for its coefficient is "nox," which has a negative value ( -10.3) when fit with all other variables and a positive value (31) when fit alone.
+* **C**. As you can see from the plot below, almost all of the variables have relatively similar values for their coefficient pairs; the x-axis value corresponds to the predictor's coefficient when used in simple linear regression and the y-axis value corresponds to its coefficient when all the variables are used to predict crim, the response. The only variable that has a drastic difference in the values for its coefficient is "nox," which has a negative value ( -10.3) when fit with all other variables and a positive value (31) when fit alone.
 
 ```{r}
 library(ggplot2)
@@ -718,14 +787,14 @@ for (i in 1:ncol(Boston)) {
     x <- c(x, x1)
 }
 
-coef_df <- data.frame(variable = names(multi_fit$coefficients),x = x, y = multi_fit$coefficients)
+coef_df <- data.frame(variable = names(multi_fit$coefficients),x = x,
+                      y = multi_fit$coefficients)
 coef_df <- coef_df[2:nrow(coef_df),]
 
 qplot(x,y, data = coef_df, col = variable)
 ```
 
-**D**.
-There seems to be statistically significant evidence that indus, nox, age, dis, ptratio and medv all have a non-linear relationship with the response, crim, based on the P-values for their respective quadratic and cubic terms.
+* **D**. There seems to be statistically significant evidence that indus, nox, age, dis, ptratio and medv all have a non-linear relationship with the response, crim, based on the P-values for their respective quadratic and cubic terms.
 
 ```{r}
 for (i in 1:ncol(Boston)) {

@@ -8,7 +8,6 @@ output:
 ---
 # Conceptual
 
-
 ## 1
 
 $$
@@ -42,11 +41,13 @@ Prove that maximizing the equation
 $$
 p_k(x)~=~\frac{\pi_k\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}} {\sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)}}
 $$
+
 for $k$, is equivalent to maximizing the equation
 
 $$
 \delta_k(x)~=~\frac{x\mu_k}{\sigma^2}~-~\frac{\mu_k^3}{2\sigma^2}~+~log(\pi_k)
 $$
+
 for $k$.
 
 As the text says, taking the $log$ of the first equation will get us started.
@@ -62,6 +63,7 @@ log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
 \frac{1}{2\sigma^2}\left( x~-~\mu_k^2 \right) ~-~
 log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
 $$
+
 Expanding the third term in the equation we get
 
 $$
@@ -71,6 +73,7 @@ log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
 \frac{1}{2\sigma^2}\left( x^2~-~2x\mu_k~+~\mu_k^2 \right) ~-~
 log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
 $$
+
 Once again expanding the third term, this time multiplying the $~-~\frac{1}{\sqrt{2\sigma62}}$ with all terms within the parenthesis, we get
 
 $$
@@ -82,6 +85,7 @@ log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
 \frac{\mu_k^2}{2\sigma^2} ~-~
 log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
 $$
+
 simplifying what is now the fourth term in equation, we get
 
 $$
@@ -93,6 +97,7 @@ log\left( \frac{1} {\sqrt{2\pi\sigma}} \right) ~-~
 \frac{\mu_k^2}{2\sigma^2} ~-~
 log\left( \sum_{l=1}^k\pi_l\cdot \frac{1}{\sqrt{2\pi\sigma}} \cdot    \epsilon^{~-~\frac{1}{2\sigma^2}\cdot\left( x~-~\mu_k^2\right)} \right)
 $$
+
 *Since we are maximizing the equation* **over all possible classes of $k$**, *we can eliminate any terms that are indepedent of $k$.* This leaves us with
 
 $$
@@ -101,16 +106,17 @@ log(\pi_k) ~+~
 \frac{x\mu_k} {\sigma^2} ~-~
 \frac{\mu_k^2}{2\sigma^2}
 $$
+
 which, when we rearrange the terms slightly, proves that maximizing the two equations are equivalent.
 
 $$
 log\left( p_k(x) \right)~=~\frac{x\mu_k}{\sigma^2}~-~\frac{\mu_k^2}{2\sigma^2}~+~log(\pi_k)~=~\delta_k(x)
 $$
 
-
 ## 3
 
 Following the exact same logic as the proof from question 2, we get to the point where we are looking to reduce the terms that are dependent on $k$. However, with Quadratic Discriminant Analysis, **we aren't making the assumption that there is a constant variance $\sigma^2$ across all classes of $k$.** Therefore, we can only eliminate the last term (normalizing constant), since all the other terms depend on $k$. Thus, the equation we are left with (shown below) is the final equation. The third term in the equation shows us that the entire formula does not change in a linear fashion as $x$ changes.
+
 $$
 ~\delta_k(x) ~=~ 
 log(\pi_k) ~+~ 
@@ -173,6 +179,7 @@ The estimates for $\beta_0,~\beta_1~and~\beta_2$ being equal to -6, 0.05 and 1, 
 $$Recieve~an~A~=~-6~+~0.05(hours~studied)~+~1(undergrad~GPA)$$
 
 * **A**. 
+
 $$Recieve~an~A~=~-6~+~0.05(40)~+~1(3.5)~=~-0.5$$
 
 $$-0.5~=~Log~Odds~of~Success$$
@@ -261,7 +268,6 @@ $$0.16~+~0.16(Odds)~=~Odds$$
 $$0.16~=~0.84(Odds)$$
 
 $$\frac{0.16}{0.84}~=~Odds~=~0.1904762~=~0.19$$
-
 
 # Applied
 
@@ -431,7 +437,6 @@ knitr::kable(results_df, col.names = c('Logistic Regression Accuracy',
                                        'QDA Accuracy'))
 ```
 
-
 ## 11
 
 * **A**.
@@ -441,7 +446,6 @@ df <- Auto
 df$mpg01 <- 0
 df$mpg01[df$mpg > median(df$mpg)] <- 1
 ```
-
 
 * **B**.
 
@@ -517,7 +521,6 @@ discriminant_analysis_acc <- function(model, newdata=test) {
 
 discriminant_analysis_acc(lda_model)
 ```
-
 
 * **E**. Performing QDA with the same variables as LDA, the same accuracy and error are returned, 90.82% and 9.18% respectively.
 

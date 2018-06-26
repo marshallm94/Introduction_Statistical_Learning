@@ -6,58 +6,47 @@ output:
   pdf_document: 
     latex_engine: xelatex
 ---
+
 # Conceptual
 
 ## 1
-**A**. 
-Given the sample size n is extremely large and the number of predictors p is small, I would expect a flexible learning method to outperform an inflexible method. Since n is large, there wouldn't be a need to make any assumptions about f(x), which is the first step in an inflexible (parametric) learning method; the very size of n would give structure to f(x) and allowing the flexible method (non-parametric) to learn from the data without restrictions would produce a better model of the data, with little risk of overfitting due to large n.
 
-**B**.
-Given the numbers of predictors p is extremely high and the number of observations n is small, I would expect an inflexible method to outperform a flexible one. A flexible method runs the risk of modeling the noise in the data, leading to overfitting and a high test error rate. If some assumptions are made about the structure of f(x) (i.e. using a parametric/inflexible method), the risk of overfitting is lowered.
+* **A**. Given the sample size n is extremely large and the number of predictors p is small, I would expect a flexible learning method to outperform an inflexible method. Since n is large, there wouldn't be a need to make any assumptions about f(x), which is the first step in an inflexible (parametric) learning method; the very size of n would give structure to f(x) and allowing the flexible method (non-parametric) to learn from the data without restrictions would produce a better model of the data, with little risk of overfitting due to large n.
 
-**C**.
-Given the relationship between the predictors and the response is highly non-linear, I would expect a flexible method to outperform an inflexible method since the true f(x) is non-linear, and flexible learning methods don't make any assumptions about the f(x).
+* **B**. Given the numbers of predictors p is extremely high and the number of observations n is small, I would expect an inflexible method to outperform a flexible one. A flexible method runs the risk of modeling the noise in the data, leading to overfitting and a high test error rate. If some assumptions are made about the structure of f(x) (i.e. using a parametric/inflexible method), the risk of overfitting is lowered.
 
-**D**.
-Given that the variance of the error terms is extremely high, I would expect an inflexible method to outperform a flexible one. Without making any assumptions about f(x) (inflexible/parametric), a flexible method has a relatively high probability of modeling the variance of the error terms as a part of f(x), whereas an inflexible method would reduce that probability, at least somewhat.
+* **C**. Given the relationship between the predictors and the response is highly non-linear, I would expect a flexible method to outperform an inflexible method since the true f(x) is non-linear, and flexible learning methods don't make any assumptions about the f(x).
 
+* **D**. Given that the variance of the error terms is extremely high, I would expect an inflexible method to outperform a flexible one. Without making any assumptions about f(x) (inflexible/parametric), a flexible method has a relatively high probability of modeling the variance of the error terms as a part of f(x), whereas an inflexible method would reduce that probability, at least somewhat.
 
 ## 2
-**A**.
-Since the question is interested in understanding which factors affect CEO salary, which is a quantitative metric, this would be a regression scenario and the word "understanding" lends towards an interest in inference, as opposed to prediction. n = 500 (firms) and p = 3 (profit, number of employees and industry).
 
-**B**.
-Determining whether a new product will be a success or failure is a classification problem, and since the response is binary, logistic regression would be a good starting (Although logistic regression has the word regression in it, due to the output of f(x) being quantitative, the output is a probability of an observation being classified as a success, therefore the method is ultimately used for classification problems). n = 20 (similar products) and p = 13 (price charged for product, marketing budget, competition price and 10 other variables).  
+* **A**. Since the question is interested in understanding which factors affect CEO salary, which is a quantitative metric, this would be a regression scenario and the word "understanding" lends towards an interest in inference, as opposed to prediction. n = 500 (firms) and p = 3 (profit, number of employees and industry).
 
-**C**.
-Interest in prediction, and since metric of interest is quantitative, this would be a regression problem. n = 52 (weeks in 2012) and p = 3 (% change in the US market, % change in the British market and the % change in the German market.)
-  
+* **B**. Determining whether a new product will be a success or failure is a classification problem, and since the response is binary, logistic regression would be a good starting (Although logistic regression has the word regression in it, due to the output of f(x) being quantitative, the output is a probability of an observation being classified as a success, therefore the method is ultimately used for classification problems). n = 20 (similar products) and p = 13 (price charged for product, marketing budget, competition price and 10 other variables). 
+* **C**. Interest in prediction, and since metric of interest is quantitative, this would be a regression problem. n = 52 (weeks in 2012) and p = 3 (% change in the US market, % change in the British market and the % change in the German market.)
 
 ## 3
-**A**.
+
+* **A**.
+
 ![](chapter_2_q3a.png)
 
-**B**.
+* **B**.
 
-* *The Bayes error curve*
-(dashed black line) will always be a flat line because it represents the irreducible error; even the best model cannot account for the natural variance of the error terms, hence the horizontal line.
+* *The Bayes error curve* (dashed black line) will always be a flat line because it represents the irreducible error; even the best model cannot account for the natural variance of the error terms, hence the horizontal line.
 
-* *The training error curve*
-(solid red line) has downward sloping curve because, as more flexible learning methods are used, the method can always "explain away" all of the variance in the training data.
+* *The training error curve* (solid red line) has downward sloping curve because, as more flexible learning methods are used, the method can always "explain away" all of the variance in the training data.
 
-* *The test error curve* (solid blue line)
-has a U-shape to it because, as more flexible methods are used, the test error is reduced *up until the point (red circle)* where the method begins to model the noise in the training data, which will lead to higher variance and therefore a higher test error rate. Note that the perfect method and model **cannot** go below the Bayes error curve.
+* *The test error curve* (solid blue line) has a U-shape to it because, as more flexible methods are used, the test error is reduced *up until the point (red circle)* where the method begins to model the noise in the training data, which will lead to higher variance and therefore a higher test error rate. Note that the perfect method and model **cannot** go below the Bayes error curve.
 
-* *The (squared) bias curve*
-(dotted black line) has a downward sloping curve. Bias is defined as the error that occurs by attempting to model a real life relationship mathematically. So, the simpler (less flexible) the method, the more bias will be introduced (e.g. the probability that any real life relationship is *truly* linear is low). The more flexible the method, the closer the estimate of f(x) will be to the true f(x). (given a large enough sample size)
+* *The (squared) bias curve* (dotted black line) has a downward sloping curve. Bias is defined as the error that occurs by attempting to model a real life relationship mathematically. So, the simpler (less flexible) the method, the more bias will be introduced (e.g. the probability that any real life relationship is *truly* linear is low). The more flexible the method, the closer the estimate of f(x) will be to the true f(x). (given a large enough sample size)
 
-* *The variance curve*
-(solid black line) has is upward sloping because as the flexiblility of the learning method increases, the more the data affect the estimate of f(x), therefore changing the data would change the estimate of f(x) drastically. On the other hand, using the least flexible method possible (horizontal line) as your way of estimating f(x), would have zero variance.
-      
-      
+* *The variance curve* (solid black line) has is upward sloping because as the flexiblility of the learning method increases, the more the data affect the estimate of f(x), therefore changing the data would change the estimate of f(x) drastically. On the other hand, using the least flexible method possible (horizontal line) as your way of estimating f(x), would have zero variance.
+
 ## 4
-**A**.
-Classification would be useful when ...
+
+* **A**. Classification would be useful when ...
 
 * *Situation 1* ... you would want to determine which treatment method a new cancer patient would respond the best too. The response would be whether the patient went into remission and the predictors would include variables such as age, prevalence of cancer in family history, diet, genetic predispositions, etc (certainly not an easy task). The goal would be prediction, since you theoretically already know the patient has cancer and you would just like to predict the treatment for which they would respond the best.
 
@@ -65,8 +54,7 @@ Classification would be useful when ...
 
 * *Situation 3* ... you want to see how different demographic variables affect someone's voting tendencies. Variables could include age, state of current residence, birth state, voting tendencies of parents, income, married, etc. The responce would be Democrate or Republican. Since the end goal is to see *how* each of the variables affect someone's voting tendencies, this would be an inference problem.
 
-**B**.
-Regression would be useful when ...
+* **B**. Regression would be useful when ...
 
 * *Situation 1* ... you would like to understand how variables affect a customers ecommerce order amount. The response would be the total amount their "cart" was worth at the time of checkout and predictors could be advertising budget, date, the items in their cart and time spent at each webpage. The goal would be inference so as to *understand* how each variable affects the response.
 
@@ -74,9 +62,7 @@ Regression would be useful when ...
 
 * *Situation 3* ... you want to see how various health habits affect a person resting heart rate. Variables could include diet, time spent exercising per week, type of exercise, age, activity level at job and the reponse would be their resting heart rate. Sinc predicting someone's resting heart rate isn't of that much importantance, this would be an inference problem; you are looking to understand *how* each variable affects the response.
 
-**C**.
-
-Cluster analysis would be useful when ...
+* **C**. Cluster analysis would be useful when ...
 
 * *Situation 1* ... a company would like to see what similarities their customers have with one another. Clustering could be performed on location, income level, education, etc.
 
@@ -84,19 +70,18 @@ Cluster analysis would be useful when ...
 
 * *Situation 3* ... the authors of "An Introduction to Statistical Learning" want to see the various education levels of the people that bought their book. 
 
-
 ## 5
 
 The advantages of a flexible learning method over a less flexible learning method are that flexible learning methods are typically going to be less biased than inflexible method (holding all else equal). However, with this comes the disadvantage that more flexible method are also prone to more variance. In addition, flexible methods are usually much less interpretable than inflexible methods, so if inference is the goal, an inflexible method might be a better option. If prediction is the goal and it doesn't particularly matter if you understand how each variable affects the outcome, a more flexible method will most likely be more accurate.
-
 
 ## 6
 
 The main difference between parametric and non-parametric methods is that parametric methods make some assumption about the general shape of f(x). The advantages of this are that, give that the structure is defined, the challenge of estimating f(x) is reduced to one of estimating the parameters/coefficients of each regressor. On the other hand, non-parametric models make no assumption about the structure of f(x). For both regression and classification implementations of non-parametric methods, a large sample size is needed to reduce the chance of overfitting, so when n is small, a parametric approach is probably the better option.
 
-
 ## 7
-**A**.
+
+* **A**.
+
 ```{r}
 # create data frame
 obs <- c(1,2,3,4,5,6)
@@ -118,22 +103,17 @@ df3 <- cbind(obs, df3, y)
 arrange(df3, Distance)
 ```
 
-**B**.
-When K = 1, the prediction for Y would be green because the "nearest neighbor" to the test point (at a distance of 1.41) is observation 5, which is green.
+* **B**. When K = 1, the prediction for Y would be green because the "nearest neighbor" to the test point (at a distance of 1.41) is observation 5, which is green.
 
-**C**.
-When K = 3, the 3 "nearest neighbors" to the test point are green, red and red. Therefore, P("Green" | X = 0) = 0.33 and P("Red" | X = 0) = 0.66 and the test point is assigned the classification with the highest probability, red.
+* **C**. When K = 3, the 3 "nearest neighbors" to the test point are green, red and red. Therefore, P("Green" | X = 0) = 0.33 and P("Red" | X = 0) = 0.66 and the test point is assigned the classification with the highest probability, red.
 
-**D**.
-If the Bayes Decision Boundary is highly non-linear, then you could expect the best (most accurate) value for K to be small. The reason for this is as K increases, the Bayes Decision Boundary becomes less and less flexible (i.e. more and more linear) because, as the classifier takes more data points into consideration, each data point has less leverage on the decision boundary.
-
-
+* **D**. If the Bayes Decision Boundary is highly non-linear, then you could expect the best (most accurate) value for K to be small. The reason for this is as K increases, the Bayes Decision Boundary becomes less and less flexible (i.e. more and more linear) because, as the classifier takes more data points into consideration, each data point has less leverage on the decision boundary.
 
 # Applied
 
 ## 8
-**A & B**.
-(As opposed to reading the data in with read.csv(), I'm going to install the ISLR package and reference the data manually; the row names are already assigned)
+
+* **A & B**. (As opposed to reading the data in with read.csv(), I'm going to install the ISLR package and reference the data manually; the row names are already assigned)
 
 ```{r}
 # install packages
@@ -141,25 +121,29 @@ library(ISLR)
 head(College)
 ```
 
-**C**.
+* **C**.
 
-* *i*
+* *C-1*.
+
 ```{r}
 summary(College)
 ```
 
-* *ii*
+* *C-2*.
+
 ```{r}
 pairs(College[,1:10])
 ```
 
-* *iii*
+* *C-3*.
+
 ```{r}
 with(College, boxplot(Outstate, Private))
 title("Outstate vs. Private")
 ```
 
-* *iv*
+* *C-4*.
+
 ```{r}
 # repeat the string "No" 777 times (number of rows in College data set)
 Elite <- rep("No", nrow(College))
@@ -172,7 +156,8 @@ with(College, boxplot(Outstate, Elite))
 title("Outstate vs Elite")
 ```
 
-* *v*
+* *C-5*.
+
 ```{r}
 par(mfrow = c(2,2))
 hist(College$Books)
@@ -181,7 +166,8 @@ hist(College$Personal)
 hist(College$Room.Board)
 ```
 
-* *vi*
+* *C-6*.
+
 ```{r basic_eda}
 library(ggplot2)
 qplot(College$Expend)
@@ -195,28 +181,33 @@ A couple conclusions can be drawn from the above graphs:
 2. Although there are few universities in the data set that do spend more than $25,000 per student, those that do have graduation rates at or above 90% (excluding one outlier)
 3. There seems to be a positive relationship betwwen the percent of alumni that donate to the university and the instructional expenditure per student. (Not a strong relationship however)
 
-
 ## 9
+
 ```{r}
 sum(is.na(Auto))
 str(Auto)
 ```
-**A**.
+
+* **A**.
+
 * *Quantitative* mpg, cylinders, displacement, horsepower, weight, acceleration, year
 * *Qualitative* origin, name
 
-**B**.
+* **B**.
+
 ```{r}
 lapply(Auto[1:7], range)
 ```
 
-**C**.
+* **C**.
+
 ```{r}
 lapply(Auto[c(1,2,3,4,5,6,7)], mean)
 lapply(Auto[c(1,2,3,4,5,6,7)], sd)
 ```
 
-**D**.
+* **D**.
+
 ```{r}
 df <- Auto[-c(10:85),]
 lapply(df[1:7], range)
@@ -224,15 +215,15 @@ lapply(df[c(1,2,3,4,5,6,7)], mean)
 lapply(df[c(1,2,3,4,5,6,7)], sd)
 ```
 
-**E**.
+* **E**.
+
 ```{r}
 pairs(Auto)
 ```
 
 Although using the pairs function doesn't creat the most visually appealing, it does allow quick views of how the relationship between each variable and all the other. Most notably, there seem so be a negative linear relationship between mpg and displacement, horsepower and weight. Conversely, as one would expect those thee variable seem to have positive linear relationships with one another.
 
-**F**.
-As stated in my previous answer, it seems as though displacement, horsepower and weight all have negative linear relationships with mpg. We can take a closer look by zooming in on how those specific variable relate to mpg. Creating a rough linear model of mpg as predicted by the other three variables (displacement, horsepower and weight) returns a model that explains 70% of the variance in mpg.
+* **F**. As stated in my previous answer, it seems as though displacement, horsepower and weight all have negative linear relationships with mpg. We can take a closer look by zooming in on how those specific variable relate to mpg. Creating a rough linear model of mpg as predicted by the other three variables (displacement, horsepower and weight) returns a model that explains 70% of the variance in mpg.
 
 ```{r}
 qplot(y = mpg, x = displacement, data = Auto)
@@ -242,9 +233,10 @@ fit <- lm(mpg ~ displacement + horsepower + weight, data = Auto)
 summary(fit)
 ```
 
-
 ## 10
-**A**.
+
+* **A**.
+
 ```{r}
 library(MASS)
 dim(Boston)
@@ -252,7 +244,8 @@ dim(Boston)
 
 There are 506 observations (suburbs in Boston) and 14 columns, representing various attributes of the suburbs. (e.g. the variable "crim" is the per capita crime rate by town)
 
-**B**.
+* **B**.
+
 ```{r}
 library(corrplot)
 cors <- cor(Boston)
@@ -263,8 +256,7 @@ qplot(rad, tax, data = Boston)
 
 Looking at the correlation matrix , the tax and dis variables have a relatively negative correlation and tax and rad (index of accessibility to radial highways) are the most positively correlated variables in the data set. Looking closer at these two relationships, both have data points with high leverage.
 
-**C**.
-Referencing the correlation matrix, the rad and tax variables are the ones that are the most correlated with per capita crime rate (crim).
+* **C**. Referencing the correlation matrix, the rad and tax variables are the ones that are the most correlated with per capita crime rate (crim).
 
 ```{r}
 qplot(rad, crim, data = Boston)
@@ -273,8 +265,7 @@ qplot(tax, crim, data = Boston)
 
 Both of these plots have the same basic shape in that as rad/tax increase to close to their maximum values, the distribution of crim is becomes much more spread out. Given any value for tax (rad) up to roughly 450 (8), crim deviates very little. However, once the tax (rad) approach their maximum values, the values for crim have a much higher variance.
 
-**D**.
-It seem that the vast majority of suburbs in Boston have low per capita crime rates. However, their is a long tail on the histogram, indicating that certain suburbs have very high crime rates. Subsetting the data to only those suburbs with crime rates greater than 30, one commonality that jumps out is the age variable; most of the units in these suburbs are older (built before 1940).
+* **D**. It seem that the vast majority of suburbs in Boston have low per capita crime rates. However, their is a long tail on the histogram, indicating that certain suburbs have very high crime rates. Subsetting the data to only those suburbs with crime rates greater than 30, one commonality that jumps out is the age variable; most of the units in these suburbs are older (built before 1940).
 
 ```{r}
 # high crime rates
@@ -290,26 +281,25 @@ qplot(ptratio, data = Boston)
 
 While crime and tax rates have a unique distribution, the pupil-teacher ratio distribution doesn't have any exteme tails.
 
-**E**.
-35 suburbs bound the Charles River.
+* **E**. 35 suburbs bound the Charles River.
 
 ```{r}
 table(Boston$chas)
 ```
 
-**F**.
+* **F**.
+
 ```{r}
 median(Boston$ptratio)
 ```
 
-**G**.
-Suburbs 399 and 406 have the lowest median value of owner occupied homes. Both of these suburbs are in the upper extremes of most of the other variables as well; all units in both suburbs were build before 1940, both have crime rates that are in the tail of the distribution, have high black populations, high levels of nitrogen oxide.
+* **G**. Suburbs 399 and 406 have the lowest median value of owner occupied homes. Both of these suburbs are in the upper extremes of most of the other variables as well; all units in both suburbs were build before 1940, both have crime rates that are in the tail of the distribution, have high black populations, high levels of nitrogen oxide.
+
 ```{r}
 subset(Boston, medv == min(Boston$medv))
 ```
 
-**H**.
-64 suburbs average more than 7 rooms per dwelling and 13 average more than 8 per dwelling. All of the suburbs that average more than 8 rooms per dwelling have mostly older buildings, and, most notably, have the highest median value of owner-occupied homes in the data set.
+* **H**. 64 suburbs average more than 7 rooms per dwelling and 13 average more than 8 per dwelling. All of the suburbs that average more than 8 rooms per dwelling have mostly older buildings, and, most notably, have the highest median value of owner-occupied homes in the data set.
 
 ```{r}
 nrow(subset(Boston, rm > 7))
