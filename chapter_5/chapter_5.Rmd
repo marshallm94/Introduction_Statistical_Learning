@@ -1,0 +1,56 @@
+---
+title: "ISLR | Chapter 4 Exercises"
+author: "Marshall McQuillen"
+date: "6/29/2018"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+# Conceptual
+
+## 1
+
+$$
+f(\alpha)~=~Var(\alpha X~+~(1~-~\alpha)Y)
+$$
+
+$$
+f(\alpha)~=~Var(\alpha X)~+~Var((1~-~\alpha)Y)~+~2Cov(\alpha X,~(1~-~\alpha)Y)
+$$
+
+$$
+f(\alpha)~=~\alpha^2Var(X)~+~(1~-~\alpha)^2Var(Y)~+~2\alpha(1~-~\alpha)Cov(X,~Y)
+$$
+
+$$
+f(\alpha)~=~\alpha^2Var(X)~+~(1~-~\alpha)^2Var(Y)~+~2(\alpha~-~\alpha^2)Cov(X,~Y)
+$$
+
+$$
+\frac{\partial f(\alpha)}{\partial \alpha}~=~2\alpha\sigma_X^2~+~2(1~-~\alpha)(-1)\sigma_Y^2~+~2(1~-~2\alpha)\sigma_{XY}
+$$
+
+$$
+\frac{\partial f(\alpha)}{\partial \alpha}~=~\alpha\sigma_X^2~+~(-1~+~\alpha)\sigma_Y^2~+~(1~-~2\alpha)\sigma_{XY}
+$$
+
+$$
+\frac{\partial f(\alpha)}{\partial \alpha}~=~\alpha\sigma_X^2~+~-\sigma_Y^2~+~\alpha\sigma_Y^2~+~\sigma_{XY}~-~2\alpha\sigma_{XY}
+$$
+
+$$
+\frac{\partial f(\alpha)}{\partial \alpha}~=~\alpha(\sigma_X^2~+~\sigma_Y^2~-~2\sigma_{XY})~-~\sigma_Y^2~+~\sigma_{XY}
+$$
+
+$$
+\frac{\partial f(\alpha)}{\partial \alpha}~=~\alpha~-~\frac{\sigma_Y^2~+~\sigma_{XY}}{(\sigma_X^2~+~\sigma_Y^2~-~2\sigma_{XY})}
+$$
+
+$$
+-\alpha~=-~\frac{\sigma_Y^2~+~\sigma_{XY}}{(\sigma_X^2~+~\sigma_Y^2~-~2\sigma_{XY})}
+$$
+
+$$
+\alpha~=~\frac{\sigma_Y^2~-~\sigma_{XY}}{\sigma_X^2~+~\sigma_Y^2~-~2\sigma_{XY}}
+$$
