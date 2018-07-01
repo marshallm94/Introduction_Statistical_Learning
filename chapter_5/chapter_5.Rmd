@@ -86,7 +86,7 @@ $$
 
 * **B**. The probability that the second bootstrap observation is *not* the $j$th observation is $\left(\frac{n~-~1}{n}\right)^2$.
 
-* **C**. Since a boostrapped sample contains $N$ observations, the probability that the $j$th observation ($x_j$) is *not* in the bootstapped sample ($S-b$) is:
+* **C**. Since a boostrapped sample contains $N$ observations, the probability that the $j$th observation ($x_j$) is *not* in the bootstapped sample ($S_b$) is:
 
 $$
 P(x_j~not~in~S_b)~=~\left(\frac{n~-~1}{n}\right)^n
@@ -169,3 +169,17 @@ Therefore:
 $$
 \lim_{x\to\infty}~\left(1~-~\left(1~-~\frac{1}{x}\right)^x\right)~=~0.632~=1~-~\frac{1}{\epsilon}
 $$
+
+## 3
+
+* **A**. K-Fold cross validation is the process of randomly dividing the entire data set into $K$ separate subsets. A statistical model can then be trained on $K~-~1$ of those subsets, and the final $K$th subset is used to test the model on unseen data, returning an estimate of the test error. This is performed $K$ times, each time using a different subset as to estimate the test error. This results in $K$ separate estimates of the testing error, which can be averaged to get the cross validated error estimate.
+
+* **B**.
+
+\setlength{\leftskip}{2cm}
+
+*i*. There are a couple advantages of K-Fold CV over the validation set approach. First, K-Fold CV will return more than one estimate of the testing error, allowing insight into the variance of the testing error. In addition to this, since the number of observations in the training data set using the validation set approach is less than the number of observations used in the training data set in K-Fold CV, the validation set approach will typically overestimate the testing error. This is due to the fact that a model has a better chance of modeling the true relationship within the data the more observations too which it has access.
+
+*ii*. LOOCV also has a couple downsides relative to K-Fold CV. First and foremost, since a total of $N$ models are fit to the data, there is a large increase in computation time over K-Fold CV when K is equal to the usual 5 or 10. In addition to this, since there are $N$ total models and each of the $N$ models consists of $N~-~1$ observations, *each of the $N$ models will be trained on nearly identical data*. This leads to the CV error estimates being highly correlated, which corresponds to high variance and low bias. 
+
+\setlength{\leftskip}{0pt}
