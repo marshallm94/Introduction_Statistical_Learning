@@ -183,3 +183,11 @@ $$
 *ii*. LOOCV also has a couple downsides relative to K-Fold CV. First and foremost, since a total of $N$ models are fit to the data, there is a large increase in computation time over K-Fold CV when K is equal to the usual 5 or 10. In addition to this, since there are $N$ total models and each of the $N$ models consists of $N~-~1$ observations, *each of the $N$ models will be trained on nearly identical data*. This leads to the CV error estimates being highly correlated, which corresponds to high variance and low bias. 
 
 \setlength{\leftskip}{0pt}
+
+## 4
+
+Bootstrapping the origin sample would allow an estimate of the standard deviation of a prediction $Y$ for a given predictor $X$. By randomly drawing $N$ observations from the data set **with replacement**, one can create $Z$ bootstrapped data sets. The model can be fit to each of these bootstapped data sets, and then a prediction $Y$ can recorded for a constant $X$ with each of the models. This will result in $Z$ estimates of the prediction $Y$. The standard deviation of these predictions can then be computed using the forumula:
+
+$$
+\sigma_Y~=~\sqrt{\frac{\sum_i^z(\hat{y_i}~-~\bar{y})^2}{n~-~1}}
+$$
