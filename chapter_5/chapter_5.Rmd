@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 4 Exercises"
 author: "Marshall McQuillen"
-date: "6/29/2018"
+date: "7/3/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -191,3 +191,92 @@ Bootstrapping the origin sample would allow an estimate of the standard deviatio
 $$
 \sigma_Y~=~\sqrt{\frac{\sum_i^z(\hat{y_i}~-~\bar{y})^2}{n~-~1}}
 $$
+
+# Applied
+
+## 5
+
+* **A**.
+
+```{r}
+suppressPackageStartupMessages(library(ISLR))
+suppressPackageStartupMessages(library(caret))
+log_mod <- glm(default ~ income + balance, data = Default, family = 'binomial')
+```
+
+* **B**.
+
+```{r}
+# i
+set.seed(5)
+sample_size <- floor(0.5*nrow(Default))
+train_idx <- sample(seq_len(nrow(Default)), size = sample_size)
+train <- Default[train_idx,]
+test <- Default[-train_idx,]
+
+# ii
+lm_fit <- glm(default ~ income + balance, data = train, family = 'binomial')
+
+# iii
+y_hat <- predict(lm_fit, newdata = test, type = 'response')
+preds <- rep('No', nrow(test))
+preds[y_hat > 0.5] <- 'Yes'
+
+# iv
+cm <- confusionMatrix(as.factor(preds), as.factor(test$default), 'Yes')
+cm$overall[1]
+```
+
+* **C**. Testing three different random seeds leads to the model performing pretty well, with the Accuracy floating from 97% - 98% and therefore a validation error rate of 2% - 3%.
+
+```{r}
+results <- c()
+for (seed in sample(100, 3)) {
+    # train/validation split
+    set.seed(seed = seed)
+    sample_size <- floor(0.5*nrow(Default))
+    train_idx <- sample(seq_len(nrow(Default)), size = sample_size)
+    train <- Default[train_idx,]
+    test <- Default[-train_idx,]
+    
+    # logistic regression modeling
+    lm_fit <- glm(default ~ income + balance, data = train, family = 'binomial')
+    
+    # prediction
+    y_hat <- predict(lm_fit, newdata = test, type = 'response')
+    preds <- rep('No', nrow(test))
+    preds[y_hat > 0.5] <- 'Yes'
+    
+    # model evaluation
+    cm <- confusionMatrix(as.factor(preds), as.factor(test$default), 'Yes')
+    acc <- cm$overall[1]
+    results <- c(results, acc)
+}
+results
+```
+
+* **D**. It doesn't seem as though adding the one hot encoded $Student$ variable adds any predictive power to the model. The validation error of 2.68% is within the range of the error rates with $Student$ excluded from the model.
+
+```{r}
+# train/validation split
+set.seed(seed = 200)
+sample_size <- floor(0.5*nrow(Default))
+train_idx <- sample(seq_len(nrow(Default)), size = sample_size)
+train <- Default[train_idx,]
+test <- Default[-train_idx,]
+
+# logistic regression modeling
+lm_fit <- glm(default ~ ., data = train, family = 'binomial')
+
+# prediction
+y_hat <- predict(lm_fit, newdata = test, type = 'response')
+preds <- rep('No', nrow(test))
+preds[y_hat > 0.5] <- 'Yes'
+
+# model evaluation
+cm <- confusionMatrix(as.factor(preds), as.factor(test$default), 'Yes')
+acc <- cm$overall[1]
+
+# validation error
+1 - acc
+```
