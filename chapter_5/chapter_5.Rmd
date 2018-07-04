@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 4 Exercises"
 author: "Marshall McQuillen"
-date: "7/3/2018"
+date: "7/4/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -280,3 +280,36 @@ acc <- cm$overall[1]
 # validation error
 1 - acc
 ```
+
+## 6
+
+* **A**.
+
+```{r}
+set.seed(5)
+log_mod <- glm(default ~ income + balance, Default, family = 'binomial')
+knitr::kable(summary(log_mod)$coef)
+```
+
+* **B**.
+
+```{r}
+boot.fn <- function(data, idx_array) {
+        fit <- glm(default ~ income + balance,
+                   data = data,
+                   family = 'binomial',
+                   subset = idx_array)
+        return(coef(fit)[2:3])
+
+}
+```
+
+* **C**.
+
+```{r}
+suppressPackageStartupMessages(library(boot))
+estimates <- boot(Default, boot.fn, 100)
+estimates
+```
+
+* **D**. With 100 bootstrapped data sets fit using the same formula, the coefficient estimates are the exact same and the standard errors for the coefficients are the same to 5th and 3rd significant digit.
