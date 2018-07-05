@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 4 Exercises"
 author: "Marshall McQuillen"
-date: "7/4/2018"
+date: "7/5/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -313,3 +313,51 @@ estimates
 ```
 
 * **D**. With 100 bootstrapped data sets fit using the same formula, the coefficient estimates are the exact same and the standard errors for the coefficients are the same to 5th and 3rd significant digit.
+
+## 7
+
+* **A**.
+
+```{r}
+attach(Weekly)
+log.fit <- glm(Direction ~ Lag1 + Lag2,
+               family = 'binomial')
+summary(log.fit)
+```
+
+* **B**.
+
+```{r}
+log.fit <- glm(Direction ~ Lag1 + Lag2,
+               data = Weekly[-1,],
+               family = 'binomial')
+summary(log.fit)
+```
+
+* **C**. The first observation was *not* predicted correctly; with a predicted probability of 57.14% for Direction going up, this observation would be misclassified.
+
+```{r}
+y_hat <- predict(log.fit, newdata = Weekly[1,], type = 'response')
+y_hat
+```
+
+* **D**.
+
+```{r}
+errors <- c()
+for (i in 1:nrow(Weekly)) {
+    fit <- glm(Direction ~ Lag1 + Lag2,
+               data = Weekly[-i,],
+               family = 'binomial')
+    y_hat <- predict(fit, newdata = Weekly[i,], type = 'response')
+    pred <- ifelse(y_hat > 0.5, 'Up','Down')
+    error <- ifelse(pred == Weekly[i, 'Direction'], 0, 1)
+    errors <- c(errors, error)
+}
+```
+
+* **E**. With 490 errors the error rate comes out to 45%, potentially enough to make a profit over time, however I'm not sure I would put my own money on the line.
+
+```{r}
+mean(errors)
+```
