@@ -361,3 +361,56 @@ for (i in 1:nrow(Weekly)) {
 ```{r}
 mean(errors)
 ```
+
+## 8
+
+* **A**. $N~=~100$ and $P~=~2$ (two since $2X^2$ is a transformation of $X$) and the equation is $Y~=~X~-~2X^2~+~\epsilon$
+
+```{r}
+set.seed(1)
+y <- rnorm(100)
+x <- rnorm(100)
+y <- x - 2*x^2 + rnorm(100)
+```
+
+* **B**. As expected, there is a downward facing parabola and most of the noise in the relationship seems to be centered in the interval $-1 \leq X \leq 1$.
+
+```{r}
+df <- data.frame(x, y)
+ggplot(df, aes(x = x, y = y)) +
+    geom_point(color = 'blue')
+```
+
+* **C**.
+
+```{r}
+set.seed(5)
+for (i in 1:4) {
+    glm.fit <- glm(y ~ poly(x, i), df, family = 'gaussian')
+    cv.error <- cv.glm(df, glm.fit)
+    print(cv.error$delta)
+}
+```
+
+* **D**. The results are the same for for both random seeds because there is no *randomness* associated with LOOCV; $N$ models are trained on $N-1$ observations and then evaluated on the final observation. All $N$ evaluations are then averaged together to get the final cross validated estimate of the test error. Changing the seed would have an affect only when using K-Fold cross validation where $K \neq N$.
+
+```{r}
+set.seed(100)
+for (i in 1:4) {
+    glm.fit <- glm(y ~ poly(x, i), df, family = 'gaussian')
+    cv.error <- cv.glm(df, glm.fit)
+    print(cv.error$delta)
+}
+```
+
+* **E**. The best model as determined by the cross validated test estimates is the model with the second degree polynomial. This holds to reason since this model is the closest to the true relationship between X and Y.
+
+* **F**. Looking at the output below, it is clear that the estimate for the second degree polynomial coefficient is highly statistically significant throughout all models. However, as one would expect, the estimates for the third and fourth degree polynomial coefficients are not statistically significant, perfectly aligning with the output of the LOOCV results. 
+
+```{r}
+set.seed(100)
+for (i in 1:4) {
+    glm.fit <- glm(y ~ poly(x, i), df, family = 'gaussian')
+    print(summary(glm.fit)$coef)
+}
+```
