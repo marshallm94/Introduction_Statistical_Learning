@@ -414,3 +414,76 @@ for (i in 1:4) {
     print(summary(glm.fit)$coef)
 }
 ```
+
+## 9
+
+* **A**.
+
+```{r}
+library(MASS)
+mu_hat <- mean(Boston$medv)
+mu_hat
+```
+
+* **B**.
+
+```{r}
+stand_error <- sd(Boston$medv) / sqrt(nrow(Boston))
+stand_error
+```
+
+* **C**. 10,000 bootstrapped estimates of the mean of $medv$ comes out to equal the calculated mean and the bootstrapped standard error estimate is only off by roughly 0.002.
+
+```{r}
+boot.mean <- function(data, idx_array) {
+    return(mean(data[idx_array, 'medv']))
+}
+set.seed(5)
+boot_est <- boot(Boston, boot.mean, 10000)
+boot_est
+```
+
+* **D**. The bootstrapped 95% confidence interval for the mean of $medv$ is (21.71262, 23.35299).
+
+```{r}
+lower <- boot_est$t0 - 2*sd(boot_est$t)
+upper <- boot_est$t0 + 2*sd(boot_est$t)
+lower
+upper
+```
+
+* **E**.
+
+```{r}
+med_hat <- median(Boston$medv)
+med_hat
+```
+
+* **F**. With 10,000 bootstrapped data sets, the estimate for the median comes out to be the same as the measured median and the standard error is only 0.38.
+
+```{r}
+boot.med <- function(data, idx_array) {
+    return(median(data[idx_array, 'medv']))
+}
+set.seed(5)
+boot_est <- boot(Boston, boot.med, 10000)
+boot_est
+```
+
+* **G**.
+
+```{r}
+perc_10 <- quantile(Boston$medv, 0.1)
+perc_10
+```
+
+* **H**. The bootstrapped estimate of the 10th percentile of $medv$ is the same as the measured 10th percentile using the entire data set, however the standard error is noticably higher than the other two statistics.
+
+```{r}
+boot.perc_10 <- function(data, idx_array) {
+    return(quantile(data[idx_array, 'medv'], 0.1))
+}
+set.seed(5)
+boot_est <- boot(Boston, boot.perc_10, 10000)
+boot_est
+```
