@@ -40,3 +40,11 @@ In short, Best Subset Selection will have the best (lowest) *training* RSS for a
 *v*. False, the predictors in the $k$-variable model identified by Best Subset Selection are **not necessarily** a subset of the predictors in the $(k+1)$-variable model identified by Best Subset Selection.
 
 \setlength{\leftskip}{0pt}
+
+## 2
+
+* **A**. The lasso, relative to least squares is, *iii*, less flexible and hence will give improved prediction accuracy when its increase in bias is less than its decrease in variance.
+
+* **B**. Ridge Regression, relative to least squares is, *iii*, less flexible and hence will give improved prediction accuracy when its increase in bias is less than its decrease in variance.
+
+* **C**. Non-linear methods relative to least squares are, *ii*, more flexible and hence will give improved prediction accuracy when its increase in variance is less than its decrease in bias.
