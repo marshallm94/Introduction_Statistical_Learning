@@ -1,5 +1,5 @@
 ---
-title: "ISLR | Chapter 4 Exercises"
+title: "ISLR | Chapter 5 Exercises"
 author: "Marshall McQuillen"
 date: "7/5/2018"
 output: 
