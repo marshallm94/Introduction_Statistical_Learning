@@ -1,0 +1,24 @@
+---
+title: "ISLR | Chapter 6 Exercises"
+author: "Marshall McQuillen"
+date: "7/28/2018"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+# Conceptual
+
+## 1
+
+* **A**. For a model with $k$ predictors, Best Subset Selection will always have the best *training* RSS. The reason for this is, given a fixed $k$, there are $\binom{p}{k}$ possible models, and Best Subset Selection considers all of those $\binom{p}{k}$ possibilities.
+
+\setlength{\leftskip}{1cm}
+
+In Forward Subset Selection, of the total $\binom{p}{k}$ possible models, only the models that contain the $k~-~1$ model produced by Forward Subset Selection will be considered for the "best" $k$ predictor model.
+
+In Backward Subset Selection, of the total $\binom{p}{k}$ possible models, the predictors in the "best" $k$ variable model *must* be a subset of the model with $k~+~1$ predictors.
+
+In short, Best Subset Selection will have the best *training* RSS for a model with $k$ predictors because it considers **all** the possible $\binom{p}{k}$ models, whereas Forward and Backward Subset Selection only consider a **subset** of all the possible $\binom{p}{k}$ models.
+
+\setlength{\leftskip}{0pt}
