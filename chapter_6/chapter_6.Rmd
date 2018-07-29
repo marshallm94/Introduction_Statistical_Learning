@@ -51,7 +51,7 @@ In short, Best Subset Selection will have the best (lowest) *training* RSS for a
 
 ## 3
 
-In the (alternate) equation for the Lasso...
+In the (alternate) cost function for the Lasso...
 
 $$
 \sum_{i=1}^n\left( y_k - \beta_0 - \sum_{j=1}^p\beta_jx_{ij} \right) subject~to~\sum_{j=1}^p \left| \beta_j \right| \leq s
@@ -71,7 +71,7 @@ As we increase $s$ from 0...
 
 ## 4
 
-In the equation for Ridge Regression...
+In the cost function for Ridge Regression...
 
 $$
 \sum_{i=1}^n\left( y_k - \beta_0 - \sum_{j=1}^p\beta_jx_{ij} \right) + \lambda\sum_{j=1}^p \beta_j^2
