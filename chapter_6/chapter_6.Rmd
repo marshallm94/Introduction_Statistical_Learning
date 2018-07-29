@@ -47,4 +47,18 @@ In short, Best Subset Selection will have the best (lowest) *training* RSS for a
 
 * **B**. Ridge Regression, relative to least squares is, *iii*, less flexible and hence will give improved prediction accuracy when its increase in bias is less than its decrease in variance.
 
-* **C**. Non-linear methods relative to least squares are, *ii*, more flexible and hence will give improved prediction accuracy when its increase in variance is less than its decrease in bias.
+* **C**. Non-linear methods, relative to least squares are, *ii*, more flexible and hence will give improved prediction accuracy when their increase in variance is less than their decrease in bias.
+
+## 3
+
+As we increase $s$ in the constraint to the RSS, $\sum_{j=1}^p \left| \beta_j \right| \leq s$...
+
+* **A**. ...the training RSS will, *iv*, steadily decrease. As the budget ($s$) for the sum of the regression coefficients increases from 0, each $\beta_j$ will approach the value it would reach in ordinary least squares regression (no constraint). Therefore, without a constraint, we are letting the regression coefficients "roam freely" to reach their ordinary least squares values. Using the constraint, we are "lassoing" them in (pun intended).
+
+* **B**. ...the testing RSS will, *ii*, decrease initially, and then eventually start increasing in a U shape. When $s$ is 0, all the regression coefficients are 0, and the "model" is simply the intercept, $\beta_0$, the mean of the response (highly biased, very low variance). As $s$ increases from 0, the model becomes more flexible, allowing for an increasingly better fit to the data up to a point (bottom of the U). Once this point is reached, the model becomes **overly** flexible, overfitting the training data and leading to an increase in the test error (right side of U). 
+
+* **C**. ...variance will, *iii*, steadily increase. As $s$ increases from 0, the model becomes more and more flexible, and as we know, more flexible models have a higher variance and lower bias. The model will be more influenced by the data it is trained on.
+
+* **D**. ...(squared) bias will, *iv*, steadily decrease. As $s$ increases from 0, the model becomes more and more flexible, and as we know, more flexible models have a higher variance and lower bias. The model will have a better chance of representing the *true* relationship between the predictors and the response.
+
+* **E**. ...the irreducible error will, *v*, remain constant. The irreducible error is just that, **irreducible**.
