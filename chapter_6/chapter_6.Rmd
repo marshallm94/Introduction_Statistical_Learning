@@ -54,7 +54,7 @@ In short, Best Subset Selection will have the best (lowest) *training* RSS for a
 In the (alternate) cost function for the Lasso...
 
 $$
-\sum_{i=1}^n\left( y_k - \beta_0 - \sum_{j=1}^p\beta_jx_{ij} \right) subject~to~\sum_{j=1}^p \left| \beta_j \right| \leq s
+\sum_{i=1}^n\left( y_k - \beta_0 - \sum_{j=1}^p\beta_jx_{ij} \right)^2 subject~to~\sum_{j=1}^p \left| \beta_j \right| \leq s
 $$
 
 As we increase $s$ from 0...
@@ -74,17 +74,162 @@ As we increase $s$ from 0...
 In the cost function for Ridge Regression...
 
 $$
-\sum_{i=1}^n\left( y_k - \beta_0 - \sum_{j=1}^p\beta_jx_{ij} \right) + \lambda\sum_{j=1}^p \beta_j^2
+\sum_{i=1}^n\left( y_k - \beta_0 - \sum_{j=1}^p\beta_jx_{ij} \right)^2 + \lambda\sum_{j=1}^p \beta_j^2
 $$
 
 ...as we increase $\lambda$ from 0...
 
 * **A**. ...the training RSS will, *iii*, steadily increase. As $\lambda$ increases from 0, more "weight" is given to the second term in the cost function, thus penalizing large regression coefficients more and more. Increasing $\lambda$ from 0 restricts the regression coefficients more and more.
 
-* **B**. ...the testing RSS will, *ii*, decrease initially, and then eventually start increasing in a U shape. As $\lambda$ increases from 0, increasingly strict restrictions are put on the magnitude that the regression coefficients can grow too. This has the affect of making the model less flexible and more generalizable, **up to a point**. The left side of the U represents the model's increase in bias being less than it's decrease in variance, and the right side of the U represents the decrease in variance no longer being worth the increase in bias.
+* **B**. ...the testing RSS will, *ii*, decrease initially, and then eventually start increasing in a U shape. As $\lambda$ increases from 0, increasingly strict restrictions are put on the magnitude that the regression coefficients can grow too. This has the effect of making the model less flexible and more generalizable, **up to a point**. The left side of the U represents the model's increase in bias being less than it's decrease in variance, and the right side of the U represents the decrease in variance no longer being worth the increase in bias.
 
 * **C**. ...the variance will, *iv*, steadily decrease. As $\lambda$ increases from 0, increasingly strict limits are placed on the regression coefficients, making it less flexible.
 
 * **D**. ...the (squared) bias will, *iii*, steadily increase. As $\lambda$ increases from 0, increasingly strict limits are placed on the regression coefficients, making it less flexible. This will make it increasingly harder for the model to estimate the true relationship between the response and the predictors.
 
 * **E**. ...the irreducible error will, *v*, remain constant. The irreducible error is just that, **irreducible**.
+
+## 5
+
+* **A**. The optimization problem for Ridge Regression is:
+
+$$
+\sum_{i=1}^n\left( y_k - \beta_0 - \sum_{j=1}^p\beta_jx_{ij} \right)^2 + \lambda\sum_{j=1}^p \beta_j^2
+$$
+
+\setlength{\leftskip}{1cm}
+
+Written out when $n=p=0$, the equation comes to:
+
+$$
+\left( y_1 - \beta_0 - \beta_1x_{11} - \beta_2x_{12} \right)^2 +
+\left( y_2 - \beta_0 - \beta_1x_{21} - \beta_2x_{22} \right)^2 +
+\lambda \left( \beta_1^2 + \beta_2^2 \right)
+$$
+
+When $\beta_0=0$, a small simplification can be made such that the above equation becomes:
+
+$$
+\left( y_1 - \beta_1x_{11} - \beta_2x_{12} \right)^2 +
+\left( y_2 - \beta_1x_{21} - \beta_2x_{22} \right)^2 +
+\lambda \left( \beta_1^2 + \beta_2^2 \right)
+$$
+
+\setlength{\leftskip}{0cm}
+
+* **B**. Given that $x_{11}=x_{12}$ and $x_{21}=x_{22}$, I will refer to these as simply $x_1$ and $x_2$ respectively where applicable. A small rewrite of the preceding equation gives: 
+
+$$
+f(x) = \left( y_1 - \beta_1 x_1 - \beta_2 x_1 \right)^2 +
+\left( y_2 - \beta_1 x_2 - \beta_2 x_2 \right)^2 +
+\lambda \left( \beta_1^2 + \beta_2^2 \right)
+$$
+
+\setlength{\leftskip}{1cm}
+
+Given that the problem above is one of *minimization*, taking the derivative is the first step in showing that $\beta_1=\beta_2$.
+
+Calculating the derivative with respect to $\beta_1$ can be broken down into the derivative of the three separate terms in the above equation:
+
+$$
+\frac{\partial}{\partial \beta_1}f(x) = 
+\frac{\partial}{\partial \beta_1}\left( y_1 - \beta_1x_1 - \beta_2x_1 \right)^2 + \frac{\partial}{\partial \beta_1}\left( y_2 - \beta_1x_2 - \beta_2x_2 \right)^2 +
+\frac{\partial}{\partial \beta_1}\left ( \lambda\beta_1^2 + \lambda\beta_2^2 \right)
+$$
+
+\setlength{\leftskip}{2cm}
+
+**First Term Derivative**
+
+$$
+\frac{\partial}{\partial \beta_1} \left(y_1 - \beta_1x_1 - \beta_2x_1 \right)^2 = 
+2\left( y_1 - \beta_1x_1 - \beta_2x_1 \right) \cdot \left( -x_1 \right) =
+2\left( -y_1x_1 + \beta_1x_1^2 + \beta_2x_1^2 \right)
+$$
+
+**Second Term Derivative**
+
+$$
+\frac{\partial}{\partial \beta_1} \left(y_2 - \beta_1x_2 - \beta_2x_2 \right)^2 = 
+2\left( y_2 - \beta_1x_2 - \beta_2x_2 \right) \cdot \left( -x_2 \right) =
+2\left( -y_2x_2 + \beta_1x_2^2 + \beta_2x_2^2 \right)
+$$
+
+**Third Term Derivative**
+
+$$
+\frac{\partial}{\partial \beta_1}\left ( \lambda\beta_1^2 + \lambda\beta_2^2 \right) = 2\lambda\beta_1
+$$
+
+Bringing this all together, the derivative of the full equation comes out to:
+
+$$
+\frac{\partial}{\partial \beta_1}f(x) = 2\left( -y_1x_1 + \beta_1x_1^2 + \beta_2x_1^2 \right) + 2\left( -y_2x_2 + \beta_1x_2^2 + \beta_2x_2^2 \right) +
+2\lambda\beta_1
+$$
+
+Setting the derivative equal to 0 and solving for $\beta_1$:
+
+$$
+2\left( -y_1x_1 + \beta_1x_1^2 + \beta_2x_1^2 \right) + 
+2\left( -y_2x_2 + \beta_1x_2^2 + \beta_2x_2^2 \right) +
+2\lambda\beta_1 = 0
+$$
+
+Divide by 2:
+
+$$
+\left( -y_1x_1 + \beta_1x_1^2 + \beta_2x_1^2 \right) + 
+\left( -y_2x_2 + \beta_1x_2^2 + \beta_2x_2^2 \right) +
+\lambda\beta_1 = 0
+$$
+
+Group $\beta_1$ terms and $\beta_2$ terms together:
+
+$$
+\left( \beta_1x_1^2 + \beta_1x_2^2 + \lambda\beta_1 \right) + \beta_2x_1^2 + \beta_2x_2^2 - y_1x_1 - y_2x_2 = 0
+$$
+
+Factor out $\beta_1$ and $\beta_2$:
+
+$$
+\beta_1\left( x_1^2 + x_2^2 + \lambda \right) + \beta_2\left( x_1^2 + x_2^2 \right) - y_1x_1 - y_2x_2 = 0
+$$
+
+Add $y_1x_1$ and $y_2x_2$ to both sides of the equation:
+
+$$
+\beta_1\left( x_1^2 + x_2^2 + \lambda \right) + \beta_2\left( x_1^2 + x_2^2 \right) = y_1x_1 + y_2x_2 
+$$
+
+\setlength{\leftskip}{1cm}
+
+Repeating the same process, this time taking the derivative **with respect to $\beta_2$**, would yield:
+
+$$
+\beta_2\left( x_1^2 + x_2^2 + \lambda \right) + \beta_1\left( x_1^2 + x_2^2 \right) = y_1x_1 + y_2x_2 
+$$
+
+Using substitution, we can set the two equations equal to each other:
+
+$$
+\beta_1\left( x_1^2 + x_2^2 + \lambda \right) + \beta_2\left( x_1^2 + x_2^2 \right) = \beta_2\left( x_1^2 + x_2^2 + \lambda \right) + \beta_1\left( x_1^2 + x_2^2 \right) 
+$$
+
+Factoring $\lambda$ out into it's own term:
+
+$$
+\beta_1\left( x_1^2 + x_2^2 \right) + \beta_1\lambda + \beta_2\left( x_1^2 + x_2^2 \right) = \beta_2\left( x_1^2 + x_2^2 \right) + \beta_2\lambda + \beta_1\left( x_1^2 + x_2^2 \right) 
+$$
+
+Subract $\beta_1\left( x_1^2 + x_2^2 \right)$ and $\beta_2\left( x_1^2 + x_2^2 \right)$ then divide by $\lambda$:
+
+$$
+\beta_1\lambda = \beta_2\lambda~~~thus~~~\beta_1=\beta_2
+$$
+
+\setlength{\leftskip}{0cm}
+
+
+
+
