@@ -230,6 +230,97 @@ $$
 
 \setlength{\leftskip}{0cm}
 
+* **C**. The lasso optimization problem is similar to that of Ridge Regression, with a small change to the third term in the equation:
+
+$$
+f(x) = \left( y_1 - \beta_1 x_1 - \beta_2 x_1 \right)^2 +
+\left( y_2 - \beta_1 x_2 - \beta_2 x_2 \right)^2 +
+\lambda \left( | \beta_1 | + | \beta_2 | \right)
+$$
+
+* **D**. Taking a visual approach to an explanation as to why there are many $\beta_1$'s and $\beta_2$'s that solve the Lasso starts with the image of the error contour plots and the shaded constraint regions from Chapter 6, reproduced below.
+
+![](lasso_vs_ridge.png)
 
 
 
+## 6
+
+* **A**. Considering the Ridge Regression loss function where $p=1$, the equation...
+
+$$
+\sum_{j=1}^p \left( y_j - \beta_j \right)^2 + \lambda\sum_{j=1}^p\beta_j^2
+$$
+
+\setlength{\leftskip}{1cm}
+
+...can be re-written as the following.
+
+$$
+f(\beta_j) = \left( y_j - \beta_j \right)^2 + \lambda\beta_j^2
+$$
+
+A quick derivation shows that equation 6.12 is solved by 6.14:
+
+$$
+\frac{\partial f(\beta_j)}{\partial \beta_j} = 2\left( y_j - \beta_j \right)(-1) + 2\lambda\beta_j
+$$
+
+$$
+2\left( y_j - \beta_j \right)(-1) + 2\lambda\beta_j = 0
+$$
+
+$$
+-2\left( y_j - \beta_j \right) + 2\lambda\beta_j = 0
+$$
+
+$$
+-2y_j + 2\beta_j + 2\lambda\beta_j = 0
+$$
+
+$$
+-y_j + \beta_j + \lambda\beta_j = 0
+$$
+
+$$
+-y_j + \beta_j(1 + \lambda) = 0
+$$
+
+$$
+\beta_j(1 + \lambda) = y_j
+$$
+
+$$
+\beta_j = \frac{y_j}{(1 + \lambda)}
+$$
+
+The following code holds $y_j = \lambda = 1$ and plots a sequence of $\beta_j$ estimates in blue. The minimum of those estimates is circled in red, and the minimum estimated by the equation above is circled in green, both encompassing 0.5
+
+\hfill
+
+```{r}
+ridge <- function(y, lambda, beta) {
+    return((y - beta)^2 + lambda*beta^2)
+}
+
+y = 1
+lambda = 1
+betas <- seq(-15, 15, 0.1)
+
+f.x <- ridge(y, lambda, betas)
+
+function_estimate <- f.x[which.min(f.x)]
+equation_estimate <- y/(lambda + 1) 
+
+plot(x = betas,
+     y = f.x,
+     col = "blue",
+     xlab = 'Betas',
+     ylab = "Ridge Regression Optimization")
+points(function_estimate, col = 'red', cex = 2)
+points(equation_estimate, col = 'green', cex = 4)
+
+function_estimate == equation_estimate
+```
+
+\setlength{\leftskip}{0cm}
