@@ -316,11 +316,58 @@ plot(x = betas,
      y = f.x,
      col = "blue",
      xlab = 'Betas',
-     ylab = "Ridge Regression Optimization")
+     ylab = "Ridge Regression Optimization",
+     main = "Ridge Regression Minimization")
 points(function_estimate, col = 'red', cex = 2)
 points(equation_estimate, col = 'green', cex = 4)
 
 function_estimate == equation_estimate
+```
+
+\hfill
+
+\setlength{\leftskip}{0cm}
+
+* **B**. Considering the Lasso Regression loss function where $p=1$, the equation...
+
+$$
+\sum_{j=1}^p \left( y_j - \beta_j \right)^2 + \lambda\sum_{j=1}^p | \beta_j |
+$$
+
+\setlength{\leftskip}{1cm}
+
+...can be re-written as the following.
+
+$$
+f(\beta_j) = \left( y_j - \beta_j \right)^2 + \lambda | \beta_j |
+$$
+
+The following code holds $y_j = \lambda = 1$ and plots a sequence of $\beta_j$ estimates in blue. The minimum of those estimates is circled in red, and the minimum estimated by the equation (where $y_j > \frac{\lambda}{2}$) above is circled in green.
+
+\hfill
+
+```{r}
+lasso <- function(beta, y=y, lambda=lambda) {
+    return((y - beta)^2 + lambda*abs(beta))
+}
+
+y = 1
+lambda = 1
+betas <- seq(-15, 15, 0.1)
+
+f.x <- lasso(betas, y, lambda)
+
+function_estimate <- f.x[which.min(f.x)]
+equation_estimate <- y - (lambda/2) 
+
+plot(x = betas,
+     y = f.x,
+     col = "blue",
+     xlab = 'Betas',
+     ylab = "Lasso Regression Optimization",
+     main = "Minimization of Lasso where y > lambda/2")
+points(function_estimate, col = 'red', cex = 2)
+points(equation_estimate, col = 'green', cex = 4)
 ```
 
 \setlength{\leftskip}{0cm}
