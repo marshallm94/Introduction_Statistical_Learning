@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 6 Exercises"
 author: "Marshall McQuillen"
-date: "7/28/2018"
+date: "8/3/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -238,11 +238,7 @@ f(x) = \left( y_1 - \beta_1 x_1 - \beta_2 x_1 \right)^2 +
 \lambda \left( | \beta_1 | + | \beta_2 | \right)
 $$
 
-* **D**. Taking a visual approach to an explanation as to why there are many $\beta_1$'s and $\beta_2$'s that solve the Lasso starts with the image of the error contour plots and the shaded constraint regions from Chapter 6, reproduced below.
-
-![](lasso_vs_ridge.png)
-
-
+* **D**. **NEED TO COME BACK TOO** 
 
 ## 6
 
@@ -371,3 +367,270 @@ points(equation_estimate, col = 'green', cex = 4)
 ```
 
 \setlength{\leftskip}{0cm}
+
+## 7 **NEED TO COME BACK TOO**
+
+# Applied
+
+## 8
+
+* **A**.
+
+```{r}
+set.seed(5)
+X <- rnorm(n=100)
+noise <- rnorm(n=100)
+```
+
+* **B**.
+
+```{r}
+beta_0 <- 1
+beta_1 <- -2
+beta_2 <- 3.75
+beta_3 <- 5
+Y <- beta_0 + beta_1*X + beta_2*(X^2) + beta_3*(X^3) + noise
+```
+
+* **C**. Using Best Subset Selection below, $C_p,~BIC~and~adjusted~R^2$ all select the model with three variables. The coefficient estimimates come out to
+$Y = 1.072 - 1.583X + 3.695X^2 + 4.890X^3$
+
+```{r}
+library(leaps)
+df <- data.frame(X, Y)
+
+# Best Subset Selection
+# in poly(), setting raw = TRUE return raw polynomials, as opposed to 
+# orthogonal
+regfit.full <- regsubsets(Y ~ poly(X, 10, raw = TRUE),
+                          data = df,
+                          nvmax = 10,
+                          method = 'exhaustive')
+reg.summary <- summary(regfit.full)
+
+# Cp
+plot(reg.summary$cp,
+     xlab = 'Number of Variables',
+     ylab = 'Cp',
+     main = "BSS Cp Chooses the 3 Variable Model",
+     type = 'l')
+points(which.min(reg.summary$cp),
+       reg.summary$cp[which.min(reg.summary$cp)],
+       col = 'red',
+       cex = 2,
+       pch = 20)
+
+# BIC
+plot(reg.summary$bic,
+     xlab = 'Number of Variables',
+     ylab = 'BIC',
+     main = "BSS BIC Chooses the 3 Variable Model",
+     type = 'l')
+points(which.min(reg.summary$bic),
+       reg.summary$bic[which.min(reg.summary$bic)],
+       col = 'red',
+       cex = 2,
+       pch = 20)
+
+# Adj R62
+plot(reg.summary$adjr2,
+     xlab = 'Number of Variables',
+     ylab = 'Adjusted R^2',
+     main = "BSS Adjusted R-Squared Chooses the 3 Variable Model",
+     type = 'l')
+points(which.max(reg.summary$adjr2),
+      reg.summary$adjr2[which.max(reg.summary$adjr2)],
+      col = 'red',
+      cex = 2,
+      pch = 20)
+
+coef(regfit.full, id = 3)
+```
+
+* **D**. $C_p,~BIC~and~adjusted~R^2$ from both Forward and Backward Stepwise Selection all select the model with three variables as well.
+
+```{r}
+# Forward and Stepwise Selection
+regfit.forward <- regsubsets(Y ~ poly(X, 10, raw = TRUE),
+                          data = df,
+                          nvmax = 10,
+                          method = 'forward')
+reg.summary.forward <- summary(regfit.forward)
+
+par(mfrow = c(1,3))
+
+# Cp
+plot(reg.summary.forward$cp,
+     xlab = 'Variables',
+     ylab = 'Forward Cp',
+     main = "FSS Cp",
+     type = 'l')
+points(which.min(reg.summary.forward$cp),
+       reg.summary.forward$cp[which.min(reg.summary.forward$cp)],
+       col = 'red',
+       cex = 2,
+       pch = 20)
+
+# BIC
+plot(reg.summary.forward$bic,
+     xlab = 'Number of Variables',
+     ylab = 'BIC',
+     main = "FSS BIC",
+     type = 'l')
+points(which.min(reg.summary.forward$bic),
+       reg.summary.forward$bic[which.min(reg.summary.forward$bic)],
+       col = 'red',
+       cex = 2,
+       pch = 20)
+
+# Adj R62
+plot(reg.summary.forward$adjr2,
+     xlab = 'Number of Variables',
+     ylab = 'Adjusted R^2',
+     main = "FSS Adjusted R-Squared",
+     type = 'l')
+points(which.max(reg.summary.forward$adjr2),
+      reg.summary.forward$adjr2[which.max(reg.summary.forward$adjr2)],
+      col = 'red',
+      cex = 2,
+      pch = 20)
+
+# Backward Stepwise Selection
+regfit.backward <- regsubsets(Y ~ poly(X, 10, raw = TRUE),
+                          data = df,
+                          nvmax = 10,
+                          method = 'backward')
+reg.summary.backward <- summary(regfit.backward)
+
+par(mfrow = c(1,3))
+
+# Cp
+plot(reg.summary.backward$cp,
+     xlab = 'Number of Variables',
+     ylab = 'Cp',
+     main = "Bck. SS Cp",
+     type = 'l')
+points(which.min(reg.summary.backward$cp),
+       reg.summary.backward$cp[which.min(reg.summary.backward$cp)],
+       col = 'red',
+       cex = 2,
+       pch = 20)
+
+# BIC
+plot(reg.summary.backward$bic,
+     xlab = 'Number of Variables',
+     ylab = 'BIC',
+     main = "Bck. SS BIC Chooses the 3 Variable Model",
+     type = 'l')
+points(which.min(reg.summary.backward$bic),
+       reg.summary.backward$bic[which.min(reg.summary.backward$bic)],
+       col = 'red',
+       cex = 2,
+       pch = 20)
+
+# Adj R62
+plot(reg.summary.backward$adjr2,
+     xlab = 'Number of Variables',
+     ylab = 'Adjusted R^2',
+     main = "Bck. SS Adjusted R-Squared",
+     type = 'l')
+points(which.max(reg.summary.backward$adjr2),
+      reg.summary.backward$adjr2[which.max(reg.summary.backward$adjr2)],
+      col = 'red',
+      cex = 2,
+      pch = 20)
+```
+
+* **E**. Using the $\lambda$ value selected using cross validation, Lasso Regression selects $X^2,~X^3~and~X^5$ with coefficients of 3.5, 3.6 and 0.2 respectively (along with an intercept of 1.31). This is different from the true coefficients of $\beta_0 = 1,~\beta_1(X) = -2,~\beta_2(X^2) = 3.75,~\beta_3(X^3) = 5$.
+
+```{r}
+# Lasso Regression
+set.seed(5)
+library(glmnet)
+model.x <- model.matrix(Y ~ poly(X, 10, raw = TRUE), data = df)[, -1]
+
+par(mfrow = c(1,1))
+
+set.seed(1)
+cv.out <- cv.glmnet(model.x, Y, alpha = 1)
+plot(cv.out)
+best_lam <- cv.out$lambda.min
+points(best_lam,
+      best_lam,
+      col = 'blue',
+      cex = 4)
+best_lam
+
+lasso.mod <- glmnet(model.x, Y, alpha = 1, lambda = best_lam)
+coef(lasso.mod)
+```
+
+* **F**. Setting a new response variable such that $Y = 5 + 6X^7 + \epsilon$, $C_p,~BIC~and~Adjusted~R^2$ suggest the 2, 1 and 4 variable model respectively. $BIC$ did correctly identify $X^7$, as well as correctly identify the coefficients as 5.02 and 6 for $\beta_0~and~\beta_1$ respectively.
+
+The Lasso also selected the correct coefficients, $\beta_0~and~\beta_7$, as well as chose coefficients that are relatively close to the true values, although not as close as those obtained using Best Subset Selection. **This goes to show that when the response $Y$ is a function of multiple predictors, the Lasso will produced a biased estimate of the model. However, when the response is a function of only a couple coefficients (in this case 1), the Lasso will approximate the true relationship relatively well.**
+
+```{r}
+set.seed(5)
+X = rnorm(100)
+noise <- rnorm(100)
+beta_0 <- 5
+beta_7 <- 6
+
+Y <- beta_0 + beta_7*X^7 + noise
+
+df <- data.frame(X, Y)
+
+# Best Subset Selection
+regfit.full <- regsubsets(Y ~ poly(X, 10, raw = TRUE),
+                          data = df,
+                          nvmax = 10,
+                          method = 'exhaustive')
+reg.summary <- summary(regfit.full)
+
+par(mfrow = c(1,3))
+
+# Cp
+plot(reg.summary$cp,
+     xlab = 'Number of Variables',
+     ylab = 'Cp',
+     main = "BSS Cp",
+     type = 'l')
+points(which.min(reg.summary$cp),
+       reg.summary$cp[which.min(reg.summary$cp)],
+       col = 'red',
+       cex = 2,
+       pch = 20)
+
+# BIC
+plot(reg.summary$bic,
+     xlab = 'Number of Variables',
+     ylab = 'BIC',
+     main = "BSS BIC",
+     type = 'l')
+points(which.min(reg.summary$bic),
+       reg.summary$bic[which.min(reg.summary$bic)],
+       col = 'red',
+       cex = 2,
+       pch = 20)
+
+# Adj R62
+plot(reg.summary$adjr2,
+     xlab = 'Number of Variables',
+     ylab = 'Adjusted R^2',
+     main = "BSS Adjusted R-Squared",
+     type = 'l')
+points(which.max(reg.summary$adjr2),
+      reg.summary$adjr2[which.max(reg.summary$adjr2)],
+      col = 'red',
+      cex = 2,
+      pch = 20)
+
+coef(regfit.full, id = 1)
+
+# Lasso Regression
+set.seed(5)
+model.x <- model.matrix(Y ~ poly(X, 10, raw = TRUE), data = df)[, -1]
+
+lasso.mod <- glmnet(model.x, Y, alpha = 1)
+predict(lasso.mod, s = best_lam, type = 'coefficients')
+```
