@@ -634,3 +634,112 @@ model.x <- model.matrix(Y ~ poly(X, 10, raw = TRUE), data = df)[, -1]
 lasso.mod <- glmnet(model.x, Y, alpha = 1)
 predict(lasso.mod, s = best_lam, type = 'coefficients')
 ```
+
+## 9
+
+* **A**. *Train/Test Split*
+
+```{r}
+library(ISLR)
+library(Metrics)
+
+set.seed(5)
+train_idx <- sample(c(TRUE, FALSE), nrow(College), rep = TRUE)
+test_idx <- (!train_idx)
+```
+
+* **B**. Ordinary Least Squares returns a  testing RMSE of **998.93**.
+
+```{r}
+lm.mod <- lm(Apps ~ .,
+         data = College,
+         subset = train_idx)
+lm.pred <- predict(lm.mod, newdata = College[test_idx,])
+lm.test.mse <- mse(College[test_idx, 'Apps'], lm.pred)
+sqrt(lm.test.mse)
+```
+
+* **C**. Ridge Regression produces a slightly higher testing RMSE than OLS, coming in at **1003**.
+
+```{r}
+x = model.matrix(Apps ~ ., data = College)
+y = College$Apps
+
+lambda.grid <- 10^seq(10, -2, length = 100)
+
+cv.out <- cv.glmnet(x[train_idx,],
+                    y[train_idx],
+                    alpha = 0,
+                    lambda = lambda.grid)
+
+best.lambda <- cv.out$lambda.min
+ridge.mod <- glmnet(x, y, alpha = 0, lambda = best.lambda)
+ridge.pred <- predict(ridge.mod,
+                      s = best.lambda,
+                      newx = x[test_idx,])
+ridge.test.mse <- mse(y[test_idx], ridge.pred)
+sqrt(ridge.test.mse)
+```
+
+* **D**. Similar to Ridge Regression, the Lasso has a slightly higher testing RMSE than the OLS, at 993.41. The coefficients are shown below.
+
+```{r}
+cv.out <- cv.glmnet(x[train_idx,],
+                    y[train_idx],
+                    alpha = 1,
+                    lambda = lambda.grid)
+
+best.lambda <- cv.out$lambda.min
+lasso.mod <- glmnet(x, y, alpha = 0, lambda = best.lambda)
+lasso.pred <- predict(lasso.mod,
+                      s = best.lambda,
+                      newx = x[test_idx,])
+lasso.test.mse <- mse(y[test_idx], lasso.pred)
+sqrt(lasso.test.mse)
+predict(lasso.mod, s = best.lambda, type = 'coefficients')
+```
+
+* **E**. Using 5 principal components, PCR returns a testing RMSE of 1885.01, double the error of OLS.
+
+```{r}
+library(pls)
+set.seed(5)
+pcr.fit <- pcr(Apps ~ .,
+               data = College[train_idx,],
+               scale = TRUE,
+               validation = 'CV')
+validationplot(pcr.fit, val.type = 'MSEP')
+pcr.pred <- predict(pcr.fit, College[test_idx, ], ncomp = 5)
+pcr.test.mse <- mse(College[test_idx, 'Apps'], pcr.pred)
+sqrt(pcr.test.mse)
+```
+
+* **F**. Partial Least Squares with 3 components returns a testing RMSE of 1665.24, also well above the RMSE of OLS.
+
+```{r}
+pls.fit <- plsr(Apps ~ .,
+               data = College[train_idx,],
+               scale = TRUE,
+               validation = 'CV')
+validationplot(pls.fit, val.type = 'MSEP')
+pls.pred <- predict(pls.fit, College[test_idx,], ncomp = 3)
+pls.test.mse <- mse(College[test_idx, 'Apps'], pls.pred)
+sqrt(pls.test.mse)
+```
+
+* **G**. Plotting the testing RMSE's of the five methods tested, it is clear that OLS, Ridge and Lasso are far superior to Principal Component Regression and Partial Least Squares. Since OLS produced a testing RMSE of just under 1000, this means that, *on average*, the prediction for the number of applications will be off by 983 using OLS.
+
+```{r}
+library(ggplot2)
+errors <- c(sqrt(lm.test.mse),
+  sqrt(ridge.test.mse),
+  sqrt(lasso.test.mse),
+  sqrt(pcr.test.mse),
+  sqrt(pls.test.mse))
+barplot(errors,
+        col = 'blue',
+        names = c('OLS','Ridge','Lasso','PCR','PLS'),
+        ylab = 'RMSE',
+        xlab = 'Linear Method',
+        main = 'Principal Component Methods Fall Behind')
+```
