@@ -743,3 +743,142 @@ barplot(errors,
         xlab = 'Linear Method',
         main = 'Principal Component Methods Fall Behind')
 ```
+
+## 10
+
+* **A**. Creating a 20 attributes randomly generated from a Normal Distribution and a response variable $Y$ such that $Y = 567 - X_1 - X_3 + 2X_5 + 3X_7 + 5X_9 + 8X_{11} + 13X_{13} + 21X_{15} + \epsilon$. That is to say that $X_2,~X_4,~X_6,~X_8,~X_{10},~X_{12},~X_{14},~X_{16},~X_{17},~X_{18},~X_{19}~and~X_{20}$ **have no affect on the response**.
+
+```{r, echo=TRUE, results='hide'}
+set.seed(5)
+X <- matrix(rnorm(1000* 20), nrow = 1000, ncol = 20)
+betas <- sample(seq(-50, 50, 0.25), 20)
+noise <- rnorm(20)
+for (i in 1:20) {
+    if (i %% 2 == 0) {
+        betas[i] <- 0        
+    }
+}
+y <- X %*% betas + noise
+df <- data.frame(x = X, y = y)
+```
+
+* **B**.
+
+```{r}
+train_idx <- sample(1:nrow(df), 100)
+```
+
+* **C**. As one would expect, the training error approaches zero.
+
+```{r}
+best.subset <- regsubsets(y ~ .,
+                          data = df,
+                          subset = train_idx,
+                          nvmax = 20,
+                          method = 'exhaustive')
+best.subset.summary <- summary(best.subset)
+par(mfrow = c(1,1))
+plot(best.subset.summary$rss / 100,
+     pch = 19,
+     col = 'blue',
+     type = 'b',
+     xlab = 'Number of Predictors',
+     ylab = 'Training MSE',
+     main = 'Training MSE Approaches 0 as No. Predictors Increases')
+```
+
+* **D**.
+
+```{r}
+df.test.matrix <- model.matrix(y ~ ., data = df[-train_idx,])
+test.errors <- NULL
+for (i in 1:20) {
+    coefs <- coef(best.subset, id = i)
+    predictions <- df.test.matrix[, names(coefs)] %*% coefs
+    test.errors[i] <- mse(y[-train_idx], predictions)
+}
+plot(test.errors,
+     pch = 19,
+     col = 'red',
+     type = 'b',
+     xlab = 'Number of Predictors',
+     ylab = 'MSE',
+     main = 'Testing MSE')
+```
+
+* **E**. As one would expect, the testing MSE is minimized at a model with an intermediate amount of predictors. This resembles the classic "U" shape that the testing error will take when moving from a simple model to a more complex model (**overfitting**). (This is imperceptible to the eye in the above plot, however if I plot models 1 through 9 on one graph and 10 through 20 on another it becomes clear; these plots are shown below)
+
+```{r}
+which.min(test.errors)
+par(mfrow = c(1, 2))
+plot(test.errors[1:9],
+     pch = 19,
+     col = 'green',
+     type = 'b',
+     xlab = 'Number of Predictors',
+     ylab = 'MSE',
+     main = 'Testing MSE Approaching Minimum')
+plot(test.errors[10:20],
+     pch = 19,
+     col = 'green',
+     type = 'b',
+     xlab = 'Number of Predictors',
+     ylab = 'MSE',
+     main = 'Testing MSE Increasing from Minimum',
+     xaxt = 'n')
+axis(1, at = seq(0, 10, 2), labels = c('10','12','14','16','18','20'))
+points(which.min(test.errors) - 9,
+       test.errors[which.min(test.errors)],
+       col = 'red',
+       pch = 'O',
+       cex = 2)
+```
+
+* **F**. Illustrated in the table below, the coefficient estimates are very close to the true values (note that the coefficients excluded from the table were correctly set to 0 in the model).
+
+```{r}
+estimates <- rep(0, 20)
+estimates[1] <- coef(best.subset, id = 10)[2]
+estimates[3] <- coef(best.subset, id = 10)[3]
+estimates[5] <- coef(best.subset, id = 10)[4]
+estimates[7] <- coef(best.subset, id = 10)[5]
+estimates[9] <- coef(best.subset, id = 10)[6]
+estimates[11] <- coef(best.subset, id = 10)[7]
+estimates[13] <- coef(best.subset, id = 10)[8]
+estimates[15] <- coef(best.subset, id = 10)[9]
+estimates[17] <- coef(best.subset, id = 10)[10]
+estimates[19] <- coef(best.subset, id = 10)[11]
+coef_df <- data.frame(betas,estimates)
+coef_df <- t(coef_df)[, c(1,3,5,7,9,11,13,15,17,19)]
+rownames(coef_df) <- c("True_value", "Estimate")
+colnames(coef_df) <- c('X1','X3','X5','X7','X9','X11','X13','X15','X17','X19')
+knitr::kable(coef_df, digits = 2, caption = 'Coefficients')
+```
+
+* **G**. Plotting the error in the coefficient estimates as $\sqrt{\sum_{j=1}^p (\beta_j - \hat{\beta_k^2})^2}$ on the y axis and the number of predictors in the model as that number increases on the x axis, it is clear that this error is minimized at 10, the same value at which the testing MSE was minimized.
+
+```{r}
+par(mfrow = c(1,1))
+r <- seq(1, 20)
+y <- rep(NA, 20)
+col_names <- colnames(df)[1:20]
+names(betas) <- col_names
+for (i in 1:20) {
+    cfs <- coef(best.subset, id = i)
+    cfs <- cfs[2:length(cfs)]
+    y[i] <- sqrt(sum((betas[names(cfs)] - cfs)^2))
+}
+plot(x = r,
+     y = y,
+     type = 'b',
+     col = 'blue',
+     pch = 19,
+     xlab = 'Number of Predictors',
+     ylab = 'Error',
+     main = 'Error in Coefficient Estimates')
+points(which.min(y),
+       y[which.min(y)],
+       col = 'red',
+       pch = 'O',
+       cex = 2)
+```
