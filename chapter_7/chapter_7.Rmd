@@ -1,0 +1,58 @@
+---
+title: "ISLR | Chapter 7 Exercises"
+author: "Marshall McQuillen"
+date: "9/12/2018"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+# Conceptual
+
+## 1
+
+* **A**. The cubic piecewise polynomial:
+
+$$
+f(x) = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x - \xi)^3_+ ~~~ 
+where ~~~ (x - \xi)^3_+ = 
+\begin{cases}
+0, ~~~ x \le \xi \\ 
+(x - \xi)^3, ~~~ otherwise
+\end{cases}
+$$
+
+\setlength{\leftskip}{1cm}
+
+...can be broken up and rewritten to be:
+
+$$
+f(x) = 
+\begin{cases}
+f(x)_1 = a_1 + b_1x + c_1x^2 + d_1x^3, ~~~ x \le \xi \\ 
+f(x)_2 = a_2 + b_2x + c_2x^2 + d_2x^3, ~~~ otherwise
+\end{cases}
+$$
+
+In $f(x)_1$, since $(x - \xi)^3_+ = 0$ (because $x \le \xi$), the fifth term (of $f(x)$) zeroes out and the coefficients can be expresses as $a_1 = \beta_0, ~b_1 = \beta_1, ~c_1 = \beta_2$ and $d_1 = \beta_3$.
+
+\setlength{\leftskip}{0cm}
+
+* **B**. Expanding the fifth term in $f(x)$ allows for the various powers of $x$ to be grouped together and then recondensed. $a_2, ~b_2, ~c_2$ and $d_2$ are expressed in terms of the cofficients below.
+
+\begin{align}
+f(x)_2 & = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x - \xi)^3 \\
+& = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x - \xi)(x - \xi)(x - \xi) \\
+& = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x^2 - 2x\xi + \xi^2)(x - \xi) \\
+& = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x^3 -x^2\xi - 2x^2\xi + 2x\xi^2 + \xi^2x - \xi^3) \\
+& = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x^3 -3x^2\xi + 3x\xi^2 - \xi^3) \\
+& = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4x^3 -\beta_43x^2\xi +\beta_4 3x\xi^2 - \beta_4\xi^3 \\
+& = (\beta_0  - \beta_4\xi^3) + (\beta_1x + \beta_4 3x\xi^2) + (\beta_2x^2 - \beta_43x^2\xi) + (\beta_3x^3 + \beta_4x^3) \\
+& = (\beta_0 - \beta_4\xi^3) + (\beta_1 + 3\beta_4\xi^2)x + (\beta_2 - 3\beta_4\xi)x^2 + (\beta_3 + \beta_4)x^3 \\
+f(x)_2 & = a_2 + b_2x + c_2x^2 + d_2x^3 ~~~ where ~~~ \begin{cases}
+                                                    a_2 = \beta_0 - \beta_4\xi^3 \\
+                                                    b_2 = \beta_1 + 3\beta_4\xi^2 \\
+                                                    c_2 = \beta_2 - 3\beta_4\xi \\
+                                                    d_2 = \beta_3 + \beta_4
+                                                    \end{cases}
+\end{align}
