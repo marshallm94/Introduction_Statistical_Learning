@@ -29,19 +29,19 @@ $$
 $$
 f(x) = 
 \begin{cases}
-f(x)_1 = a_1 + b_1x + c_1x^2 + d_1x^3, ~~~ x \le \xi \\ 
-f(x)_2 = a_2 + b_2x + c_2x^2 + d_2x^3, ~~~ otherwise
+f_1(x) = a_1 + b_1x + c_1x^2 + d_1x^3, ~~~ x \le \xi \\ 
+f_2(x) = a_2 + b_2x + c_2x^2 + d_2x^3, ~~~ otherwise
 \end{cases}
 $$
 
-In $f(x)_1$, since $(x - \xi)^3_+ = 0$ (because $x \le \xi$), the fifth term (of $f(x)$) zeroes out and the coefficients can be expresses as $a_1 = \beta_0, ~b_1 = \beta_1, ~c_1 = \beta_2$ and $d_1 = \beta_3$.
+In $f_1(x)$, since $(x - \xi)^3_+ = 0$ (because $x \le \xi$), the fifth term (of $f(x)$) zeroes out and the coefficients can be expresses as $a_1 = \beta_0, ~b_1 = \beta_1, ~c_1 = \beta_2$ and $d_1 = \beta_3$.
 
 \setlength{\leftskip}{0cm}
 
 * **B**. Expanding the fifth term in $f(x)$ allows for the various powers of $x$ to be grouped together and then recondensed. $a_2, ~b_2, ~c_2$ and $d_2$ are expressed in terms of the cofficients below.
 
 \begin{align}
-f(x)_2 & = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x - \xi)^3 \\
+f_2(x) & = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x - \xi)^3 \\
 & = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x - \xi)(x - \xi)(x - \xi) \\
 & = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x^2 - 2x\xi + \xi^2)(x - \xi) \\
 & = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x^3 -x^2\xi - 2x^2\xi + 2x\xi^2 + \xi^2x - \xi^3) \\
@@ -49,7 +49,7 @@ f(x)_2 & = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x - \xi)^3 \\
 & = \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4x^3 -\beta_43x^2\xi +\beta_4 3x\xi^2 - \beta_4\xi^3 \\
 & = (\beta_0  - \beta_4\xi^3) + (\beta_1x + \beta_4 3x\xi^2) + (\beta_2x^2 - \beta_43x^2\xi) + (\beta_3x^3 + \beta_4x^3) \\
 & = (\beta_0 - \beta_4\xi^3) + (\beta_1 + 3\beta_4\xi^2)x + (\beta_2 - 3\beta_4\xi)x^2 + (\beta_3 + \beta_4)x^3 \\
-f(x)_2 & = a_2 + b_2x + c_2x^2 + d_2x^3 ~~~ where ~~~ \begin{cases}
+f_2(x) & = a_2 + b_2x + c_2x^2 + d_2x^3 ~~~ where ~~~ \begin{cases}
                                                     a_2 = \beta_0 - \beta_4\xi^3 \\
                                                     b_2 = \beta_1 + 3\beta_4\xi^2 \\
                                                     c_2 = \beta_2 - 3\beta_4\xi \\
@@ -61,22 +61,56 @@ f(x)_2 & = a_2 + b_2x + c_2x^2 + d_2x^3 ~~~ where ~~~ \begin{cases}
 
 * **C**. Showing that $f(x)$ is continuous at $\xi$ is illustrated by showing that $f(\xi)_1 = f(\xi)_2$.
 
-
 \begin{align}
-f(\xi)_1 & = a_1 + b_1(\xi) + c_1(\xi)^2 + d_1(\xi)^3 \\
+f_1(\xi) & = a_1 + b_1(\xi) + c_1(\xi)^2 + d_1(\xi)^3 \\
 & = \beta_0 + \beta_1(\xi) + \beta_2(\xi)^2 + \beta_3(\xi)^3 \\
 \\
-f(\xi)_2 & = a_2 + b_2(\xi) + c_2(\xi)^2 + d_2(\xi)^3 \\
+f_2(\xi) & = a_2 + b_2(\xi) + c_2(\xi)^2 + d_2(\xi)^3 \\
 & = (\beta_0 - \beta_4\xi^3) + (\beta_1 + 3\beta_4\xi^2)(\xi) + (\beta_2 - 3\beta_4\xi)(\xi)^2 + (\beta_3 + \beta_4)(\xi)^3 \\
 & = (\beta_0 - \beta_4\xi^3) + (\beta_1\xi + 3\beta_4\xi^3) + (\beta_2\xi^2 - 3\beta_4\xi^3) + (\beta_3\xi^3 + \beta_4\xi^3) \\
 & = \beta_0 - \beta_4\xi^3 + \beta_1\xi + 3\beta_4\xi^3 + \beta_2\xi^2 - 3\beta_4\xi^3 + \beta_3\xi^3 + \beta_4\xi^3 \\
 & = \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3 + 3\beta_4\xi^3 - 3\beta_4\xi^3 + \beta_4\xi^3 - \beta_4\xi^3 \\
 & = \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3 + (3\beta_4\xi^3 - 3\beta_4\xi^3) + (\beta_4\xi^3 - \beta_4\xi^3) \\
-f(\xi)_2 & = \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3
+f_2(\xi) & = \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3
+\end{align}
+
+$$
+f_2(\xi) = \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3 = f_1(\xi)
+$$
+
+* **D**. In order to show that $f'_1(\xi) = f'_2(\xi)$, we must first find $f'(x)$ with respect to $x$ and then simplify both $f'_1(\xi)$ and $f'_2(\xi)$.
+
+\begin{align}
+f(x) & = a_1 + b_1x + c_1x^2 + d_1x^3 \\
+f'(x) & = b_1 + 2c_1x + 3d_1x^2
+\end{align}
+
+\setlength{\leftskip}{1cm}
+
+Therefore, substituting the necessary coefficients in for $b_1, ~c_1$ and $d_1$ for both $f'_1(\xi)$ and $f'_2(\xi)$ becomes:
+
+\begin{align}
+f'(x) & = b_1 + 2c_1x + 3d_1x^2 ~~~ then ~~~ \begin{cases}
+                                            f'_1(\xi) = \beta_1 + 2\beta_2\xi + 3\beta_3\xi^2 \\
+                                            f'_2(\xi) = (\beta_1 + 3\beta_4\xi^2) + 2(\beta_2 - 3\beta_4\xi )\xi + 3(\beta_3 + \beta_4)\xi^2
+                                              \end{cases}
+\end{align}
+
+\begin{align}
+f'_2(\xi) & = (\beta_1 + 3\beta_4\xi^2) + 2(\beta_2 - 3\beta_4\xi )\xi + 3(\beta_3 + \beta_4)\xi^2 \\
+& = \beta_1 + 3\beta_4\xi^2 + 2\beta_2\xi - 6\beta_4\xi^2 + 3\beta_3\xi^2 + 3\beta_4\xi^2 \\
+& = \beta_1 + 2\beta_2\xi + 3\beta_3\xi^2 + (3\beta_4\xi^2 + 3\beta_4\xi^2 - 6\beta_4\xi^2) \\
+& = \beta_1 + 2\beta_2\xi + 3\beta_3\xi^2 + (6\beta_4\xi^2 - 6\beta_4\xi^2) \\
+f'_2(\xi) & = \beta_1 + 2\beta_2\xi + 3\beta_3\xi^2
 \end{align}
 
 
+We now see that the derivative $f'(x)$ is continuous at knot $\xi$, which is to say $f'_1(\xi) = f'_2(\xi)$:
+
 $$
-f(\xi)_2 = \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3 = f(\xi)_1
+f'_2(\xi) = \beta_1 + 2\beta_2\xi + 3\beta_3\xi^2 = f'_1(\xi)
 $$
+
+\setlength{\leftskip}{0cm}
+
 
