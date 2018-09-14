@@ -56,3 +56,27 @@ f(x)_2 & = a_2 + b_2x + c_2x^2 + d_2x^3 ~~~ where ~~~ \begin{cases}
                                                     d_2 = \beta_3 + \beta_4
                                                     \end{cases}
 \end{align}
+
+\pagebreak
+
+* **C**. Showing that $f(x)$ is continuous at $\xi$ is illustrated by showing that $f(\xi)_1 = f(\xi)_2$.
+
+
+\begin{align}
+f(\xi)_1 & = a_1 + b_1(\xi) + c_1(\xi)^2 + d_1(\xi)^3 \\
+& = \beta_0 + \beta_1(\xi) + \beta_2(\xi)^2 + \beta_3(\xi)^3 \\
+\\
+f(\xi)_2 & = a_2 + b_2(\xi) + c_2(\xi)^2 + d_2(\xi)^3 \\
+& = (\beta_0 - \beta_4\xi^3) + (\beta_1 + 3\beta_4\xi^2)(\xi) + (\beta_2 - 3\beta_4\xi)(\xi)^2 + (\beta_3 + \beta_4)(\xi)^3 \\
+& = (\beta_0 - \beta_4\xi^3) + (\beta_1\xi + 3\beta_4\xi^3) + (\beta_2\xi^2 - 3\beta_4\xi^3) + (\beta_3\xi^3 + \beta_4\xi^3) \\
+& = \beta_0 - \beta_4\xi^3 + \beta_1\xi + 3\beta_4\xi^3 + \beta_2\xi^2 - 3\beta_4\xi^3 + \beta_3\xi^3 + \beta_4\xi^3 \\
+& = \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3 + 3\beta_4\xi^3 - 3\beta_4\xi^3 + \beta_4\xi^3 - \beta_4\xi^3 \\
+& = \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3 + (3\beta_4\xi^3 - 3\beta_4\xi^3) + (\beta_4\xi^3 - \beta_4\xi^3) \\
+f(\xi)_2 & = \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3
+\end{align}
+
+
+$$
+f(\xi)_2 = \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3 = f(\xi)_1
+$$
+
