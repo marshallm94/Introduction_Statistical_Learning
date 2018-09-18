@@ -180,3 +180,24 @@ Once again, working backwards conceptually, if the goal is to minimize $\int g''
 * **E**. With $\lambda = 0$ and $m = 3$, the second term in the equation is completely ignored, and $g(x)$ becomes the line that interpolates all data points.
 
 !["Conceptual Exercise 2"](images/conceptual_2.jpg)
+
+## 3
+
+$$
+f(x) = 1 + x +  \begin{cases}
+                -2(x - 1)^2,~ x \ge 1 \\
+                0, ~otherwise
+                \end{cases}
+$$
+
+The intercept is at $y = 1$, $f(x)$ is linear with a slope equal to 1 up to $x = 1$, after which it becomes quadratic.
+
+\hfill
+
+```{r, echo=FALSE}
+x <- -2:2
+y <- 1 + x + (-2*(x-1)^2 * I(x >= 1))
+plot(x, y, type = 'l', main = "f(x)")
+points(0,1, pch = 16)
+text(0.5,1,labels = 'Intercept (0, 1)')
+```
