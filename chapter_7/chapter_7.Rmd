@@ -153,4 +153,30 @@ $$
 
 \setlength{\leftskip}{0cm}
 
+## 2
 
+(sketches on following page)
+
+* **A**. With $\lambda = \infty$, the second term will dominate the above equation and the RSS will be ignored. Since $g^0 = g$, this comes out to finding $g(x)$ that minimizes the integral of $g(x)$. Therefore, $g(x) = 0$.
+
+* **B**. With $\lambda = \infty$ and $m = 1$, the second term will dominate the above equation and the RSS will be ignored. This then becomes a problem of finding a function $g(x)$ where $\int g'(x)$ is minimized. Therefore, $g(x) = c$ (a flat line) where $c$ is a constant, ensuring that $g'(x) = 0$.
+
+* **C**. With $\lambda = \infty$ and $m = 2$, the second term will dominate the above equation and the RSS will be ignored. This then becomes a problem of finding a function $g(x)$ where $\int g''(x)$ is minimized.
+
+\setlength{\leftskip}{1cm}
+
+If we work backwards conceptually, we will see that $g(x) = \beta_0 + \beta_1 x$. Since $\int g''(x)$ must be minimized, $g''(x) = 0$. Therefore, $g'(x) = c$ where $c$ is some constant. This implies that $g(x)$ must have a constant slope, $c$ aka $\beta_1$. Therefore, $g(x) = \beta_0 + \beta_1 x$
+
+\setlength{\leftskip}{0cm}
+
+* **D**. With $\lambda = \infty$ and $m = 3$, the second term will dominate the above equation and the RSS will be ignored. This then becomes a problem of finding a function $g(x)$ where $\int g'''(x)$ is minimized. Therefore, $g(x) = \beta_0 + \beta_1x + \beta_2x^2$, $g(x)$ will be quadratic in some sense
+
+\setlength{\leftskip}{1cm}
+
+Once again, working backwards conceptually, if the goal is to minimize $\int g'''(x)$, then $g'''(x) = 0$. Therefore, $g''(x) = c$, where $c$ is some constant. This implies that $g'(x)$ must have a constant slope, $c$. if $g'(x)$ has a constant slope, then $g(x) = \beta_0 + \beta_1x + \beta_2x^2$. Having a quadratic equation means that the slope of $g(x)$ is changing at a fixed rate, which satisfies our condition that $g'(x) = c$. 
+
+\setlength{\leftskip}{0cm}
+
+* **E**. With $\lambda = 0$ and $m = 3$, the second term in the equation is completely ignored, and $g(x)$ becomes the line that interpolates all data points.
+
+!["Conceptual Exercise 2"](images/conceptual_2.jpg)
