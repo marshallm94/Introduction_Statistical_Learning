@@ -201,3 +201,35 @@ plot(x, y, type = 'l', main = "f(x)")
 points(0,1, pch = 16)
 text(0.5,1,labels = 'Intercept (0, 1)')
 ```
+
+\pagebreak
+
+## 4
+
+\begin{align}
+f(x) & = \beta_0 + \beta_1b_1(x) + \beta_2b_2(x) \\
+f(x) & = 1 + b_1(x) + 3b_2(x) ~~~ where ~~~
+\begin{cases}
+    b_1(x) = I(0 \leq x \leq 2) - (x - 1)I(1 \leq x \leq 2) \\
+    b_2(x) = (x - 3)I(3 \leq x \leq 4) + I(4 < x \leq 5)
+\end{cases}
+\end{align}
+
+```{r}
+x <- -2:2
+y <- c(1,1,2,2,1)
+plot(x, y)
+```
+
+## 5
+
+\begin{align}
+\hat{g_1} & = \left( \sum_{i=1}^n (y_i - g(x_i))^2 + \int[g^3(x)]^2dx \right) \\
+\hat{g_2} & = \left( \sum_{i=1}^n (y_i - g(x_i))^2 + \int[g^4(x)]^2dx \right)
+\end{align}
+
+* **A**. As $\lambda \to \infty$, $\hat{g_2}$ will have a smaller training RSS. This is because $\hat{g_2}$ has one more degree of freedom than $\hat{g_1}$; in other words, it is allowed to be more flexible thatn $\hat{g_1}$.
+
+* **B**. As $\lambda \to \infty$, $\hat{g_1}$ will most likely have a lower test RSS, although this is less certain than part **A**. It will most likely have a lower test RSS because we are constraining it more, which is to say there is less of a chance that it incorporates the error term $\epsilon$ into the model itself.
+
+* **C**. If $\lambda = 0$, the two equations are the same so they will have the same training and test RSS (one that interpolates all data points).
