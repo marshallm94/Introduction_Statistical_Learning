@@ -354,7 +354,7 @@ g
 
 Since polynomial, stepwise functions or splines can't be fit with qualitative data, below is a plot showing the division of wage across job class (industrial and informational) and marital status. Interestingly, there is not a large difference between the average income for workers in the industrial sector and those in the informational sector. In fact, given that a worker is widowed, one would expect him/her to earn more in the industrial sector based on this data.
 
-In addition, looking at cubic splines of age segmented by job class and marital status, it is clear that income in the information sector is higher, although it drops off more sharply in one's later years. One can also expect to earn more if married, as shown in the third set of plots.
+In addition, looking at cubic splines of age segmented by job class and marital status, it is clear that income in the information sector is higher, although it drops off more sharply in one's later years. One can also expect to earn more if married, as shown in the third set of plots (only marital status' with a significant number of observations were included).
 
 ```{r}
 suppressPackageStartupMessages(library(splines))
@@ -372,6 +372,7 @@ g <- ggplot(Wage, aes(maritl, wage)) +
     ylab("Wage")
 g
 
+# Plot of Wage predicted by age partitioned by job class
 g <- ggplot(Wage,
             aes(x = age, y = wage)) +
     geom_point(color = 'lightblue') +
@@ -385,6 +386,7 @@ g <- ggplot(Wage,
     ylab("Wage")
 g
 
+# Plot of Wage predicted by age partitioned by marital status
 g <- ggplot(subset(Wage, maritl %in% c("1. Never Married", "2. Married")),
             aes(x = age, y = wage)) +
     geom_point(color = 'lightblue') +
@@ -397,4 +399,124 @@ g <- ggplot(subset(Wage, maritl %in% c("1. Never Married", "2. Married")),
     xlab("Age") +
     ylab("Wage")
 g
+```
+
+## 8
+
+Plotting a linear model of miles per gallon predicted by horsepower, along with 3 polynomial models with degree 2 - 4, it seems clear that there is evidence for a quadratic model, althought the improvements after that become marginal. This is confirmed with ANOVA of all 4 models. The quadratic model returns a rather impressive RMSE of 4.38.
+
+```{r}
+detach(Wage)
+attach(Auto)
+
+set.seed(5)
+
+# Plot of polynomials of MPG as predicted by horsepower
+g <- ggplot(Auto,
+            aes(x = horsepower, y = mpg)) +
+    geom_point(color = 'darkgrey') +
+    stat_smooth(method = 'lm',
+                formula = y ~ x,
+                se = F,
+                size = 1,
+                aes(color = 'linear')) +    
+    stat_smooth(method = 'lm',
+                formula = y ~ poly(x, 2),
+                se = F,
+                size = 1,
+                aes(color = 'Quadratic')) +
+    stat_smooth(method = 'lm',
+                formula = y ~ poly(x, 3),
+                se = F,
+                size = 1,
+                aes(color = 'Cubic')) +
+    stat_smooth(method = 'lm',
+                formula = y ~ poly(x, 4),
+                se = F,
+                size = 1,
+                aes(color = 'Quartic')) +
+    guides(color=guide_legend(title = "Degree Polynomial")) +
+    ggtitle("Polynomials of Degree 1 - 4 of MPG ~ Horsepower") +
+    xlab("Horsepower") +
+    ylab("MPG")
+g
+
+# ANOVA of polynomial degree models
+fit.1 <- lm(mpg ~ horsepower, data = Auto)
+fit.2 <- lm(mpg ~ poly(horsepower, 2), data = Auto)
+fit.3 <- lm(mpg ~ poly(horsepower, 3), data = Auto)
+fit.4 <- lm(mpg ~ poly(horsepower, 4), data = Auto)
+anova(fit.1, fit.2, fit.3, fit.4)
+
+# CV error of final polynomial model (degree = 2)
+cv.fit <- glm(mpg ~ poly(horsepower, 2), data = Auto)
+cv.error <- cv.glm(Auto, cv.fit, K = 10)$delta[1]
+sqrt(cv.error)
+```
+
+Moving to splines, while there is statistically significant evidence that a quartic spline with knots at 100, 150 and 200 produces a better fit than a quadratic polynomial, the difference in the RMSE is marginal, therefore if a model had to be chosen for production, I would choose the quadratic polynomial.
+
+```{r}
+# Plot of splines of MPG as predicted by horsepower with knots at 100, 150, 200
+g <- ggplot(Auto,
+            aes(x = horsepower, y = mpg)) +
+    geom_point(color = 'darkgrey') +
+    stat_smooth(method = 'lm',
+                formula = y ~ bs(x,
+                                 degree = 2,
+                                 knots = seq(50, 200, 50)),
+                se = F,
+                size = 1,
+                aes(color = 'Quadratic')) +
+    stat_smooth(method = 'lm',
+                formula = y ~ bs(x,
+                                 degree = 3,
+                                 knots = seq(50, 200, 50)),
+                se = F,
+                size = 1,
+                aes(color = 'Cubic')) +
+    stat_smooth(method = 'lm',
+                formula = y ~ bs(x,
+                                 degree = 4,
+                                 knots = seq(100, 200, 50)),
+                se = F,
+                size = 1,
+                aes(color = 'Quartic')) +
+    guides(color=guide_legend(title = "Degree of Spline")) +
+    ggtitle("Splines of Degree 2 - 4 of MPG ~ Horsepower | Knots = 100, 150, 200") +
+    xlab("Horsepower") +
+    ylab("MPG")
+g
+
+# ANOVA of splines models with knots at 100, 150, 200
+fit.1 <- lm(mpg ~ horsepower, data = Auto)
+fit.2 <- lm(mpg ~ bs(horsepower,
+                     degree = 2,
+                     knots = seq(100, 200, 50)),
+            data = Auto)
+fit.3 <- lm(mpg ~ bs(horsepower,
+                     degree = 3,
+                     knots = seq(100, 200, 50)),
+            data = Auto)
+fit.4 <- lm(mpg ~ bs(horsepower,
+                     degree = 4,
+                     knots = seq(100, 200, 50)),
+            data = Auto)
+anova(fit.1, fit.2, fit.3, fit.4)
+
+# CV error of final spline model (degree = 4, knots @ 100, 150, 200)
+cv.fit <- glm(mpg ~ bs(horsepower,
+                     degree = 4,
+                     knots = seq(100, 200, 50)),
+            data = Auto)
+cv.error <- cv.glm(Auto, cv.fit, K = 10)$delta[1]
+sqrt(cv.error)
+
+# Final model test
+fit.poly <- lm(mpg ~ poly(horsepower, 2), data = Auto)
+fit.spline <- lm(mpg ~ bs(horsepower,
+                           degree = 4,
+                           knots = seq(100, 200, 50)),
+                  data = Auto)
+anova(fit.poly, fit.spline)
 ```
