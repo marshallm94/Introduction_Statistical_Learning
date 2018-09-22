@@ -250,7 +250,7 @@ attach(Wage)
 
 set.seed(5)
 
-# 10-Fold Polynomial models with degree 1 - 10
+# 10-Fold CV of Polynomial models with degree 1 - 10
 degrees <- 1:10
 cv.errors <- rep(0, 10)
 for (i in degrees) {
@@ -304,3 +304,48 @@ g <- ggplot(Wage,
      ylab("Wage")
 g
 ```
+
+* **B**. Since the model will start to overfit as the number of cuts increases, I will limit the number of cuts to be a maximum of 10. As shown below, the minimum error is produced with 8 cuts.
+
+```{r}
+# 10-Fold CV of step functions up to 10 cuts
+set.seed(5)
+
+cuts <- 2:10
+cv.errors <- rep(0, 9)
+for (i in cuts) {
+    Wage$age.cut <- cut(age, i)
+    cv.fit <- glm(wage ~ age.cut, data = Wage)
+    cv.errors[i-1] <- cv.glm(Wage, cv.fit, K = 10)$delta[1]
+}
+
+# Plot of CV error
+g <- ggplot(data.frame(x=cuts, y=sqrt(cv.errors)), aes(x, y)) +
+    geom_point() +
+    geom_point(aes(x=which.min(cv.errors) + 1,
+                   y=sqrt(cv.errors[which.min(cv.errors)])),
+               color = 'firebrick1',
+               shape = "O",
+               size = 6) +
+    scale_x_continuous(breaks = 1:10,
+                     labels = as.character(c(1:10))) +   
+    ggtitle("Average RMSE Over 10-Fold Cross Validation") +
+    xlab("Cuts") +
+    ylab("Average RMSE")
+g
+
+# Plot step function
+g <- ggplot(Wage,
+            aes(x = age, y = wage)) +
+     geom_point(color = 'lightblue') +
+     stat_smooth(method = 'lm',
+                 formula = y ~ cut(x, 8),
+                 size = 1,
+                 color = 'red') +
+     ggtitle("Stepwise Fit with 8 Cuts in Age Range") +
+     xlab("Age") +
+     ylab("Wage")
+g
+```
+
+     
