@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 7 Exercises"
 author: "Marshall McQuillen"
-date: "9/12/2018"
+date: "9/21/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -233,3 +233,74 @@ plot(x, y)
 * **B**. As $\lambda \to \infty$, $\hat{g_1}$ will most likely have a lower test RSS, although this is less certain than part **A**. It will most likely have a lower test RSS because we are constraining it more, which is to say there is less of a chance that it incorporates the error term $\epsilon$ into the model itself.
 
 * **C**. If $\lambda = 0$, the two equations are the same so they will have the same training and test RSS (one that interpolates all data points).
+
+# Applied
+
+## 6
+
+* **A**. Using 10-Fold CV of wage predicted by age for polynomial fits ranging in degree from 1 to 10, the minimus MSE is at a degree of 10. However, the RMSE only improves marginally after a third degree polynomial. Therefore, since a more complex model is only justifiable when accompanied by a significant decrease in the error rate, I will move forward with the third degree polynomial (which coincides with the results obtained from ANOVA.
+
+```{r}
+# imports
+suppressPackageStartupMessages(library(ISLR))
+suppressPackageStartupMessages(library(caret))
+suppressPackageStartupMessages(library(boot))
+suppressPackageStartupMessages(library(ggplot2))
+attach(Wage)
+
+set.seed(5)
+
+# 10-Fold Polynomial models with degree 1 - 10
+degrees <- 1:10
+cv.errors <- rep(0, 10)
+for (i in degrees) {
+    cv.fit <- glm(wage ~ poly(age, i), data = Wage)
+    cv.errors[i] <- cv.glm(Wage, cv.fit, K = 10)$delta[1]
+}
+
+# Plot of CV errors
+g <- ggplot(data.frame(x=1:10, y=sqrt(cv.errors)), aes(x, y)) +
+    geom_point() +
+    geom_point(aes(x=which.min(cv.errors),
+                   y=sqrt(cv.errors[which.min(cv.errors)])),
+               color = 'firebrick1',
+               shape = "O",
+               size = 6) +
+     geom_point(aes(x=3,
+               y=sqrt(cv.errors[3])),
+           color = 'royalblue1',
+           shape = "O",
+           size = 6) +
+    scale_x_continuous(breaks = 1:10,
+                     labels = as.character(c(1:10))) +   
+    ggtitle("Average RMSE Over 10-Fold Cross Validation") +
+    xlab("Degree") +
+    ylab("Average RMSE")
+g
+
+# ANOVA
+fit.1 <- lm(wage ~ age, data = Wage)
+fit.2 <- lm(wage ~ poly(age, 2), data = Wage)
+fit.3 <- lm(wage ~ poly(age, 3), data = Wage)
+fit.4 <- lm(wage ~ poly(age, 4), data = Wage)
+fit.5 <- lm(wage ~ poly(age, 5), data = Wage)
+fit.6 <- lm(wage ~ poly(age, 6), data = Wage)
+fit.7 <- lm(wage ~ poly(age, 7), data = Wage)
+fit.8 <- lm(wage ~ poly(age, 8), data = Wage)
+fit.9 <- lm(wage ~ poly(age, 9), data = Wage)
+fit.10 <- lm(wage ~ poly(age, 10), data = Wage)
+anova(fit.1, fit.2, fit.3, fit.4, fit.5, fit.6, fit.7, fit.8, fit.9, fit.10)
+
+# Plot 3rd degree polynomial
+g <- ggplot(Wage,
+            aes(x = age, y = wage)) +
+     geom_point(color = 'lightblue') +
+     stat_smooth(method = 'lm',
+                 formula = y ~ poly(x, 3),
+                 size = 1,
+                 color = 'red') +
+     ggtitle("3rd Degree Polynomial of Wage ~ Age") +
+     xlab("Age") +
+     ylab("Wage")
+g
+```
