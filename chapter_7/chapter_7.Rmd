@@ -520,3 +520,232 @@ fit.spline <- lm(mpg ~ bs(horsepower,
                   data = Auto)
 anova(fit.poly, fit.spline)
 ```
+
+## 9
+
+* **A**.
+
+```{r}
+suppressPackageStartupMessages(library(MASS))
+detach(Auto)
+attach(Boston)
+
+# Fit a cubic polynomial 
+fit.cubic <- lm(nox ~ poly(dis, 3), data = Boston)
+summary(fit.cubic)
+
+# Plot a cubic polynomial
+g <- ggplot(Boston, aes(x = dis, y = nox)) +
+    geom_point(color = 'darkgrey') +
+    stat_smooth(method = 'lm',
+                formula = y ~ poly(x, 3)) +
+    guides(color=guide_legend(title = "Degree of Polynomial")) +
+    ggtitle("Cubic Regression") +
+    xlab("Mean Distance from Employment Centers") +
+    ylab("Nitrogen Oxide Concentration")
+g
+```
+
+\hfill
+
+* **B**. The RSS is printed as a subtitle below each plot.
+
+\hfill
+
+```{r}
+# Plots of i-degree polynomial fits for i in 1:10
+for (i in 1:10) {
+    fit <- lm(nox ~ poly(dis, i), data = Boston)
+    error <- sum(resid(fit)^2)
+    g <- ggplot(Boston, aes(x = dis, y = nox)) +
+        geom_point(color = 'darkgrey') +
+        stat_smooth(method = 'lm',
+                    formula = y ~ poly(x, i)) +
+        guides(color=guide_legend(title = paste(i, "Degree of Polynomial"))) +
+        ggtitle(paste(i, "Degree Polynomial Regression"),
+                subtitle = paste("RSS =", error)) +
+        xlab("Mean Distance from Employment Centers") +
+        ylab("Nitrogen Oxide Concentration")
+    print(g)
+}
+```
+
+\hfill
+
+* **C**. 10-fold CV illustrates that the quartic polynomial has the lowest RMSE, shown by the typical U-shape of the CV error plot. The quartic polynomial is fit to the data in the second plot.
+
+\hfill
+
+```{r}
+# 10-fold CV for each i degree polynomial
+set.seed(5)
+
+degrees <- 1:10
+cv.errors <- rep(0, 10)
+for (i in degrees) {
+    fit <- glm(nox ~ poly(dis, i), data = Boston)
+    cv.errors[i] <- cv.glm(Boston, fit, K = 10)$delta[1]
+}
+
+# Plot of CV errors
+g <- ggplot(data.frame(x = 1:10, y = cv.errors), aes(x, sqrt(y))) +
+    geom_point() +
+    geom_line() +
+    geom_point(x = which.min(cv.errors),
+               y = sqrt(cv.errors[which.min(cv.errors)]),
+               shape = "O",
+               size = 6,
+               color = 'royalblue1') +
+    scale_x_continuous(breaks = 1:10,
+                       labels = as.character(c(1:10))) +   
+    ggtitle("Average RMSE Over 10-Fold Cross Validation",
+            subtitle = paste("Minimum RMSE of",
+                             round(sqrt(cv.errors[which.min(cv.errors)]), 4),
+                             "at a polynomial degree of",
+                             which.min(cv.errors))) +
+    xlab("Degrees of Polynomial") +
+    ylab("Average RMSE")
+g
+
+# Plot of quartic polynomial of nox ~ dix
+g <- ggplot(Boston, aes(x = dis, y = nox)) +
+    geom_point(color = 'lightblue') +
+    stat_smooth(method = 'lm',
+                formula = y ~ poly(x, 4),
+                color = 'firebrick1') +
+    ggtitle("Quartic Polynomial of Nox ~ Dis") +
+    xlab("Mean Distance from Employment Centers") +
+    ylab("Nitrogen Oxide Concentration")
+g
+```
+
+\hfill
+
+* **D**. When fitting a regression spline, one can specify the degrees of freedom instead of the knots. When this is the case, the `bs()` function selects `(degrees of freedom) - (degree of polynomial)` knots (in this case 4 - 3 = 1).
+
+\hfill
+
+```{r}
+# Regression spline specifying 4 degrees of freedom
+fit.spline <- glm(nox ~ bs(dis, df = 4), data = Boston)
+summary(fit.spline)
+
+# Plot of cubic spline with 4 DOF
+g <- ggplot(Boston, aes(x = dis, y = nox)) +
+    geom_point(color = 'lightblue') +
+    stat_smooth(method = 'lm',
+                formula = y ~ bs(x, df = 4),
+                color = 'firebrick1') +
+    ggtitle("Cubic Spline with 1 Knot") +
+    xlab("Mean Distance From Employment Centers") +
+    ylab("Nitrogen Oxide Concentration")
+g
+```
+
+\hfill
+
+* **E**. As shown in the plot of the RSS for varying degrees of freedom below, the RSS has a minimum at 19, and it monotonically decreases as the degrees of freedom increases. 
+
+\hfill
+
+```{r}
+# RSS for range of degrees of freedom
+set.seed(5)
+dof <- seq(5, 20, 1)
+rss <- c()
+for (i in dof) {
+    fit <- glm(nox ~ bs(dis, df = i), data = Boston)
+    rss <- c(rss, sum(resid(fit)^2))
+}
+
+# Plot of RSS with varying DOF
+g <- ggplot(data.frame(x = dof, y = rss), aes(x, y)) +
+    geom_point() +
+    geom_line(color = 'royalblue1') +
+    geom_point(x = dof[which.min(rss)],
+               y = rss[which.min(rss)],
+               shape = "O",
+               size = 6,
+               color = 'firebrick1') +
+    scale_x_continuous(breaks = dof,
+                       labels = dof) +
+    ggtitle("RSS for Varying Degrees of Freedom") +
+    xlab("Degrees of Freedom") +
+    ylab("RSS")
+g
+```
+
+\setlength{\leftskip}{1cm}
+
+\hfill
+
+Cubic Splines with 5, 10, 15, 20 and 25 degrees of freedom are plotted below. As one would expect, as the degrees of freedom increases the fit becomes more flexible.
+
+\hfill
+
+\setlength{\leftskip}{0cm}
+
+```{r}
+# Plots of cubic splines with varying DOF
+g <- ggplot(Boston, aes(x = dis, y = nox)) +
+    geom_point(color = 'darkgrey') +
+    stat_smooth(method = 'lm',
+                se = F,
+                formula = y ~ bs(x, df = 5),
+                aes(color = '5')) +
+    stat_smooth(method = 'lm',
+                se = F,
+                formula = y ~ bs(x, df = 10),
+                aes(color = '10')) +
+    stat_smooth(method = 'lm',
+                se = F,
+                formula = y ~ bs(x, df = 15),
+                aes(color = '15')) +
+    stat_smooth(method = 'lm',
+                se = F,
+                formula = y ~ bs(x, df = 20),
+                aes(color = '20')) +
+    stat_smooth(method = 'lm',
+                se = F,
+                formula = y ~ bs(x, df = 25),
+                aes(color = '25')) +
+    guides(color=guide_legend(title = "Degrees of Freedom")) +
+    ggtitle("Cubic Splines with Varying DOF") +
+    xlab("Mean Distance From Employment Centers") +
+    ylab("Nitrogen Oxide Concentration")
+g
+```
+
+\hfill
+
+* **F**. As shown in the plot below, the optimal degrees of freedom for a quartic polynomial is 7.
+
+\hfill
+
+```{r}
+# 10-fold CV to select optimal DF of quartic spline
+set.seed(5)
+dof <- seq(5, 20, 1)
+cv.errors <- c()
+suppressWarnings(
+    for (i in dof) {
+        cv.fit <- glm(nox ~ bs(dis, df = i, degree = 4), data = Boston)
+        cv.errors <- c(cv.errors, cv.glm(Boston, cv.fit, K = 10)$delta[1])
+    }
+)
+
+g <- ggplot(data.frame(x = dof, y = cv.errors), aes(x, y)) +
+    geom_point() +
+    geom_line(color = 'royalblue1') +
+    geom_point(x = dof[which.min(cv.errors)],
+               y = cv.errors[which.min(cv.errors)],
+               shape = "O",
+               size = 6,
+               color = 'firebrick1') +
+    scale_x_continuous(breaks = dof,
+                       labels = dof) +
+    ggtitle("Optimal Degrees of Freedom for Quartic Polynomial") +
+    xlab("Degrees of Freedom") +
+    ylab("MSE")
+g
+```
