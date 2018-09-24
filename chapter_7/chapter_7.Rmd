@@ -505,11 +505,14 @@ fit.4 <- lm(mpg ~ bs(horsepower,
 anova(fit.1, fit.2, fit.3, fit.4)
 
 # CV error of final spline model (degree = 4, knots @ 100, 150, 200)
+
 cv.fit <- glm(mpg ~ bs(horsepower,
                      degree = 4,
                      knots = seq(100, 200, 50)),
             data = Auto)
-cv.error <- cv.glm(Auto, cv.fit, K = 10)$delta[1]
+suppressWarnings(
+    cv.error <- cv.glm(Auto, cv.fit, K = 10)$delta[1]
+)
 sqrt(cv.error)
 
 # Final model test
@@ -590,12 +593,12 @@ for (i in degrees) {
 # Plot of CV errors
 g <- ggplot(data.frame(x = 1:10, y = cv.errors), aes(x, sqrt(y))) +
     geom_point() +
-    geom_line() +
+    geom_line(color = 'royalblue1') +
     geom_point(x = which.min(cv.errors),
                y = sqrt(cv.errors[which.min(cv.errors)]),
                shape = "O",
                size = 6,
-               color = 'royalblue1') +
+               color = 'firebrick1') +
     scale_x_continuous(breaks = 1:10,
                        labels = as.character(c(1:10))) +   
     ggtitle("Average RMSE Over 10-Fold Cross Validation",
@@ -748,4 +751,115 @@ g <- ggplot(data.frame(x = dof, y = cv.errors), aes(x, y)) +
     xlab("Degrees of Freedom") +
     ylab("MSE")
 g
+```
+
+## 10
+
+* **A**. In the plots below, the log of the RSS, $Adj.~R^2$, Cp and BIC are plotted in the same image. All images show a leveling off around teh 5 variable model. One could make the case for the 6 variable model, however I believe the (albiet) slight increase in complexity is not worth the marginal increase in predictive power. The final model coefficients are printed below.
+
+\hfill
+
+```{r}
+detach(Boston)
+attach(College)
+
+# Train/test split
+set.seed(5)
+train <- sample(c(TRUE, FALSE),
+                size = nrow(College),
+                replace = TRUE,
+                prob = c(0.75, 0.25))
+train_set <- College[train,]
+test_set <- College[!train,]
+
+# Forward Stepwise selection
+suppressPackageStartupMessages(library(leaps))
+
+regfit.forward <- regsubsets(Outstate ~ .,
+                             data = train_set,
+                             nvmax = ncol(train_set) - 1,
+                             method = "forward")
+subset.summary <- summary(regfit.forward)
+
+# Plots
+suppressPackageStartupMessages(library(gridExtra))
+
+# Plot of RSS
+g1 <- ggplot(data.frame(x = 1:length(regfit.forward$rss),
+                       y = log(regfit.forward$rss)),
+            aes(x, y)) +
+    geom_point() +
+    geom_line(color = 'royalblue1') +
+    geom_point(x = 5,
+               y = log(regfit.forward$rss[5]),
+               shape = "O",
+               size = 6,
+               color = 'firebrick1') +
+    ggtitle("RSS") +
+    ylab("Log(RSS)") +
+    theme(axis.title.y = element_text(angle = 360,
+                                      vjust = 0.5)) +
+    xlab("Number of Variables in Model")
+
+# Plot of Adjusted R^2
+g2 <- ggplot(data.frame(x = 1:length(subset.summary$adjr2),
+                       y = subset.summary$adjr2),
+            aes(x, y)) +
+    geom_point() +
+    geom_line(color = 'royalblue1') +
+    geom_point(x = 5,
+               y = subset.summary$adjr2[5],
+               shape = "O",
+               size = 6,
+               color = 'firebrick1') +
+    ggtitle(expression(Adjusted~R^{2})) +
+    ylab(expression(Adj.~R^{2})) +
+    theme(axis.title.y = element_text(angle = 360,
+                                      vjust = 0.5)) +
+    xlab("Number of Variables in Model")
+
+# Plot of Cp
+g3 <- ggplot(data.frame(x = 1:length(subset.summary$cp),
+                       y = subset.summary$cp),
+            aes(x, y)) +
+    geom_point() +
+    geom_line(color = 'royalblue1') +
+    geom_point(x = 5,
+               y = subset.summary$cp[5],
+               shape = "O",
+               size = 6,
+               color = 'firebrick1') +
+    ggtitle("Cp") +
+    ylab("Cp") +
+    theme(axis.title.y = element_text(angle = 360,
+                                      vjust = 0.5)) +
+    xlab("Number of Variables in Model")
+
+# Plot of BIC
+g4 <- ggplot(data.frame(x = 1:length(subset.summary$bic),
+                       y = subset.summary$bic),
+            aes(x, y)) +
+    geom_point() +
+    geom_line(color = 'royalblue1') +
+    geom_point(x = 5,
+               y = subset.summary$bic[5],
+               shape = "O",
+               size = 6,
+               color = 'firebrick1') +
+    ggtitle("BIC") +
+    ylab("BIC") +
+    theme(axis.title.y = element_text(angle = 360,
+                                      vjust = 0.5)) +
+    xlab("Number of Variables in Model")
+
+grid.arrange(g1, g2, g3, g4, ncol = 2, nrow = 2)
+
+final.model <- coef(regfit.forward, id = 5)
+print(final.model)
+```
+
+* **B**.
+
+```{r}
+suppressPackageStartupMessages(library(gam))
 ```
