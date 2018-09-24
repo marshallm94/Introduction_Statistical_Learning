@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 7 Exercises"
 author: "Marshall McQuillen"
-date: "9/21/2018"
+date: "9/24/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -755,7 +755,7 @@ g
 
 ## 10
 
-* **A**. In the plots below, the log of the RSS, $Adj.~R^2$, Cp and BIC are plotted in the same image. All images show a leveling off around teh 5 variable model. One could make the case for the 6 variable model, however I believe the (albiet) slight increase in complexity is not worth the marginal increase in predictive power. The final model coefficients are printed below.
+* **A**. In the plot below, the log of the RSS, $Adj.~R^2$, Cp and BIC are plotted in the same image. All images show a leveling off around the 5 variable model. One could make the case for the 6 variable model, however I believe the (albiet) slight increase in complexity is not worth the marginal increase in predictive power. The final model coefficients are printed below.
 
 \hfill
 
@@ -854,12 +854,92 @@ g4 <- ggplot(data.frame(x = 1:length(subset.summary$bic),
 
 grid.arrange(g1, g2, g3, g4, ncol = 2, nrow = 2)
 
+# final model coefficients
 final.model <- coef(regfit.forward, id = 5)
 print(final.model)
 ```
 
-* **B**.
+\pagebreak
+
+* **B**. Using the variables selected in the part **A** ($Private, ~Room.Board, ~PhD, ~Expend$ and $Grad.Rate$), it is clear that the model fits the data relatively well. There is a slight dip in the residuals at higher predicted values, although it is only minor (shown in the upper left hand plot displayed below).
+
+\setlength{\leftskip}{1cm}
+
+Note that I am starting with a GLM (not specifically a GAM with non-linear terms) to ensure that a more complex model is warranted.
+
+\setlength{\leftskip}{0cm}
+
+\hfill
 
 ```{r}
-suppressPackageStartupMessages(library(gam))
+# General Linear Model
+glm.fit <- lm(Outstate ~ Private + Room.Board + PhD + Expend + Grad.Rate, 
+               data = train_set)
+
+par(mfrow = c(2,2))
+plot(glm.fit, col = 'royalblue1')
+```
+
+\hfill
+
+* **C**. Using the GLM from above, the testing RMSE is 9273.823, which can be interpretted as the average amount (in dollars) which the predictions are off of the true values.
+
+\hfill
+
+```{r}
+set.seed(5)
+
+# Evaluating model on test set
+preds <- predict(glm.fit, newdata = test_set)
+rmse <- sqrt(mean(sum(test_set$Outstate - preds)^2))
+rmse
+```
+
+\hfill
+
+* **D**. In order to determine if a more complex model is appropriate, I create 3 additional GAM's:
+
+\setlength{\leftskip}{2cm}
+
+1. Quadratic Polynomial - Each term (excluding $Private$, which is qualitative) is given a quadratic term.
+
+2. Quadratic Spline - Each term (excluding $Private$, which is qualitative) is specified to have 4 degrees of freedom and a quadratic term. The results in R choosing 2 suitable knots (dof - degree $\rightarrow$ 4 - 2 = 2) in the data.
+
+3. Cubic Spline - Each term (excluding $Private$, which is qualitative) is specified to have 6 degrees of freedom and a cubic term. The results in R choosing 3 suitable knots (dof - degree $\rightarrow$ 6 - 3 = 3) in the data.
+
+\setlength{\leftskip}{1cm}
+
+Looking at the results of ANOVA, there is statistically significant evidence for the quadratic spline with 4 degrees of freedom. There is not sufficient evidence for the Cubic spline model.
+
+Looking at the summary of the Quadratic Spline model, the P-Values for all of the PhD terms are relatively high, indicating there is little evidence that that term has substantial predictive power (if one returns to the output of Forward Stepwise Selection, the 4 variable model excludes $PhD$, as expected)
+
+\setlength{\leftskip}{0cm}
+
+\hfill
+
+```{r}
+# Build multiple GAM's
+glm.poly <- lm(Outstate ~ Private + 
+                   poly(Room.Board, 2) +
+                   poly(PhD, 2) +
+                   poly(Expend, 2) +
+                   poly(Grad.Rate, 2), 
+               data = train_set)
+glm.spline <- lm(Outstate ~ Private +
+                   bs(Room.Board, df = 4, degree = 2) +
+                   bs(PhD, df = 4, degree = 2) + 
+                   bs(Expend, df = 4, degree = 2) + 
+                   bs(Grad.Rate, df = 4, degree = 2), 
+               data = train_set)
+glm.cubic.spline <- lm(Outstate ~ Private +
+                   bs(Room.Board, df = 6, degree = 3) +
+                   bs(PhD, df = 6, degree = 3) + 
+                   bs(Expend, df = 6, degree = 3) + 
+                   bs(Grad.Rate, df = 6, degree = 3), 
+               data = train_set)
+
+# ANOVA of all models
+anova(glm.fit, glm.poly, glm.spline, glm.cubic.spline)
+
+summary(glm.spline)
 ```
