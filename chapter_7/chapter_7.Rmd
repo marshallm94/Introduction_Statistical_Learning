@@ -911,7 +911,7 @@ rmse
 
 Looking at the results of ANOVA, there is statistically significant evidence for the quadratic spline with 4 degrees of freedom. There is not sufficient evidence for the Cubic spline model.
 
-Looking at the summary of the Quadratic Spline model, the P-Values for all of the PhD terms are relatively high, indicating there is little evidence that that term has substantial predictive power (if one returns to the output of Forward Stepwise Selection, the 4 variable model excludes $PhD$, as expected)
+Diving a little deeper into the quadratic spline model, the P-Values for all of the PhD terms are relatively high, indicating there is little evidence that that term has substantial predictive power (if one returns to the output of Forward Stepwise Selection, the 4 variable model excludes $PhD$, as expected)
 
 \setlength{\leftskip}{0cm}
 
@@ -942,4 +942,215 @@ glm.cubic.spline <- lm(Outstate ~ Private +
 anova(glm.fit, glm.poly, glm.spline, glm.cubic.spline)
 
 summary(glm.spline)
+```
+
+## 11
+
+* **A**.
+
+\hfill
+
+```{r}
+y <- rnorm(100, mean = 10, sd = 50)
+x1 <- rnorm(100)
+x2 <- rnorm(100)
+```
+
+\hfill
+
+* **B**.
+
+\hfill
+
+```{r}
+beta_1 <- 5
+```
+
+\hfill
+
+* **C**.
+
+\hfill
+
+```{r}
+a <- y - beta_1*x1
+beta_2 <- lm(a ~ x2)$coef[2]
+```
+
+\hfill
+
+* **D**.
+
+\hfill
+
+```{r}
+a <- y - beta_2*x2
+beta_1 <- lm(a ~ x1)$coef[2]
+```
+
+\hfill
+
+* **E**.
+
+\hfill
+
+```{r}
+# Iteratively hone in on coefficient values
+beta_0 <- rep(0, 1000)
+beta_1 <- rep(0, 1000)
+beta_2 <- rep(0, 1000)
+beta_1[1] <- 100
+for (i in 1:1000) {
+    a <- y - beta_1[i]*x1
+    beta_2[i] <- lm(a ~ x2)$coef[2]
+    
+    a <- y - beta_2[i]*x2
+    beta_1[i] <- lm(a ~ x1)$coef[2]
+    
+    beta_0[i] <- lm(a ~ x1)$coef[1]
+}
+
+# Plot beta_0, beta_1 and beta_2 values
+g <- ggplot(data.frame(x = 1:1000,
+                       b1 = beta_1,
+                       b2 = beta_2,
+                       b0 = beta_0),
+            aes(x = x, y = b2)) +
+    geom_line(aes(y = b1, color = "Beta 1")) +
+    geom_line(aes(y = b2, color = "Beta 2")) +
+    geom_line(aes(y = b0, color = "Beta 0")) +
+    ggtitle("Coefficients quickly approach OLS Values") +
+    ylab("Value") +
+    xlab("Iteration")
+g
+```
+
+\hfill
+
+* **F**.
+
+\hfill
+
+```{r}
+lm.fit <- lm(y ~ x1 + x2)
+
+# Reproduce plot from above, with dotted lines representing OLS estimates
+g <- ggplot(data.frame(x = 1:1000,
+                       b1 = beta_1,
+                       b2 = beta_2,
+                       b0 = beta_0),
+            aes(x = x, y = b2)) +
+    geom_line(aes(y = b1, color = "Beta 1")) +
+    geom_line(aes(y = b2, color = "Beta 2")) +
+    geom_line(aes(y = b0, color = "Beta 0")) +
+    geom_hline(yintercept = coef(lm.fit)[1], lty = 3) +
+    geom_hline(yintercept = coef(lm.fit)[2], lty = 3) +
+    geom_hline(yintercept = coef(lm.fit)[3], lty = 3) +
+    ggtitle("Coefficients quickly approach OLS Values") +
+    ylab("Value") +
+    xlab("Iteration")
+g
+```
+
+\hfill
+
+* **G**. Looking at the first few iterations of the beta vectors below, it is shown that the coefficients converged after 2 iterations.
+
+\hfill
+
+```{r}
+beta_0[1:5]
+beta_1[1:5]
+beta_2[1:5]
+```
+
+## 12
+
+Looking at the two plots below, it is clear that the coefficients converge after roughly 5 iterations.
+
+\hfill
+
+```{r}
+# Create toy matrix
+p = 100
+n = 1000
+X <- matrix(nrow = n, ncol = p, data = 0)
+
+# Create true values
+true.coefs <- rnorm(100, mean = 10, sd = 25)
+
+# Populate toy matrix with random numbers
+for (col in 1:p) {
+    X[, col] <- rnorm(n)
+}
+
+# Create true response values
+y <- X %*% true.coefs + rnorm(n)
+
+# Backfitting method
+num.iter <- 20
+beta.vector <- rep(0, p)
+coef.matrix <- matrix(nrow = num.iter, ncol = p, data = 0)
+error.matrix <- matrix(nrow = num.iter, ncol = p, data = 0)
+# For i in 1000 iterations...
+for (i in 1:num.iter) {
+    # for each coefficient in the vector of 100 coefficients...
+    for (coef in 1:p) {
+        # hold all coefficients except the current coefficient (coef) constant
+        # and fit the model specified in question 11-G
+        a <- y - X[,-coef] %*% beta.vector[-coef]
+        # set the current coefficient (coef) equal to the simple linear 
+        # regression coefficient of a predicted by coef
+        beta.vector[coef] <- lm(a ~ X[,coef])$coef[2]
+    }
+    # set the ith row of coef.matrix equal to the beta.vector 
+    # (gives us estimates of all coefficients at the current iteration)
+    coef.matrix[i,] <- beta.vector
+    # set the ith row of error.matrix to be the absolute difference between
+    # the current beta vector and the true values
+    error.matrix[i,] <- abs(true.coefs - beta.vector)
+}
+
+# Add iteration number as column to both data frames
+coef.df <- data.frame(coef.matrix)
+coef.df$iter <- 1:nrow(coef.df)
+
+error.df <- data.frame(error.matrix)
+error.df$iter <- 1:nrow(error.df)
+
+# Plot example coefficients converging
+g <- ggplot(coef.df, aes(x = iter,
+                         y = X10)) +
+    geom_line(aes(y = X10, color = "Predictor 10")) +
+    geom_line(aes(y = X20, color = "Predictor 20")) +
+    geom_line(aes(y = X30, color = "Predictor 30")) +
+    geom_line(aes(y = X40, color = "Predictor 40")) +
+    geom_line(aes(y = X50, color = "Predictor 50")) +
+    geom_line(aes(y = X60, color = "Predictor 60")) +
+    geom_line(aes(y = X70, color = "Predictor 70")) +
+    geom_line(aes(y = X80, color = "Predictor 80")) +
+    geom_line(aes(y = X90, color = "Predictor 90")) +
+    geom_line(aes(y = X100, color = "Predictor 100")) +
+    ggtitle("Coefficient Values Converge to OLS Estimates") +
+    ylab("Value") +
+    xlab("Number of Iterations")
+g
+
+# Plot difference between true coefficients and estimates
+g <- ggplot(error.df, aes(x = iter,
+                         y = X10)) +
+    geom_line(aes(y = X10, color = "Predictor 10")) +
+    geom_line(aes(y = X20, color = "Predictor 20")) +
+    geom_line(aes(y = X30, color = "Predictor 30")) +
+    geom_line(aes(y = X40, color = "Predictor 40")) +
+    geom_line(aes(y = X50, color = "Predictor 50")) +
+    geom_line(aes(y = X60, color = "Predictor 60")) +
+    geom_line(aes(y = X70, color = "Predictor 70")) +
+    geom_line(aes(y = X80, color = "Predictor 80")) +
+    geom_line(aes(y = X90, color = "Predictor 90")) +
+    geom_line(aes(y = X100, color = "Predictor 100")) +
+    ggtitle("Difference Between True Coefficient Values and Estimate Approaches Zero") +
+    ylab("abs(True Value - Estimate)") +
+    xlab("Number of Iterations")
+g
 ```
