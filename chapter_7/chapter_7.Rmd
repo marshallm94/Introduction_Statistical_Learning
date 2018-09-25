@@ -1092,7 +1092,7 @@ num.iter <- 20
 beta.vector <- rep(0, p)
 coef.matrix <- matrix(nrow = num.iter, ncol = p, data = 0)
 error.matrix <- matrix(nrow = num.iter, ncol = p, data = 0)
-# For i in 1000 iterations...
+# For i in 20 iterations...
 for (i in 1:num.iter) {
     # for each coefficient in the vector of 100 coefficients...
     for (coef in 1:p) {
@@ -1121,16 +1121,17 @@ error.df$iter <- 1:nrow(error.df)
 # Plot example coefficients converging
 g <- ggplot(coef.df, aes(x = iter,
                          y = X10)) +
-    geom_line(aes(y = X10, color = "Predictor 10")) +
-    geom_line(aes(y = X20, color = "Predictor 20")) +
-    geom_line(aes(y = X30, color = "Predictor 30")) +
-    geom_line(aes(y = X40, color = "Predictor 40")) +
-    geom_line(aes(y = X50, color = "Predictor 50")) +
-    geom_line(aes(y = X60, color = "Predictor 60")) +
-    geom_line(aes(y = X70, color = "Predictor 70")) +
-    geom_line(aes(y = X80, color = "Predictor 80")) +
-    geom_line(aes(y = X90, color = "Predictor 90")) +
-    geom_line(aes(y = X100, color = "Predictor 100")) +
+    geom_line(aes(y = X10, color = "10")) +
+    geom_line(aes(y = X20, color = "20")) +
+    geom_line(aes(y = X30, color = "30")) +
+    geom_line(aes(y = X40, color = "40")) +
+    geom_line(aes(y = X50, color = "50")) +
+    geom_line(aes(y = X60, color = "60")) +
+    geom_line(aes(y = X70, color = "70")) +
+    geom_line(aes(y = X80, color = "80")) +
+    geom_line(aes(y = X90, color = "90")) +
+    geom_line(aes(y = X100, color = "100")) +
+    guides(color=guide_legend(title = "Coefficient ID")) +
     ggtitle("Coefficient Values Converge to OLS Estimates") +
     ylab("Value") +
     xlab("Number of Iterations")
@@ -1139,16 +1140,17 @@ g
 # Plot difference between true coefficients and estimates
 g <- ggplot(error.df, aes(x = iter,
                          y = X10)) +
-    geom_line(aes(y = X10, color = "Predictor 10")) +
-    geom_line(aes(y = X20, color = "Predictor 20")) +
-    geom_line(aes(y = X30, color = "Predictor 30")) +
-    geom_line(aes(y = X40, color = "Predictor 40")) +
-    geom_line(aes(y = X50, color = "Predictor 50")) +
-    geom_line(aes(y = X60, color = "Predictor 60")) +
-    geom_line(aes(y = X70, color = "Predictor 70")) +
-    geom_line(aes(y = X80, color = "Predictor 80")) +
-    geom_line(aes(y = X90, color = "Predictor 90")) +
-    geom_line(aes(y = X100, color = "Predictor 100")) +
+    geom_line(aes(y = X10, color = "10")) +
+    geom_line(aes(y = X20, color = "20")) +
+    geom_line(aes(y = X30, color = "30")) +
+    geom_line(aes(y = X40, color = "40")) +
+    geom_line(aes(y = X50, color = "50")) +
+    geom_line(aes(y = X60, color = "60")) +
+    geom_line(aes(y = X70, color = "70")) +
+    geom_line(aes(y = X80, color = "80")) +
+    geom_line(aes(y = X90, color = "90")) +
+    geom_line(aes(y = X100, color = "100")) +
+    guides(color=guide_legend(title = "Coefficient ID")) +
     ggtitle("Difference Between True Coefficient Values and Estimate Approaches Zero") +
     ylab("abs(True Value - Estimate)") +
     xlab("Number of Iterations")
