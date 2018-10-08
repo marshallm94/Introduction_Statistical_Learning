@@ -13,3 +13,5 @@ This repo holds my answers for all lab exercises in the book "An Introduction to
 [Chapter 6](chapter_6/chapter_6.pdf)
 
 [Chapter 7](chapter_7/chapter_7.pdf)
+
+[Chapter 8](chapter_8/chapter_8.pdf)
