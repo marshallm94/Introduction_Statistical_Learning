@@ -17,23 +17,18 @@ output:
 
 ## 2
 
-Considering the regression setting, knowing that an additive model takes the form given, the equation below can be expanded to illustrate how it would behave when using a decision tree (with one split) as the base model.
+Considering the regression setting, knowing that an additive model takes the form given below, the equation can be expanded to illustrate how it would behave when using a decision tree (with one split) as the base model.
 
-$$
-f(x) = \frac{\sum_{j=1}^P f_j(x)}{P}
-$$
+\begin{align}
+f(x) & = \frac{\sum_{j=1}^P f_j(x)}{P} \\
+f(x) & = \frac{\beta_1I(x_{1i} \leq t) + \beta_2I(x_{2i} \leq t) + \beta_3I(x_{3i} \leq t) + \cdots + \beta_pI(x_{pi} \leq t)}{P}
+\end{align}
 
 When each tree has depth one, the model will take the form 
-$f_j(X_j) = c_1 \cdot I(x_{ji} \leq t)$, where $t$ is the value in the range of $X_j$ that minimizes the RSS. Knowing this, it is clear that the boosted model $f(x)$ will take the final form of:
+$f_j(X_j) = \beta_jI(x_{ji} \leq t) + \beta_0$, where $t$ is the value in the range of $X_j$ that minimizes the RSS. Knowing this, it is clear that the boosted model $f(x)$ will take the final form below:
 
 $$
-f(x) = \frac{c_1I(x_{1i} \leq t) + c_2I(x_{2i} \leq t) + c_3I(x_{3i} \leq t) + \cdots + c_pI(x_{pi} \leq t)}{P}
-$$
-
-This can be rewritten to be:
-
-$$
-f(x) = \frac{\sum_{j=1}^P f_j(X_j)}{P} ~~~ where ~~~ f_j(X_j) = c_jI(x_{ji} \leq t)
+f(x) = \frac{\sum_{j=1}^P f_j(X_j)}{P} ~~~ where ~~~ f_j(X_j) = \beta_jI(x_{ji} \leq t)
 $$
 
 When each tree is depth-one (meaning there is only one split), each tree will only consist of one split on one variable. Further, *recursive binary splitting* is a **greedy algorithm**, meaning that, "...at each step of the tree-building process, the best split is made at at that particular step, rather than looking ahead and picking a split that will lead to a better tree in some future step." - *ISLR p.307* This makes it clear that when one wants a tree consisting of one variable, the split will occur at the value that minimizes the RSS, misclassification error rate, gini index or cross entropy.
