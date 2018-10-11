@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 8 Exercises"
 author: "Marshall McQuillen"
-date: "10/05/2018"
+date: "10/10/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -17,21 +17,22 @@ output:
 
 ## 2
 
-Considering the regression setting, knowing that an additive model takes the form given below, the equation can be expanded to illustrate how it would behave when using a decision tree (with one split) as the base model.
+Consider the regression setting; when each tree has depth one (meaning there is only one split), each tree will only consist of one split on one attribute, and the predicted response for those two groups will be the mean response (of the training data) of those two groups. Therefore, the base model will take the form $f_j(x_j) = \beta_jI(x_{ji} \leq t) + \beta'_0I(x_{ji} > t)$, where $t$ is the value in the range of $x_j$ that dictates the split (in order to minimize the RSS). Knowing this, one can outline algorithm 8.2, as shown below:
 
 \begin{align}
-f(x) & = \frac{\sum_{j=1}^P f_j(x)}{P} \\
-f(x) & = \frac{\beta_1I(x_{1i} \leq t) + \beta_2I(x_{2i} \leq t) + \beta_3I(x_{3i} \leq t) + \cdots + \beta_pI(x_{pi} \leq t)}{P}
+\hat{f(x)} & = 0 \\
+f_1(x_1) & = \beta_1I(x_{1i} \leq t) + \beta'_1I(x_{1i} > t) \\
+\hat{f(x)} & = \hat{f(x)} + \lambda f_1(x_1) \\
+r_i & = r_i - \lambda f_1(x_i) \\
+f_2(x_2) & = \beta_2I(x_{2i} \leq t)  + \beta'_2I(x_{2i} > t) \\
+\hat{f(x)} & = \hat{f(x)} + \lambda f_2(x_2)\\
+r_i & = r_i - \lambda f_2(x_i) \\
+& \vdots \\
+f_j(x_j) & = \beta_jI(x_{ji} \leq t) + \beta'_0I(x_{ji} > t)\\
+\hat{f(x)} & = \hat{f(x)} + \lambda f_j(x_j) \\
+r_i & = r_i - \lambda f_j(x_i) \\
+& \vdots \\
+f(x) & = \sum_{j=1}^P f_j(X_j) ~~~ where ~~~ f_j(X_j) = \beta_jI(x_{ji} \leq t) + \beta'_jI(x_{ji} > t)\\
 \end{align}
 
-When each tree has depth one, the model will take the form 
-$f_j(X_j) = \beta_jI(x_{ji} \leq t) + \beta_0$, where $t$ is the value in the range of $X_j$ that minimizes the RSS. Knowing this, it is clear that the boosted model $f(x)$ will take the final form below:
-
-$$
-f(x) = \frac{\sum_{j=1}^P f_j(X_j)}{P} ~~~ where ~~~ f_j(X_j) = \beta_jI(x_{ji} \leq t)
-$$
-
-When each tree is depth-one (meaning there is only one split), each tree will only consist of one split on one variable. Further, *recursive binary splitting* is a **greedy algorithm**, meaning that, "...at each step of the tree-building process, the best split is made at at that particular step, rather than looking ahead and picking a split that will lead to a better tree in some future step." - *ISLR p.307* This makes it clear that when one wants a tree consisting of one variable, the split will occur at the value that minimizes the RSS, misclassification error rate, gini index or cross entropy.
-
-It is important to recognize the implications of this; once a variable has been "used", the value that dictates the split is **the** (not **a**) value that reduces disorder in the response the most. In order to further reduce disorder in the response (weighted residuals after the first tree), the tree will have to choose another variable, since using one it has already chosen won't lead to a further decrease in the response (it would simply split on the same value, leading to no change in the overall model).
-
+Note that $\beta_j$ is the mean of the response for all values of $x_j$ that are less than or equal to $t$, and $\beta'_j$ is the mean response for all values  of $x_j$ that are greater than $t$.
