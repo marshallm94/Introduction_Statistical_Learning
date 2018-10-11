@@ -17,7 +17,7 @@ output:
 
 ## 2
 
-Consider the regression setting; when each tree has depth one (meaning there is only one split), each tree will only consist of one split on one attribute, and the predicted response for those two groups will be the mean response (of the training data) of those two groups. Therefore, the base model will take the form $f_j(x_j) = \beta_jI(x_{ji} \leq t) + \beta'_0I(x_{ji} > t)$, where $t$ is the value in the range of $x_j$ that dictates the split (in order to minimize the RSS). Knowing this, one can outline algorithm 8.2, as shown below:
+Consider the regression setting; when each tree has depth one (meaning there is only one split), each tree will only consist of one split on one attribute, and the predicted response for those two groups will be the mean response (of the training data) of those two groups. Therefore, the base model will take the form $f_j(x_j) = \beta_jI(x_{ji} \leq t) + \beta'_jI(x_{ji} > t)$, where $t$ is the value in the range of $x_j$ that dictates the split (in order to minimize the RSS). Knowing this, one can walk through algorithm 8.2, as shown below:
 
 \begin{align}
 \hat{f(x)} & = 0 \\
