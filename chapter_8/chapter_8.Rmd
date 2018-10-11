@@ -28,7 +28,7 @@ f_2(x_2) & = \beta_2I(x_{2i} \leq t)  + \beta'_2I(x_{2i} > t) \\
 \hat{f(x)} & = \hat{f(x)} + \lambda f_2(x_2)\\
 r_i & = r_i - \lambda f_2(x_i) \\
 & \vdots \\
-f_j(x_j) & = \beta_jI(x_{ji} \leq t) + \beta'_0I(x_{ji} > t)\\
+f_j(x_j) & = \beta_jI(x_{ji} \leq t) + \beta'_jI(x_{ji} > t)\\
 \hat{f(x)} & = \hat{f(x)} + \lambda f_j(x_j) \\
 r_i & = r_i - \lambda f_j(x_i) \\
 & \vdots \\
