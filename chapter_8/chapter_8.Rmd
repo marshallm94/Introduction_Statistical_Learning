@@ -36,3 +36,46 @@ f(x) & = \sum_{j=1}^P f_j(X_j) ~~~ where ~~~ f_j(X_j) = \beta_jI(x_{ji} \leq t) 
 \end{align}
 
 Note that $\beta_j$ is the mean of the response for all values of $x_j$ that are less than or equal to $t$, and $\beta'_j$ is the mean response for all values  of $x_j$ that are greater than $t$.
+
+\pagebreak
+
+## 3
+
+```{r}
+suppressPackageStartupMessages(library(ggplot2))
+pm1 <- seq(0.01, 0.99, 0.01)
+
+# Defining functions
+two_class_gini <- function(prob) {
+    return((prob * (1-prob)) + (prob * (1-prob)))
+}
+
+two_class_entropy <- function(prob) {
+    return(-1*(prob*log(prob) + (1 - prob)*log(1 - prob)))
+}
+
+class_error <- function(prob) {
+    return(1 - pmax(prob, (1 - prob)))
+}
+
+# error calculation
+classification_error <- class_error(pm1)
+gini_error <- two_class_gini(pm1)
+entropy_error <- two_class_entropy(pm1)
+
+# bring all data together for plotting
+error_df <- data.frame(x = pm1,
+                       gini = gini_error,
+                       class = classification_error,
+                       entropy = entropy_error)
+
+# Error plot
+ggplot(error_df, aes(x = x, y = gini)) +
+    geom_line(aes(color = 'Gini Index')) +
+    geom_line(aes(y = entropy, color = 'Cross Entropy')) +
+    geom_line(aes(y = class, color = 'Classification Error')) + 
+    guides(color = guide_legend(title = "Metric")) +
+    ggtitle("Classification Error Rates with Varying Node Purity") +
+    ylab("Error Rate") +
+    xlab("Node Purity (P)")
+```
