@@ -79,3 +79,9 @@ ggplot(error_df, aes(x = x, y = gini)) +
     ylab("Error Rate") +
     xlab("Node Purity (P)")
 ```
+
+## 4
+
+(sketch on following page)
+
+!["Conceptual Exercise 4"](images/conceptual_4.png)
