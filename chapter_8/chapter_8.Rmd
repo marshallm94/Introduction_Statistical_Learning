@@ -98,3 +98,20 @@ table(majority_vote)
 # average chooses green
 ifelse(mean(probs) >= 0.5, 'red', 'green')
 ```
+
+## 6
+
+**Broad Strokes** - Use recursive binary splitting to continually split the data until there are fewer than $x$ training observations in each terminal node, where $x$ is predefined. The prediction for each terminal node will be the average of the response values of the training observations in that terminal node.
+
+
+**Detail** - Starting with all the observations in the training set in one group, choose **the** value that, when split on, produces the lowest RSS among the two groups dictated by that split value.
+
+\setlength{\leftskip}{1cm}
+
+* When the data set is split into two groups, the **single prediction** for the observations that are in group A will be the mean of the response values of the observations that are in group A, and the **single prediction** for the observations that are in group B will be the mean of the response values of the observations that are in group B.
+
+* To calculate the (training) RSS of a particular split, sum the squared  differences between the predicted value and the actual value of the response for all observations.
+    
+\setlength{\leftskip}{0cm}
+
+Now the data is  parititioned into two groups. Repeat the same process again, treating each of those two groups as the *parent* group, which will be split into two *child* groups, leading to four total groups/divisions of the data set. Repeating again would lead to eight total division of the data set. Repeat this process until there are less than $x$ training observations in each terminal node. Note that if only one of the *parent* groups has more than $x$ training observations in it, but the other has less than $x$, only the group with more than $x$ would be split further (in other words, the tree doesn't have to split evenly all the way down).
