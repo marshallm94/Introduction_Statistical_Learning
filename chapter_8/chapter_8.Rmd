@@ -115,3 +115,73 @@ ifelse(mean(probs) >= 0.5, 'red', 'green')
 \setlength{\leftskip}{0cm}
 
 Now the data is  parititioned into two groups. Repeat the same process again, treating each of those two groups as the *parent* group, which will be split into two *child* groups, leading to four total groups/divisions of the data set. Repeating again would lead to eight total division of the data set. Repeat this process until there are less than $x$ training observations in each terminal node. Note that if only one of the *parent* groups has more than $x$ training observations in it, but the other has less than $x$, only the group with more than $x$ would be split further (in other words, the tree doesn't have to split evenly all the way down).
+
+# Applied
+
+## 7
+
+Looking at the plot below, it is clear that the testing error rate levels off after around 100 trees. Notably, as is characteristic of Random Forests, the classic "U" shape of the testing error is not present, showing a lack of overfitting as the number of trees in the ensemble increases.
+
+\hfill
+
+```{r}
+# load libraries
+suppressPackageStartupMessages(library(ISLR))
+suppressPackageStartupMessages(library(MASS))
+suppressPackageStartupMessages(library(randomForest))
+attach(Boston)
+
+set.seed(5)
+
+# train test split
+train <- sample(c(TRUE, FALSE), nrow(Boston), replace = TRUE)
+X.train <- Boston[train, -14]
+X.test <- Boston[-train, - 14]
+y.train <- Boston[train, 14]
+y.test <- Boston[-train, 14]
+
+# modeling
+rf.model.p <- randomForest(x = X.train,
+                         y = y.train,
+                         xtest = X.test,
+                         ytest = y.test,
+                         mtry = ncol(Boston) - 1,
+                         ntree = 500)
+rf.model.half_p <- randomForest(x = X.train,
+                         y = y.train,
+                         xtest = X.test,
+                         ytest = y.test,
+                         mtry = ceiling(ncol(Boston)/2),
+                         ntree = 500)
+rf.model.sqrt_p <- randomForest(x = X.train,
+                         y = y.train,
+                         xtest = X.test,
+                         ytest = y.test,
+                         mtry = ceiling(sqrt(ncol(Boston))),
+                         ntree = 500)
+rf.model.2 <- randomForest(x = X.train,
+                         y = y.train,
+                         xtest = X.test,
+                         ytest = y.test,
+                         mtry = 2,
+                         ntree = 500)
+# create dataframe
+model.df <- data.frame(x = 1:500,
+                       model_2 = rf.model.2$test$mse,
+                       model_sqrt_p = rf.model.sqrt_p$test$mse,
+                       model_half_p = rf.model.half_p$test$mse,
+                       model_p = rf.model.p$test$mse)
+
+# plot errors
+
+ggplot(model.df, aes(x = x, y = model_2)) +
+    geom_line(aes(y = sqrt(model_2), color = '2')) +
+    geom_line(aes(y = sqrt(model_sqrt_p), color = 'sqrt(p)')) +
+    geom_line(aes(y = sqrt(model_half_p), color = 'p/2')) +
+    geom_line(aes(y = sqrt(model_p), color = 'p')) +
+    guides(color = guide_legend(title = "No. Variables Considered")) +
+    ggtitle("Predicting Median Owner-Occupied Homes") +
+    xlab("Number of Trees per Model") +
+    ylab("RMSE (in $1,000's")
+```
+
