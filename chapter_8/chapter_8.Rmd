@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 8 Exercises"
 author: "Marshall McQuillen"
-date: "10/10/2018"
+date: "10/15/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -185,3 +185,150 @@ ggplot(model.df, aes(x = x, y = model_2)) +
     ylab("RMSE (in $1,000's")
 ```
 
+## 8
+
+* **A**.
+
+```{r}
+detach(Boston)
+attach(Carseats)
+
+# train test split
+set.seed(5)
+train <- sample(c(TRUE, FALSE), nrow(Carseats), replace = TRUE)
+carseats.train <- Carseats[train,]
+carseats.test <- Carseats[-train,]
+```
+
+\hfill
+
+* **B**.
+
+```{r}
+suppressPackageStartupMessages(library(tree))
+suppressPackageStartupMessages(library(rpart))
+suppressPackageStartupMessages(library(rpart.plot))
+
+# create two trees, one for ease-of-plotting and one for future modeling
+display.tree <- rpart(Sales ~ .,
+                   data = carseats.train)
+model.tree <- tree(Sales ~ .,
+                     data = carseats.train)
+
+# plot the tree
+prp(display.tree)
+
+# predict with the model tree
+y_hat <- predict(model.tree, newdata = carseats.test)
+mse <- mean((carseats.test$Sales - y_hat)^2)
+print(paste("Test MSE =", round(mse, 4)))
+```
+
+\hfill
+
+* **C**. Looking at the plot of the cross validated error against tree size below, it appears that pruning the tree would help, albiet minorly.
+
+```{r}
+# cross validation
+set.seed(2)
+cv.carseats <- cv.tree(model.tree)
+ggplot(data.frame(x = cv.carseats$size,
+                  y = cv.carseats$dev), aes(x, y)) +
+    geom_point() +
+    geom_point(x = cv.carseats$size[which.min(cv.carseats$dev)],
+               y = cv.carseats$dev[which.min(cv.carseats$dev)],
+               color = 'red',
+               shape = 'O',
+               size = 6) +
+    geom_line(color = 'blue') +
+    ggtitle("CV Error for Varying Tree Sizes") +
+    xlab("Tree Size") +
+    ylab("RSS")
+```
+
+\hfill
+
+* **D**. The variable importance plot shown below indicates which variables were "most useful" in reducing child node impurity. In this case (regression), the $Increase~in~Node~Purity$ is calculated by finding the reduction in the RSS from splitting on that variable. For every split *in every tree* where $x$ variable is split on, the reduction in the RSS is recorded, and then this is averaged over all trees. 
+
+```{r}
+# bagged decision trees
+bag.model <- randomForest(Sales ~ .,
+                          data = carseats.train,
+                          mtry = ncol(carseats.train) - 1,
+                          importance = TRUE)
+y_hat <- predict(bag.model, newdata = carseats.test)
+mse <- mean((carseats.test$Sales - y_hat)^2)
+print(paste("Test MSE =", round(mse, 4)))
+
+# variable importance plot
+var_imp_df <- data.frame(importance(bag.model))
+ggplot(var_imp_df, aes(x = reorder(row.names(var_imp_df),
+                                   IncNodePurity),
+                       y = IncNodePurity,
+                       fill = IncNodePurity)) +
+    geom_bar(stat = 'identity') +
+    coord_flip() +
+    ggtitle("Variable Importances for Bagged Decision Trees") +
+    ylab("Mean Reduction in RSS Across all Trees") +
+    xlab("Variable")
+```
+
+\hfill
+
+* **E**. Looking at the first plot below, it is clear that as the number of variables considered at each split increases, the testing MSE decreases up to a point (8, in this forest) and then increases again (although minorly).
+
+```{r}
+# test various number of attributes considered at each split
+set.seed(2)
+m <- c(2, 4, 6, 8, 9, 10)
+errors <- rep(0, length(m))
+
+for (i in 1:length(m)) {
+    rf.model <- randomForest(Sales ~ .,
+                              data = carseats.train,
+                              ntree = 500,
+                              mtry = m[i],
+                              importance = TRUE)
+    y_hat <- predict(rf.model, newdata = carseats.test)
+    errors[i] <- mean((carseats.test$Sales - y_hat)^2)
+}
+
+# plot various errors
+ggplot(data.frame(x = m,
+                  y = errors), aes(x, y)) +
+    geom_point() +
+    geom_point(x = m[which.min(errors)],
+               y = errors[which.min(errors)],
+               col = 'red',
+               shape = 'O',
+               size = 6) +
+    geom_line(color = 'blue') +
+    scale_x_continuous(breaks = m,
+                       labels = m) +
+    ggtitle("Testing MSE for Various M") +
+    ylab("MSE") +
+    xlab("No. Variables Considered at Each Split")
+
+# final model
+rf.model <- randomForest(Sales ~ .,
+                          data = carseats.train,
+                          ntree = 500,
+                          mtry = m[which.min(errors)],
+                          importance = TRUE)
+y_hat <- predict(rf.model, newdata = carseats.test)
+mse <- mean((carseats.test$Sales - y_hat)^2)
+print(paste("Test MSE =", round(mse, 4)))
+
+# variable importance plot of final model
+var_imp_df <- data.frame(importance(rf.model))
+ggplot(var_imp_df, aes(x = reorder(row.names(var_imp_df),
+                                   IncNodePurity),
+                       y = IncNodePurity,
+                       fill = IncNodePurity)) +
+    geom_bar(stat = 'identity') +
+    coord_flip() +
+    ggtitle("Variable Importances for Random Forest") +
+    ylab("Mean Reduction in RSS Across all Trees") +
+    xlab("Variable")
+
+```
