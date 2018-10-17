@@ -330,5 +330,40 @@ ggplot(var_imp_df, aes(x = reorder(row.names(var_imp_df),
     ggtitle("Variable Importances for Random Forest") +
     ylab("Mean Reduction in RSS Across all Trees") +
     xlab("Variable")
-
 ```
+
+## 9
+
+* **A**.
+
+```{r}
+detach(Carseats)
+attach(OJ)
+
+# train test split
+set.seed(5)
+train <- sample(1:dim(OJ)[1], 800)
+oj.train <- OJ[train, ]
+oj.test <- OJ[-train, ]
+```
+
+\hfill
+
+* **B**. The tree has 8 terminal nodes and has a misclassification error rate (given by $\frac{\sum_{i=1}^n I(y_i \neq \hat{y_1})}{n}$) is 0.17
+
+```{r}
+model.tree <- tree(Purchase ~ .,
+                   data = oj.train)
+summary(model.tree)
+```
+
+\hfill
+
+* **C**. Looking at node 4 (the first terminal node, denoted by an asterisk), it is shown that any observation with a $LoyalCH$ value (numerical value symbolizing customer loyalty to the CH brand) less than 0.00589885 will be predicted to be MM (Minute Maid). There are 64 observations in the training data that are allocated to this node. There is a 94% probability of MM and conversely a 6% probability of CH.
+
+```{r}
+model.tree
+```
+
+\hfill
+
