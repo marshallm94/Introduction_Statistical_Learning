@@ -240,6 +240,8 @@ ggplot(data.frame(x = cv.carseats$size,
                color = 'red',
                shape = 'O',
                size = 6) +
+    scale_x_continuous(breaks = rev(cv.carseats$size),
+                       labels = rev(cv.carseats$size)) +
     geom_line(color = 'blue') +
     ggtitle("CV Error for Varying Tree Sizes") +
     xlab("Tree Size") +
@@ -367,3 +369,84 @@ model.tree
 
 \hfill
 
+* **D**. As displayed by the first split on $LoyalCH$, the largest reduction in the misclassification rate is achieved by splitting on that variable. Further, both the second splits are $LoyalCH$ to increase terminal node purity. For example, if an incoming observation has $LoyalCh = 0.45$ and $PriceDiff = 0.5$, that observation would "fall" down the left hand side of the top split, then  right side of *both* the following splits.
+
+```{r}
+plot(model.tree)
+text(model.tree, pretty = 0)
+```
+
+\hfill
+
+* **E**. Looking at the confusion matrix below, the misclassification rate is $1 - Accuracy$.
+
+```{r}
+suppressPackageStartupMessages(library(caret))
+y.hat <- predict(model.tree, newdata = oj.test, type = 'class')
+cm <- confusionMatrix(y.hat, oj.test$Purchase)
+error <- sum(cm$table[1,2], cm$table[2,1])/sum(cm$table)
+print(paste("Misclassification Rate:", round(error, 4)))
+```
+
+\hfill
+
+* **F**.
+
+```{r}
+set.seed(5)
+cv.oj <- cv.tree(model.tree)
+```
+
+\hfill
+
+* **G & H**.
+
+```{r}
+ggplot(data.frame(x = cv.oj$size,
+                  y = cv.oj$dev), aes(x, y)) +
+    geom_point() +
+    geom_point(x = cv.oj$size[which.min(cv.oj$dev)],
+               y = cv.oj$dev[which.min(cv.oj$dev)],
+               color = 'red',
+               shape = 'O',
+               size = 6) +
+    geom_line(color = 'blue') +
+    scale_x_continuous(breaks = cv.oj$size,
+                       labels = cv.oj$size) +
+    ggtitle("CV Error for Varying Tree Sizes",
+            paste("Lowest CV RSS at a Tree Size of",
+                  cv.oj$size[which.min(cv.oj$dev)])) +
+    xlab("Tree Size") +
+    ylab("RSS")
+```
+
+\hfill
+
+* **I**. (Although cross validation indicated a tree size of 6, I am setting the size to 4 in order to illustrate the point of the problem).
+
+```{r}
+pruned.tree <- prune.misclass(model.tree,
+                              best = 4)
+```
+
+\hfill
+
+* **J**. The unpruned tree has a (slightly) lower training misclassification error rate than the pruned tree.
+
+```{r}
+summary(pruned.tree)
+summary(model.tree)
+```
+
+\hfill
+
+* **K**. As shown below, pruning the tree to a simpler pays off when it comes to testing data. The pruned tree has 78.52% accuracy while the fully grown tree has 75.56% accuracy.
+
+```{r}
+y.hat.prune <- predict(pruned.tree, newdata = oj.test, type = 'class')
+y.hat.normal <- predict(model.tree, newdata = oj.test, type = 'class')
+cm.prune <- confusionMatrix(y.hat.prune, oj.test$Purchase)
+cm.normal <- confusionMatrix(y.hat.normal, oj.test$Purchase)
+cm.prune$overall[1]
+cm.normal$overall[1]
+```
