@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 8 Exercises"
 author: "Marshall McQuillen"
-date: "10/15/2018"
+date: "10/22/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -449,4 +449,135 @@ cm.prune <- confusionMatrix(y.hat.prune, oj.test$Purchase)
 cm.normal <- confusionMatrix(y.hat.normal, oj.test$Purchase)
 cm.prune$overall[1]
 cm.normal$overall[1]
+```
+
+## 10
+
+* **A**.
+
+```{r}
+detach(OJ)
+attach(Hitters)
+
+# transform data set
+Hitters <- Hitters[complete.cases(Hitters$Salary),]
+Hitters$Salary <- log(Hitters$Salary)
+```
+
+\hfill
+
+* **B**.
+
+```{r}
+hitters.train <- Hitters[1:200,]
+hitters.test <- Hitters[201:nrow(Hitters),]
+```
+
+\hfill
+
+* **C & D**.
+
+```{r}
+suppressPackageStartupMessages(library(gbm))
+set.seed(1)
+
+
+# fit boosted model
+lambdas <- seq(0.001, 0.1, 0.001)
+train.errors <- rep(0, length(lambdas))
+test.errors <- rep(0, length(lambdas))
+for (i in 1:length(lambdas)) {
+    hitters.boost <- gbm(Salary ~ .,
+                         data = hitters.train,
+                         distribution = 'gaussian',
+                         n.trees = 1000,
+                         shrinkage = lambdas[i])
+    train.y.hat <- predict(hitters.boost,
+                     newdata = hitters.train,
+                     n.trees = 1000)
+    test.y.hat <- predict(hitters.boost,
+                 newdata = hitters.test,
+                 n.trees = 1000)
+    train.errors[i] <- mean((train.y.hat - hitters.train$Salary)^2)
+    test.errors[i] <- mean((test.y.hat - hitters.test$Salary)^2)
+}
+
+# plot results
+ggplot(data.frame(x = lambdas,
+                  train = train.errors,
+                  test = test.errors), aes(x , test)) +
+    geom_line(aes(y = train, color = "Train MSE")) +
+    geom_line(aes(y = test, color = "Test MSE")) +
+    ggtitle("Salary Prediction Errors") +
+    xlab("Lambda") +
+    ylab("Error Rate")
+```
+
+\hfil
+
+* **E**.
+
+```{r}
+suppressPackageStartupMessages(library(glmnet))
+
+# create training and testing matrices
+x.train <- model.matrix(Salary ~ .,
+                        data = hitters.train)[,-1]
+y.train <- hitters.train$Salary
+x.test <- model.matrix(Salary ~ .,
+                       data = hitters.test)[,-1]
+y.test <- hitters.test$Salary
+
+# ridge regression
+ridge.model <- glmnet(x.train,
+                      y.train,
+                      alpha = 0)
+ridge.y.hat <- predict(ridge.model, newx = x.test)
+ridge.mse <- mean((ridge.y.hat - y.test)^2)
+    
+# lasso regression
+lasso.model <- glmnet(x.train,
+                      y.train,
+                      alpha = 1)
+lasso.y.hat <- predict(lasso.model, newx = x.test)
+lasso.mse <- mean((lasso.y.hat - y.test)^2)
+
+# final boosted model
+boosted.model <- gbm(Salary ~ .,
+                     data = hitters.train,
+                     distribution = 'gaussian',
+                     n.trees = 1000,
+                     shrinkage = lambdas[which.min(test.errors)])
+boosted.y.hat <- predict(boosted.model,
+                         newdata = hitters.test,
+                         n.trees = 1000)
+boosted.mse <- mean((boosted.y.hat - hitters.test$Salary)^2)
+
+
+print(paste("Boosted regression trees testing MSE |", round(boosted.mse, 4)))
+print(paste("Lasso regression testing MSE |", round(lasso.mse, 4)))
+print(paste("Ridge regression testing MSE |", round(ridge.mse, 4)))
+```
+
+\hfill
+
+* **F**. $CAtbat$ is the most important variable in the boosted model, which equates to the number of times a player was at bat during his career.
+
+```{r}
+# variable importance plot
+summary(boosted.model)
+```
+
+\hfill
+
+* **G**.
+
+```{r}
+bag.model <- randomForest(x = x.train,
+                          y = y.train,
+                          xtest = x.test,
+                          ytest = y.test,
+                          ntree = 1000,
+                          mtry = ncol(x.train))
+print(paste("Bagged regression trees testing MSE |", round(mean(bag.model$test$mse), 4)))
 ```
