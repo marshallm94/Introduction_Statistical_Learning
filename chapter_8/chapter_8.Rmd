@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 8 Exercises"
 author: "Marshall McQuillen"
-date: "10/22/2018"
+date: "10/23/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -563,9 +563,21 @@ print(paste("Ridge regression testing MSE |", round(ridge.mse, 4)))
 
 * **F**. $CAtbat$ is the most important variable in the boosted model, which equates to the number of times a player was at bat during his career.
 
+```{r echo=FALSE, include=FALSE}
+var_imp_df <- data.frame(x = summary(boosted.model)$var,
+                         y = summary(boosted.model)$rel.inf)
+```
+
 ```{r}
 # variable importance plot
-summary(boosted.model)
+ggplot(var_imp_df, aes(x = reorder(x, y),
+                       y = y,
+                       fill = y)) +
+    geom_bar(stat = 'identity') +
+    coord_flip() +
+    ggtitle("Variable Importances for Boosted Decision Trees") +
+    ylab("Relative Influence") +
+    xlab("Variable")
 ```
 
 \hfill
@@ -580,4 +592,62 @@ bag.model <- randomForest(x = x.train,
                           ntree = 1000,
                           mtry = ncol(x.train))
 print(paste("Bagged regression trees testing MSE |", round(mean(bag.model$test$mse), 4)))
+```
+
+## 11
+
+* **A**.
+
+```{r}
+detach(Hitters)
+attach(Caravan)
+
+Caravan$Purchase <- ifelse(Caravan$Purchase == "Yes", 1, 0)
+
+caravan.train <- Caravan[1:1000,]
+caravan.test <- Caravan[1001:nrow(Caravan),]
+```
+
+\hfill
+
+* **B**.
+
+```{r}
+set.seed(5)
+# build boosted classification model
+boost.caravan <- gbm(Purchase ~ . - PVRAAUT - AVRAAUT,
+                     data = caravan.train,
+                     distribution = 'gaussian',
+                     n.trees = 1000,
+                     shrinkage = 0.01)
+```
+
+```{r echo=FALSE, include=FALSE}
+var_imp_df <- data.frame(x = summary(boost.caravan)$var[1:15],
+                         y = summary(boost.caravan)$rel.inf[1:15])
+```
+
+```{r}
+# variable importance plot
+ggplot(var_imp_df, aes(x = reorder(x, y),
+                       y = y,
+                       fill = y)) +
+    geom_bar(stat = 'identity') +
+    coord_flip() +
+    ggtitle("Variable Importances for Boosted Decision Trees") +
+    ylab("Relative Influence") +
+    xlab("Variable")
+```
+
+\hfill
+
+* **C**.
+
+```{r}
+y.hat.prob <- predict(boost.caravan,
+                      newdata = caravan.test,
+                      n.trees = 1000,
+                      type = 'response')
+y.hat <- as.factor(ifelse(y.hat.prob > 0.2, 1, 0))
+confusionMatrix(y.hat, as.factor(caravan.test$Purchase))$table
 ```
