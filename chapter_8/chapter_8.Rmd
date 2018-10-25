@@ -641,7 +641,7 @@ ggplot(var_imp_df, aes(x = reorder(x, y),
 
 \hfill
 
-* **C**.
+* **C**. While boosting produces a Positive Predictive Value (aka Precision) that is much higher than that of logistic regression, as shown below, one of the beauty's of probabilistic models is that has another conceptual knob to turn, toggling what the threshold is for a success. This is shown in the below plot, althought even the best precision outputted by logistic regression falls short of that of a boosted model
 
 ```{r}
 y.hat.prob <- predict(boost.caravan,
@@ -649,5 +649,44 @@ y.hat.prob <- predict(boost.caravan,
                       n.trees = 1000,
                       type = 'response')
 y.hat <- as.factor(ifelse(y.hat.prob > 0.2, 1, 0))
-confusionMatrix(y.hat, as.factor(caravan.test$Purchase))$table
+boost.summary <- confusionMatrix(as.factor(y.hat),
+                      as.factor(caravan.test$Purchase),
+                      positive = "1")
+boost.summary$table
+print(paste("Boosted ensemble precision = ", round(boost.summary$byClass[3], 4)))
+
+# Logistic Regression
+log.mod <- glm(Purchase ~ .,
+               data = caravan.train,
+               family = 'binomial')
+
+# prediction with various thresholds
+log.mod.y.hat.logit <- predict(log.mod, newdata = caravan.test)
+log.mod.y.hat.prob <- exp(log.mod.y.hat.logit) / (exp(log.mod.y.hat.logit) + 1)
+
+thresholds <- seq(0.05, 0.95, 0.05)
+precisions <- rep(0, length(thresholds))
+for (i in 1:length(thresholds)) {
+    log.mod.y.hat <- ifelse(log.mod.y.hat.prob >= thresholds[i], 1, 0)
+    log.mod.summary <- confusionMatrix(as.factor(log.mod.y.hat),
+                                       as.factor(caravan.test$Purchase),
+                                       positive = "1")
+    precisions[i] <- log.mod.summary$byClass[3]
+}
+
+# plot precision
+ggplot(data.frame(x = thresholds,
+                  y = precisions), aes(x, y)) +
+    geom_line(color = 'royalblue1') +
+    geom_point() +
+    geom_point(x = thresholds[which.max(precisions)],
+               y = precisions[which.max(precisions)],
+               shape = 'O',
+               size = 6,
+               color = 'firebrick1') +
+    ggtitle("Precision for Varying Thresholds",
+            paste("Maximum Precision of", round(precisions[which.max(precisions)], 4), "at threshold of", thresholds[which.max(precisions)])) +
+    xlab("Threshold") +
+    ylab("Precision")
+
 ```
