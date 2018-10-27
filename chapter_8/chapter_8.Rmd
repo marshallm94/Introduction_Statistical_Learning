@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 8 Exercises"
 author: "Marshall McQuillen"
-date: "10/23/2018"
+date: "10/26/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -688,5 +688,62 @@ ggplot(data.frame(x = thresholds,
             paste("Maximum Precision of", round(precisions[which.max(precisions)], 4), "at threshold of", thresholds[which.max(precisions)])) +
     xlab("Threshold") +
     ylab("Precision")
+```
 
+## 12
+
+```{r}
+# get data
+suppressPackageStartupMessages(library(quantmod))
+
+set.seed(3)
+
+getSymbols("GE",
+           src = 'yahoo',
+           from = as.Date("1960-01-04"),
+           to = as.Date("2015-12-31"))
+
+# create response vector
+GE <- GE[complete.cases(GE), ]
+GE$timestep_1 <- lag(GE$GE.Close, -1)
+GE$Direction <- ifelse(GE$timestep_1 > GE$GE.Close, 1, 0)
+
+# growth plot
+chartSeries(GE)
+
+# train test splits
+train.idx <- sample(c(TRUE, FALSE), 
+                    replace = TRUE,
+                    nrow(GE),
+                    prob = c(0.75, 0.25))
+ge.train <- GE[train.idx, ]
+ge.test <- GE[!train.idx, ]
+
+# logistic regression
+log.mod <- glm(Direction ~ . - timestep_1,
+               data = ge.train,
+               family = 'binomial')
+log.mod.logit <- predict(log.mod, newdata = ge.test)
+log.mod.prob <- exp(log.mod.logit) / (1 + exp(log.mod.logit))
+
+# vary threholds
+thresholds <- seq(0.01, 0.99, 0.01)
+errors <- rep(0, length(thresholds))
+
+for (i in 1:length(thresholds)) {
+    log.mod.y.hat <- ifelse(log.mod.prob >= thresholds[i], 1, 0)
+    suppressWarnings(
+        cm <- confusionMatrix(as.factor(log.mod.y.hat),
+                              as.factor(ge.test$Direction),
+                              positive = "1")
+    )
+    errors[i] <- cm$overall[1]
+}
+
+ggplot(data.frame(x = thresholds,
+                  y = errors), aes(x, y)) +
+    geom_line(color = 'royalblue1') +
+    ggtitle("Accuracy for Various Thresholds") +
+    ylab("Accuracy") +
+    xlab("Threshold")
 ```
