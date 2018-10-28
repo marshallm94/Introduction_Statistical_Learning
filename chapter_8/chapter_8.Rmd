@@ -692,9 +692,12 @@ ggplot(data.frame(x = thresholds,
 
 ## 12
 
+Looking at the results below, of modeling whether the tomorrow's close price of GE will be higher than today's, it is shown that logistic regression outperforms the other models. Admittedly, with more robust features, I would imagine the scales would be tipped in favor of a more complex model, whether that be a Random Forest or Boosted Classification trees.
+
 ```{r}
 # get data
 suppressPackageStartupMessages(library(quantmod))
+suppressPackageStartupMessages(library(dplyr))
 
 set.seed(3)
 
@@ -703,10 +706,19 @@ getSymbols("GE",
            from = as.Date("1960-01-04"),
            to = as.Date("2015-12-31"))
 
-# create response vector
-GE <- GE[complete.cases(GE), ]
-GE$timestep_1 <- lag(GE$GE.Close, -1)
-GE$Direction <- ifelse(GE$timestep_1 > GE$GE.Close, 1, 0)
+# data cleaning
+timestep_1 <- as.numeric(GE$GE.Close)
+timestep_1 <- c(timestep_1, 0)
+timestep_1 <- timestep_1[2:length(timestep_1)]
+
+GE$timestep_plus_1 <- timestep_1
+GE$Direction <- ifelse(GE$timestep_plus_1 > GE$GE.Close, 1, 0)
+
+ge_df <- data.frame(GE)
+ge_df <- ge_df %>% select(-one_of("timestep_plus_1"))
+ge_df <- ge_df[1:nrow(ge_df) - 1,]
+
+ge_df$Direction <- as.factor(ge_df$Direction)
 
 # growth plot
 chartSeries(GE)
@@ -714,13 +726,18 @@ chartSeries(GE)
 # train test splits
 train.idx <- sample(c(TRUE, FALSE), 
                     replace = TRUE,
-                    nrow(GE),
+                    nrow(ge_df),
                     prob = c(0.75, 0.25))
-ge.train <- GE[train.idx, ]
-ge.test <- GE[!train.idx, ]
+ge.train <- ge_df[train.idx, ]
+ge.test <- ge_df[!train.idx, ]
+
+x.train <- ge_df[train.idx, -7]
+y.train <- ge_df[train.idx, 7]
+x.test <- ge_df[!train.idx, -7]
+y.test <- ge_df[!train.idx, 7]
 
 # logistic regression
-log.mod <- glm(Direction ~ . - timestep_1,
+log.mod <- glm(Direction ~ .,
                data = ge.train,
                family = 'binomial')
 log.mod.logit <- predict(log.mod, newdata = ge.test)
@@ -740,10 +757,76 @@ for (i in 1:length(thresholds)) {
     errors[i] <- cm$overall[1]
 }
 
+# plot of logistic regression accuracy
 ggplot(data.frame(x = thresholds,
                   y = errors), aes(x, y)) +
     geom_line(color = 'royalblue1') +
-    ggtitle("Accuracy for Various Thresholds") +
+    ggtitle("Logistic Regression Accuracy for Various Thresholds") +
     ylab("Accuracy") +
     xlab("Threshold")
+
+# bagging
+bagged.trees <- randomForest(Direction ~ .,
+                             data = ge.train,
+                             mtry = ncol(ge.train) - 1,
+                             ntree = 1000)
+bagged.trees.y.hat <- predict(bagged.trees, newdata = ge.test)
+
+# random forest
+rf.mod <- randomForest(Direction ~ .,
+                       data = ge.train,
+                       ntree = 1000)
+rf.mod.y.hat <- predict(rf.mod, newdata = ge.test)
+
+# boosted trees
+boost.mod <- gbm(as.character(Direction) ~ .,
+                 data = ge.train,
+                 distribution = 'bernoulli',
+                 n.trees = 1000)
+
+boost.mod.y.prob <- predict(boost.mod,
+                           newdata = ge.test,
+                           n.trees = 1000,
+                           type = 'response')
+
+boost_errors <- rep(0, length(thresholds))
+
+# calculate accuracy for various thresholds of boosted model
+for (i in 1:length(thresholds)) {
+    boost.mod.y.hat <- ifelse(boost.mod.y.prob >= thresholds[i], 1, 0)
+    suppressWarnings(
+        cm <- confusionMatrix(as.factor(boost.mod.y.hat),
+                              as.factor(ge.test$Direction),
+                              positive = "1")
+    )
+    boost_errors[i] <- cm$overall[1]
+}
+
+# plot boosted model accuracy over various thresholds
+ggplot(data.frame(x = thresholds,
+                  y = boost_errors), aes(x, y)) +
+    geom_line(color = 'royalblue1') +
+    ggtitle("Boosted Accuracy for Various Thresholds") +
+    ylab("Accuracy") +
+    xlab("Threshold")
+
+# model evalutation
+
+log.mod.y.hat <- ifelse(log.mod.prob >= 0.5, 1, 0)
+
+confusionMatrix(as.factor(log.mod.y.hat),
+                as.factor(ge.test$Direction),
+                positive = "1")$overall[1]
+confusionMatrix(bagged.trees.y.hat,
+                ge.test$Direction,
+                positive = "1")$overall[1]
+confusionMatrix(rf.mod.y.hat,
+                ge.test$Direction,
+                positive = "1")$overall[1]
+
+boost.mod.y.hat <- ifelse(boost.mod.y.prob >= 0.55, 1, 0)
+
+confusionMatrix(as.factor(boost.mod.y.hat),
+                as.factor(ge.test$Direction),
+                positive = "1")$overall[1]
 ```
