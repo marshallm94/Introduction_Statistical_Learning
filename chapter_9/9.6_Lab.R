@@ -145,3 +145,82 @@ summary(tune.out)
 
 # predictions
 y.hat <- predict(tune.out$best.model, newdata = dat[-train, ])
+confusionMatrix(reference = y.hat,
+                data = dat[-train, 'y'])$table
+
+################################################################################
+################################### ROC CURVES #################################
+################################################################################
+
+# Deviated from lab to account for inability to install ROCR: using ggplot2 
+
+# model 
+svm.opt <- svm(y ~ .,
+               data = dat[train, ],
+               kernel = 'radial',
+               gamma = 2,
+               cost = 1,
+               probability = TRUE) 
+
+y.hat.prob <- attr(predict(svm.opt,
+                      newdata = dat[train, ],
+                      probability = TRUE), "probabilities")
+
+# get true and false positive rates for varying thresholds
+thresholds <- seq(0.01, 1, 0.01)
+tp.rate <- rep(0, length(thresholds))
+fp.rate <- rep(0, length(thresholds))
+
+for (i in 1:length(thresholds)) {
+    y.hat <- ifelse(y.hat.prob[, 1] > thresholds[i], '2', '1')
+    cm <- confusionMatrix(data = factor(y.hat, levels = 1:2),
+                          reference = factor(dat[train, 'y'], levels = 1:2))
+    tp.rate[i] <- cm$byClass['Sensitivity']
+    fp.rate[i] <- 1 - cm$byClass['Specificity']
+}
+
+roc_df <- data.frame(x = fp.rate, y = tp.rate)
+
+# roc plot
+ggplot(roc_df, aes(x, y)) +
+    geom_line(color = 'blue') +
+    ggtitle("Support Vector Machine Training ROC",
+            "Positive class = 2") +
+    xlab("False Positive Rate (1 - Specificity)") +
+    ylab("True Positive Rate (Sensitivity)")
+
+
+# increase gamma
+svm.opt <- svm(y ~ .,
+               data = dat[train, ],
+               kernel = 'radial',
+               gamma = 50,
+               cost = 1,
+               probability = TRUE) 
+
+y.hat.prob <- attr(predict(svm.opt,
+                           newdata = dat[train, ],
+                           probability = TRUE), "probabilities")
+
+# get true and false positive rates for varying thresholds
+thresholds <- seq(0.01, 1, 0.01)
+tp.rate <- rep(0, length(thresholds))
+fp.rate <- rep(0, length(thresholds))
+
+for (i in 1:length(thresholds)) {
+    y.hat <- ifelse(y.hat.prob[, 1] > thresholds[i], '2', '1')
+    cm <- confusionMatrix(data = factor(y.hat, levels = 1:2),
+                          reference = factor(dat[train, 'y'], levels = 1:2))
+    tp.rate[i] <- cm$byClass['Sensitivity']
+    fp.rate[i] <- 1 - cm$byClass['Specificity']
+}
+
+roc_df <- data.frame(x = fp.rate, y = tp.rate)
+
+# roc plot
+ggplot(roc_df, aes(x, y)) +
+    geom_line(color = 'blue') +
+    ggtitle("Support Vector Machine Training ROC",
+            "Positive class = 2") +
+    xlab("False Positive Rate (1 - Specificity)") +
+    ylab("True Positive Rate (Sensitivity)")
