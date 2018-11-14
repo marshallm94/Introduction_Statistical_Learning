@@ -1,0 +1,54 @@
+---
+title: "ISLR | Chapter 9 Exercises"
+author: "Marshall McQuillen"
+date: "11/14/2018"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+# Conceptual
+
+## 1
+
+* **A & B**.
+
+```{r}
+suppressPackageStartupMessages(library(gridExtra))
+suppressPackageStartupMessages(library(ggplot2))
+
+x <- matrix(rnorm(500*2), ncol = 2)
+
+hyperplane1 <- 1 + 3*x[, 1] - x[, 2]
+y <- ifelse(hyperplane1 > 0, 1, -1)
+
+hyperplane2 <- -2 + x[, 1] + 2*x[, 2]
+y2 <- ifelse(hyperplane2 > 0, 1, -1)
+
+par(mfrow = c(1, 2))
+
+plot1 <- ggplot(data.frame(x = x,
+                  y = factor(y, levels = c(-1, 1))), aes(x.1, x.2, color=y)) +
+            geom_point(show.legend = FALSE) +
+            geom_abline(intercept = 1,
+                        slope = 3,
+                        linetype = 'dashed') +
+            ggtitle("Binary Class Data | Hyperplane 1") +
+            xlab("X1") +
+            ylab("X2") +
+            labs(color = "Class")
+
+plot2 <- ggplot(data.frame(x = x,
+                  y = factor(y2, levels = c(-1, 1))), aes(x.1, x.2, color=y)) +
+            geom_point() +
+            geom_abline(intercept = 1,
+                        slope = -0.5,
+                        linetype = 'dashed') +
+            ggtitle("Binary Class Data | Hyperplane 2") +
+            xlab("X1") +
+            ylab("X2") +
+            labs(color = "Class")
+
+grid.arrange(plot1, plot2, ncol = 2)
+```
+
