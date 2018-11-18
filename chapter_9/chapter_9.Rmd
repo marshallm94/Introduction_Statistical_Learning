@@ -244,6 +244,12 @@ ggplot(df, aes(x_1, x_2, color = y)) +
     geom_abline(intercept = -0.25,
                 slope = 1,
                 linetype = 'solid') +
+    geom_abline(intercept = -0,
+                slope = 1,
+                linetype = 'dashed') +
+    geom_abline(intercept = -1,
+                slope = 1,
+                linetype = 'dashed') +
     scale_color_manual(values = c("Red" = 'red', "Blue" = 'blue')) +
     ggtitle("Maximal Marginal Classifier") +
     xlab("X1") +
@@ -253,7 +259,7 @@ ggplot(df, aes(x_1, x_2, color = y)) +
 
 \hfill
 
-* **H**.
+* **H**. A data set where the Maximal Marginal Classifier does not exist.
 
 \hfill
 
