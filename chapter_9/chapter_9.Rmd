@@ -19,16 +19,20 @@ output:
 suppressPackageStartupMessages(library(gridExtra))
 suppressPackageStartupMessages(library(ggplot2))
 
+# data setup
 x <- matrix(rnorm(1000*2), ncol = 2)
 
+# define hyperplane 1 (part A)
 hyperplane1 <- 1 + 3*x[, 1] - x[, 2]
 y <- ifelse(hyperplane1 > 0, 1, -1)
 
+# define hyperplane 2 (part b)
 hyperplane2 <- -2 + x[, 1] + 2*x[, 2]
 y2 <- ifelse(hyperplane2 > 0, 1, -1)
 
 par(mfrow = c(1, 2))
 
+# plot hyperplanes
 plot1 <- ggplot(data.frame(x = x,
                   y = factor(y, levels = c(-1, 1))), aes(x.1, x.2, color=y)) +
             geom_point(show.legend = FALSE) +
@@ -61,9 +65,11 @@ grid.arrange(plot1, plot2, ncol = 2)
 \hfill
 
 ```{r}
+# data setup
 x_1 <- runif(2500, min = -4, max = 2)
 x_2 <- runif(2500, min = -1, max = 5)
 
+# define hyperplane
 hyperplane3 <- (1 + x_1)^2 + (2 - x_2)^2 - 4
 y3 <- factor(ifelse(hyperplane3 > 0, ">4", "<4"))
 
@@ -71,6 +77,7 @@ df <- data.frame(x1 = x_1,
                  x2 = x_2,
                  y = y3)
 
+# plot hyperplane with additional points in black
 ggplot(df, aes(x1, x2, color=y)) +
     geom_point() +
     geom_point(x = 0,
@@ -115,10 +122,12 @@ ggplot(df, aes(x1, x2, color=y)) +
 \hfill
 
 ```{r}
+# data setup
 df <- data.frame(x_1 = c(3,2,4,1,2,4,4),
                  x_2 = c(4,2,4,4,1,3,1),
                  y = c(rep("Red", 4), rep("Blue", 3)))
 
+# plot MMC
 ggplot(df, aes(x_1, x_2, color = y)) +
     geom_point() +
     geom_abline(intercept = -0.5,
@@ -140,6 +149,7 @@ ggplot(df, aes(x_1, x_2, color = y)) +
 \hfill
 
 ```{r}
+# illustrate support vectors and margins
 ggplot(df, aes(x_1, x_2, color = y)) +
     geom_point() +
     geom_abline(intercept = -0.5,
@@ -185,9 +195,10 @@ ggplot(df, aes(x_1, x_2, color = y)) +
 \hfill
 
 ```{r}
+# remove non support vectors
 sub_df <- df[-c(1, 4, 7), ]
-    
-    
+
+# remove non support vectors
 ggplot(sub_df, aes(x_1, x_2, color = y)) +
     geom_point() +
     geom_abline(intercept = -0.5,
@@ -220,7 +231,8 @@ ggplot(sub_df, aes(x_1, x_2, color = y)) +
                size = 10,
                shape = "o") +    
     scale_color_manual(values = c("Red" = 'red', "Blue" = 'blue')) +
-    ggtitle("Maximal Marginal Classifier") +
+    ggtitle("Maximal Marginal Classifier",
+            "Non Support Vectors Removed") +
     xlab("X1") +
     ylab("X2") +
     labs(color = 'Class')
@@ -239,6 +251,7 @@ The reason that this is less desirable than the Maximal Marginal Classifier is b
 \hfill
 
 ```{r}
+# illustrate non-maximal margin classifier
 ggplot(df, aes(x_1, x_2, color = y)) +
     geom_point() +
     geom_abline(intercept = -0.25,
@@ -251,7 +264,7 @@ ggplot(df, aes(x_1, x_2, color = y)) +
                 slope = 1,
                 linetype = 'dashed') +
     scale_color_manual(values = c("Red" = 'red', "Blue" = 'blue')) +
-    ggtitle("Maximal Marginal Classifier") +
+    ggtitle("Non-Maximal Marginal Classifier") +
     xlab("X1") +
     ylab("X2") +
     labs(color = 'Class')
@@ -269,6 +282,7 @@ new.point <- data.frame(x_1 = 2,
                         y = "Blue")
 df <- rbind(df, new.point)
 
+# illustrate tha data set where a non-maximal is not possible
 ggplot(df, aes(x_1, x_2, color = y)) +
     geom_point() +
     geom_abline(intercept = -0.5,
@@ -285,4 +299,88 @@ ggplot(df, aes(x_1, x_2, color = y)) +
     xlab("X1") +
     ylab("X2") +
     labs(color = 'Class')
+```
+
+# Applied
+
+## 4
+
+As shown below, a linear decision boundary is not possible with the data provided. Knowing this, it is unlikely that a linear SVM would outperform a more complex model. This intuition is confirmed in the following three plots, showing that the radial SVM (with $\gamma = 2$) is the model that fits the training data the best.
+
+Not surprisingly, the radial SVM outperforms the linear and polynomial SVM's on the test set as well. Interestingly, the radial SVM also has fewer support vectors, therefore making the model more computationally efficient to store.
+
+\hfill
+
+```{r}
+suppressPackageStartupMessages(library(e1071))
+suppressPackageStartupMessages(library(caret))
+set.seed(2)
+
+# data setup
+x_1 <- rnorm(100)
+x_2 <- 5*(x_1^2) + rnorm(100)
+idx <- sample(100, 50)
+x_2[idx] <- x_2[idx] + 5
+x_2[-idx] <- x_2[-idx] - 5
+y <- factor(ifelse(x_2 > 5*(x_1^2) + rnorm(100), -1, 1), levels = c(-1, 1))
+
+df <- data.frame(x.1 = x_1, 
+                 x.2 = x_2,
+                 y = y)
+
+# plot data
+ggplot(df, aes(x.1, x.2, color = y)) +
+    geom_point() +
+    ggtitle("Maximal Marginal Classifier NOT Possible") +
+    xlab("X1") +
+    ylab("X2") +
+    labs(color = 'Class')
+
+set.seed(5)
+train <- sample(100, 75)
+
+# linear support vector machine
+linear.svm <- svm(y ~ .,
+                  data = df[train,],
+                  kernel = 'linear')
+plot(linear.svm, df[train,])
+
+# polynomial support vector machine
+poly.svm <- svm(y ~ .,
+                data = df[train,],
+                kernel = 'polynomial',
+                gamma = 2)
+plot(poly.svm, df[train,])
+
+# radial support vector machine
+radial.svm <- svm(y ~ .,
+                  data = df[train,],
+                  kernel = 'radial',
+                  gamma = 2)
+plot(radial.svm, df[train,])
+
+# prediction
+linear.svm.yhat <- predict(linear.svm, newdata = df[-train, ])
+poly.svm.yhat <- predict(poly.svm, newdata = df[-train, ])
+radial.svm.yhat <- predict(radial.svm, newdata = df[-train, ])
+
+linear.svm.acc <- confusionMatrix(df[-train, 'y'], linear.svm.yhat)$overall[1]
+poly.svm.acc <- confusionMatrix(df[-train, 'y'], poly.svm.yhat)$overall[1]
+radial.svm.acc <- confusionMatrix(df[-train, 'y'], radial.svm.yhat)$overall[1]
+
+print(paste("Linear SVM test accuracy =",
+            linear.svm.acc,
+            "with",
+            linear.svm$tot.nSV,
+            "support vectors."))
+print(paste("Polynomial SVM test accuracy =",
+            poly.svm.acc,
+            "with",
+            poly.svm$tot.nSV,
+            "support vectors."))
+print(paste("Radial SVM test accuracy =",
+            radial.svm.acc,
+            "with",
+            radial.svm$tot.nSV,
+            "support vectors."))
 ```
