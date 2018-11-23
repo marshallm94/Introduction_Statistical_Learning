@@ -566,3 +566,115 @@ $$
 This opens up up a whole new world of possibilities, where the challenge becomes finding the proper basis functions as opposed to finding the proper model framework. Once these basis functions are found, the model framework can vary and still produce similar results, as shown by pitting Logistic Regression against SVM's with the same basis functions, and obtaining similar decision boundaries.
 
 \setlength{\leftskip}{0cm}
+
+\hfill
+
+## 6
+
+* **A**.
+
+\hfill 
+
+```{r}
+# set seed for reproducibility
+set.seed(1)
+# randomly generate data from a Gaussian Distribution
+x_1 <- rnorm(1000)
+x_2 <- rnorm(1000)
+# create an index that will be used to separate the classes
+idx <- sample(1000, 500)
+x_2[idx] <- x_2[idx] + 3
+x_2[-idx] <- x_2[-idx] - 3
+
+# create separating hyperplane at 0.5
+hyperplane <- 0
+y <- ifelse(x_2 <= hyperplane, 1, -1)
+
+train.df <- data.frame(x1 = x_1,
+                       x2 = x_2,
+                       y = factor(y, levels = c(-1, 1)))
+
+# plot to illustrate barely separated classes
+ggplot(train.df, aes(x1, x2, color = y)) +
+    geom_point() +
+    ggtitle("Barely Separated Classes") +
+    xlab("X1") +
+    ylab("X2") +
+    labs(color = 'Class')
+```
+
+\hfill
+
+* **B**. As one can see from the table below, cost values of 0.1, 1 and 2 all corresponded to 0 training errors.
+
+\hfill
+
+```{r}
+cost.values <- c(0.1, 1, 5, 10, 50, 100, 1000, 10000)
+
+tuned.svm <- tune(svm,
+                  y ~ .,
+                  data = train.df,
+                  kernel = 'linear',
+                  ranges = list(cost = cost.values))
+
+error.df <- data.frame(Cost = tuned.svm$performances$cost,
+                       Train_MisClass = tuned.svm$performances$error * 1000)
+error.df
+```
+
+\hfill
+
+* **C**.
+
+\hfill
+
+```{r}
+# generate test data by changing seed
+set.seed(5)
+x_1 <- rnorm(1000)
+x_2 <- rnorm(1000) + rnorm(1000) 
+idx <- sample(1000, 500)
+x_2[idx] <- x_2[idx] + 1
+x_2[-idx] <- x_2[-idx] - 1
+
+hyperplane <- 0
+y <- ifelse(x_2 <= hyperplane, 1, -1)
+
+test.df <- data.frame(x1 = x_1,
+                      x2 = x_2,
+                      y = factor(y, levels = c(-1, 1)))
+
+# plot to illustrate barely separated classes
+ggplot(test.df, aes(x1, x2, color = y)) +
+    geom_point() +
+    ggtitle("Test Data") +
+    xlab("X1") +
+    ylab("X2") +
+    labs(color = 'Class')
+
+# prediction
+test.errors <- rep(0, length(cost.values))
+for (i in 1:length(cost.values)) {
+    svm.mod <- svm(y ~ .,
+                   data = train.df,
+                   kernel = 'linear',
+                   cost = cost.values[i])
+    y.hat <- predict(svm.mod, newdata = test.df)
+    test.errors[i] <- sum(y.hat != test.df$y)
+}
+
+
+error.df$Test_MisClass <- test.errors
+error.df
+```
+
+\pagebreak
+
+* **D**. The point that is trying to be driven home here is one of the Bias-Variance Trade off; even if a Support Vector Classifier is able to correctly classifiy all *training* observations due to a high cost of violations to the margin/hyperplane, a *different* set of data (aka **test** data) might not be as cleanly separated as the training data, leading to overfitting if a high cost model is chosen. This is shown comparing the training misclassifications to the testing misclassifications, where the high cost SVM clearly overfits the data.
+
+
+
+
+
+
