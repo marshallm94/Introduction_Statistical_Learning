@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 9 Exercises"
 author: "Marshall McQuillen"
-date: "11/17/2018"
+date: "11/23/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -349,7 +349,7 @@ plot(linear.svm, df[train,])
 poly.svm <- svm(y ~ .,
                 data = df[train,],
                 kernel = 'polynomial',
-                gamma = 2)
+                degree = 2)
 plot(poly.svm, df[train,])
 
 # radial support vector machine
@@ -384,3 +384,185 @@ print(paste("Radial SVM test accuracy =",
             radial.svm$tot.nSV,
             "support vectors."))
 ```
+
+\hfill
+
+## 5
+
+* **A**.
+
+\hfill
+
+```{r}
+x1 <- runif(500) - 0.5
+x2 <- runif(500) - 0.5
+y <- 1 * (x1^2 - x2^2 > 0)
+```
+
+\hfill
+
+* **B**.
+
+\hfill
+
+```{r}
+df <- data.frame(x1 = x1,
+                 x2 = x2,
+                 y = factor(y, levels = c(0, 1)))
+
+ggplot(df, aes(x1, x2, color = y)) +
+    geom_point() +
+    ggtitle("True Nonlinear Decision Boundary") +
+    xlab("X1") +
+    ylab("X2") +
+    labs(color = "Class")
+```
+
+\hfill
+
+* **C**.
+
+\hfill
+
+```{r}
+log.mod <- glm(y ~ .,
+               data = df,
+               family = 'binomial')
+```
+
+\hfill
+
+* **D**.
+
+\hfill
+
+```{r}
+log.mod.y.prob <- predict(log.mod, newdata = df, type = "response")
+threshold <- 0.5
+log.mod.y.hat <- ifelse(log.mod.y.prob >= threshold, 1, 0)
+
+df$y_hat <- factor(log.mod.y.hat, levels = c(0, 1))
+
+ggplot(df, aes(x1, x2, color = y_hat)) +
+    geom_point() +
+    ggtitle("Logistic Regression Linear Decision Boundary") +
+    xlab("X1") +
+    ylab("X2") +
+    labs(color = "Precdicted Class")
+```
+
+\hfill
+
+* **E**.
+
+\hfill
+
+```{r}
+non.linear.log.mod <- glm(y ~ poly(x1, 2) + poly(x2, 2) + x1*x2,
+                          data = df,
+                          family = 'binomial')
+```
+
+\hfill
+
+* **F**.
+
+\hfill
+
+```{r}
+non.linear.log.mod.y.prob <- predict(non.linear.log.mod,
+                                     newdata = df,
+                                     type = 'response')
+threshold <- 0.5
+non.linear.log.mod.y.hat <- ifelse(non.linear.log.mod.y.prob >= threshold,
+                                   1, 0)
+
+df$non_lin_y_hat <- factor(non.linear.log.mod.y.hat, levels = c(0, 1))
+
+ggplot(df, aes(x1, x2, color = non_lin_y_hat)) +
+    geom_point() +
+    ggtitle("Logistic Regression Non-Linear Decision Boundary") +
+    xlab("X1") +
+    ylab("X2") +
+    labs(color = "Precdicted Class")
+```
+
+\hfill
+
+* **G**.
+
+\hfill
+
+```{r}
+svm.mod <- svm(y ~ x1 + x2,
+               data = df,
+               kernel = 'linear')
+svm.mod.y.hat <- predict(svm.mod, newdata = df)
+
+df$svm_y_hat <- svm.mod.y.hat
+
+ggplot(df, aes(x1, x2, color = svm_y_hat)) +
+    geom_point() +
+    ggtitle("SVM Linear Decision Boundary") +
+    xlab("X1") +
+    ylab("X2") +
+    labs(color = "Precdicted Class")
+```
+
+\hfill
+
+* **H**.
+
+\hfill
+
+```{r}
+svm.mod.nonlin <- svm(y ~ x1 + x2,
+               data = df,
+               kernel = 'polynomial',
+               degree = 2)
+svm.mod.nonlin.y.hat <- predict(svm.mod.nonlin, newdata = df)
+
+df$svm_y_hat_nonlin <- svm.mod.nonlin.y.hat
+
+ggplot(df, aes(x1, x2, color = svm_y_hat_nonlin)) +
+    geom_point() +
+    ggtitle("SVM Non-Linear Decision Boundary") +
+    xlab("X1") +
+    ylab("X2") +
+    labs(color = "Precdicted Class")
+```
+
+\pagebreak
+
+* **I**. The comparison between SVM's and Logistic Regression above illustrates an interesting concept when seeking to model some natural phenomena; instead of toggling the different statistical learning methods that one would use to model said phenomena, *transforming the attributes that are fed into a statistical learning method can have a similar affect on modeling that phenomena*.
+
+\setlength{\leftskip}{1cm}
+
+Typically, one is given a matrix $\mathbf{X}$ and a vector $y$, and a variety of models/functions,  
+$f_1(\mathbf{X}, y),~ f_2(\mathbf{X}, y),~ f_3(\mathbf{X}, y),~ f_j(\mathbf{X}, y)$, are used to try and model the relationship between $\mathbf{X}$ and $y$.
+
+However, as introduced in chapter 7, *basis functions* can be used to transform the attributes of $\mathbf{X}$ into a new matrix, $b(\mathbf{X})$, where $b_j(x_j)$ is a mathematical transformation of the $j^{th}$ column of $\mathbf{X}$ (illustrated below).
+
+$$
+\mathbf{X} = \begin{pmatrix}
+x_{1,1} & x_{1,2} & x_{1,3} & \cdots & x_{1,p} \\
+x_{2,1} & x_{2,2} & x_{2,3} & \cdots & x_{2,p} \\
+x_{3,1} & x_{3,2} & x_{3,3} & \cdots & x_{3,p} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+x_{n,1} & x_{n,2} & x_{n,3} & \cdots & x_{n,p} \\
+\end{pmatrix}
+$$
+
+$$
+b(\mathbf{X}) = \begin{pmatrix}
+b_1(x_{1,1}) & b_2(x_{1,2}) & b_3(x_{1,3}) & \cdots & b_{\infty}(x_{1,\infty}) \\
+b_1(x_{2,1}) & b_2(x_{2,2}) & b_3(x_{2,3}) & \cdots & b_{\infty}(x_{2,\infty}) \\
+b_1(x_{3,1}) & b_2(x_{3,2}) & b_3(x_{3,3}) & \cdots & b_{\infty}(x_{3,\infty}) \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+b_1(x_{n,1}) & b_2(x_{n,2}) & b_3(x_{n,3}) & \cdots & b_{\infty}(x_{n,\infty}) \\
+\end{pmatrix}
+$$
+
+This opens up up a whole new world of possibilities, where the challenge becomes finding the proper basis functions as opposed to finding the proper model framework. Once these basis functions are found, the model framework can vary and still produce similar results, as shown by pitting Logistic Regression against SVM's with the same basis functions, and obtaining similar decision boundaries.
+
+\setlength{\leftskip}{0cm}
