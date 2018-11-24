@@ -673,8 +673,126 @@ error.df
 
 * **D**. The point that is trying to be driven home here is one of the Bias-Variance Trade off; even if a Support Vector Classifier is able to correctly classifiy all *training* observations due to a high cost of violations to the margin/hyperplane, a *different* set of data (aka **test** data) might not be as cleanly separated as the training data, leading to overfitting if a high cost model is chosen. This is shown comparing the training misclassifications to the testing misclassifications, where the high cost SVM clearly overfits the data.
 
+\hfill
 
+## 7
 
+* **A**.
 
+\hfill
+
+```{r}
+suppressPackageStartupMessages(library(ISLR))
+attach(Auto)
+
+Auto$mileage <- factor(ifelse(Auto$mpg >= median(Auto$mpg), 1, 0))
+```
+
+\hfill
+
+* **B**.
+
+\hfill
+
+```{r}
+cv.results <- tune(svm,
+                   mileage ~ . - mpg,
+                   data = Auto,
+                   kernel = 'linear',
+                   ranges = list(cost = c(0.1, 1, 5, 10, 100, 1000)))
+summary(cv.results)
+```
+
+\hfill
+
+* **C**.
+
+\hfill
+
+```{r}
+# polynomial SVM
+poly.cv.results <- tune(svm,
+                        mileage ~ . - mpg,
+                        data = Auto,
+                        kernel = 'polynomial',
+                        ranges = list(
+                            cost = c(1, 5, 10, 100, 1000),
+                            degree = c(2,4,6)))
+summary(poly.cv.results)
+
+# radial SVM
+radial.cv.results <- tune(svm,
+                        mileage ~ . - mpg,
+                        data = Auto,
+                        kernel = 'radial',
+                        ranges = list(
+                            cost = c(1, 5, 10, 100, 1000),
+                            gamma = c(2,4,6)))
+summary(radial.cv.results)
+
+# compare models
+linear.summary <- summary(cv.results)
+poly.summary <- summary(poly.cv.results)
+radial.summary <- summary(radial.cv.results)
+
+print(paste("Linear SVM Error =", linear.summary$best.performance,
+            "with cost =", linear.summary$best.parameters[1]))
+print(paste("Polynomial SVM Error =",
+            poly.summary$best.performance,
+            "with degree =", poly.summary$best.parameters[2],
+            "and cost =", poly.summary$best.parameters[1]))
+print(paste("Radial SVM Error |",
+            radial.summary$best.performance,
+            "with gamma =", radial.summary$best.parameters[2],
+            "and cost =", radial.summary$best.parameters[1]))
+```
+
+\hfill
+
+* **D**. With the linear kernel having the lowest testing error, this implies that the best dividing hyperplane can be found within the un-transformed feature space, with a few violations to the margin and/or hyperplane. The three plots below show the possible combinations of $Horsepower,~ Acceleration$ and $Displacement$ plotted against one another. There seems to be a marginally linear decision boundary in the final plot, although the true hyperplane is most likely in greater than two dimensions.
+
+\hfill
+
+```{r}
+best.linear <- svm(mileage ~ . - mpg,
+                   data = Auto,
+                   kernel = 'linear',
+                   cost = 1)
+best.poly <- svm(mileage ~ . - mpg,
+                 data = Auto,
+                 kernel = 'polynomial',
+                 degree = poly.summary$best.parameters[2],
+                 cost = poly.summary$best.parameters[1])
+best.radial <- svm(mileage ~ . - mpg,
+                   data = Auto,
+                   kernel = 'radial',
+                   gamma = radial.summary$best.parameters[2],
+                   cost = radial.summary$best.parameters[1])
+
+# plot.svm not working for some reason...reverting to ggplot2
+ggplot(Auto, aes(horsepower,
+                 displacement,
+                 color = factor(mileage, levels = c(0, 1)))) +
+    geom_point() +
+    xlab("Horsepower") +
+    ylab("Displacement") +
+    labs(color = "Class")
+
+ggplot(Auto, aes(acceleration,
+                 displacement,
+                 color = factor(mileage, levels = c(0, 1)))) +
+    geom_point() +
+    xlab("Acceleration") +
+    ylab("Displacement") +
+    labs(color = "Class")
+
+ggplot(Auto, aes(acceleration,
+                 horsepower,
+                 color = factor(mileage, levels = c(0, 1)))) +
+    geom_point() +
+    xlab("Acceleration") +
+    ylab("Horsepower") +
+    labs(color = "Class")
+```
 
 
