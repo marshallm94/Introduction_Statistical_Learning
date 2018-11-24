@@ -795,4 +795,174 @@ ggplot(Auto, aes(acceleration,
     labs(color = "Class")
 ```
 
+\hfill
+
+## 8
+
+* **A**.
+
+\hfill
+
+```{r}
+detach(Auto)
+attach(OJ)
+
+set.seed(5)
+train <- sample(dim(OJ)[1], 800)
+oj.train <- OJ[train,]
+oj.test <- OJ[-train,]
+```
+
+\hfill
+
+* **B**. 219 of the 439 support vectors are of the CH (Citrus Hill) class, leaving 220 from the MM (Minute Maid) class.
+
+\hfill
+
+```{r}
+svm.mod <- svm(Purchase ~ .,
+               data = oj.train,
+               kernel = 'linear',
+               cost = 0.01)
+summary(svm.mod)
+```
+
+\hfill
+
+* **C**. Interestingly, the test set predictions are more accurate than the training set predicitons, with an accuracy of 84.81% (as opposed to a training accuracy of 82.25%)
+
+\hfill
+
+```{r}
+train.error <- predict(svm.mod, oj.train)
+test.error <- predict(svm.mod, oj.test)
+
+# training error
+confusionMatrix(train.error, oj.train$Purchase)
+# testing error
+confusionMatrix(test.error, oj.test$Purchase)
+```
+
+\hfill
+
+* **D**.
+
+\hfill
+
+```{r}
+cost.values <- c(0.01, 0.1, 1, 3, 5, 7, 10)
+tune.out <- tune(svm,
+                 Purchase ~ .,
+                 data = oj.train,
+                 kernel = 'linear',
+                 ranges = list(cost = cost.values))
+summary(tune.out)
+```
+
+\hfill
+
+* **E**. Using the tuned model (with a new cost of 1), the training error improves at the cost of the testing error.
+
+\hfill
+
+```{r}
+train.error <- predict(tune.out$best.model, oj.train)
+test.error <- predict(tune.out$best.model, oj.test)
+
+# training error
+confusionMatrix(train.error, oj.train$Purchase)
+# testing error
+confusionMatrix(test.error, oj.test$Purchase)
+```
+
+\hfill
+
+* **F**.
+
+\hfill
+
+```{r}
+svm.radial <- svm(Purchase ~ .,
+                  data = oj.train,
+                  kernel = 'radial',
+                  cost = 0.01)
+summary(svm.radial)
+
+# prediction
+train.error <- predict(svm.radial, oj.train)
+test.error <- predict(svm.radial, oj.test)
+
+# training error
+confusionMatrix(train.error, oj.train$Purchase)
+# testing error
+confusionMatrix(test.error, oj.test$Purchase)
+
+# model tuning
+cost.values <- c(0.01, 0.1, 1, 3, 5, 7, 10)
+tune.out <- tune(svm,
+                 Purchase ~ .,
+                 data = oj.train,
+                 kernel = 'radial',
+                 ranges = list(cost = cost.values))
+summary(tune.out)
+
+# tuned model evaluation
+train.error <- predict(tune.out$best.model, oj.train)
+test.error <- predict(tune.out$best.model, oj.test)
+
+# training error
+confusionMatrix(train.error, oj.train$Purchase)
+# testing error
+confusionMatrix(test.error, oj.test$Purchase)
+```
+
+\hfill
+
+* **G**.
+
+\hfill
+
+```{r}
+svm.poly <- svm(Purchase ~ .,
+                data = oj.train,
+                kernel = 'polynomial',
+                degree = 2,
+                cost = 0.01)
+summary(svm.poly)
+
+# prediction
+train.error <- predict(svm.poly, oj.train)
+test.error <- predict(svm.poly, oj.test)
+
+# training error
+confusionMatrix(train.error, oj.train$Purchase)
+# testing error
+confusionMatrix(test.error, oj.test$Purchase)
+
+# model tuning
+cost.values <- c(0.01, 0.1, 1, 3, 5, 7, 10)
+tune.out <- tune(svm,
+                 Purchase ~ .,
+                 data = oj.train,
+                 kernel = 'polynomial',
+                 degree = 2,
+                 ranges = list(cost = cost.values))
+summary(tune.out)
+
+# tuned model evaluation
+train.error <- predict(tune.out$best.model, oj.train)
+test.error <- predict(tune.out$best.model, oj.test)
+
+# training error
+confusionMatrix(train.error, oj.train$Purchase)
+# testing error
+confusionMatrix(test.error, oj.test$Purchase)
+```
+
+\hfill
+
+* **H**. With 85.56% accuracy on the test set and only a slight dip to 83.88% accuracy on the training set, the polynomial model of degree 2 and a cost of 10 seems to be the most appropriate model for this data.
+
+
+
 
