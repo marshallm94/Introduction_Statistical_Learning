@@ -81,6 +81,8 @@ plot(hclust(as.dist(x), method = 'complete'),
 abline(v = 2.5, col = 'red', lty = 2)
 ```
 
+\hfill
+
 ## 3
 
 * **A**.
@@ -209,6 +211,14 @@ ggplot(df, aes(x = x1, y = x2, color = group)) +
     ylab('X2') +
     ggtitle('Cluster Assignments after 20 Iterations')
 ```
+
+\hfill
+
+## 4
+
+\hfill
+
+* **A**. *Assuming the maximal intercluster dissimilarity is* **not equal** *to the minimal intercluster dissimilarity*, the clusters {1, 2, 3} and {4, 5} will be fused higher on the dendrogrogram when complete linkage is used. While complete linkage uses the *maximal* intercluster dissimilarity, single linkage uses the *minimal* intercluster dissimilarity. So, if the first assumption is held, using complete linkage will lead to the fusion occurring higher on the dendrogram. However, if the maximal intercluster dissimilarity is equal to the minimal intercluster dissimilarity, then they would fuse at the same height, regardless of the linkage method used.
 
 # Resources
 
