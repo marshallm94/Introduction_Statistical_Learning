@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 10 Exercises"
 author: "Marshall McQuillen"
-date: "12/27/2018"
+date: "2/8/2019"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -81,6 +81,107 @@ plot(hclust(as.dist(x), method = 'complete'),
 abline(v = 2.5, col = 'red', lty = 2)
 ```
 
+## 3
+
+* **A**.
+
+\hfill
+
+```{r}
+suppressPackageStartupMessages(library(ggplot2))
+df <- data.frame(x1 = c(1,1,0,5,6,4),
+                 x2 = c(4,3,4,1,2,0))
+qplot(df$x1, df$x2, xlab = 'X1', ylab = 'X2')
+```
+
+\hfill
+
+* **B**.
+
+\hfill
+
+```{r}
+suppressPackageStartupMessages(library(knitr))
+df$group <- sample(c('A','B'), 6, replace = TRUE)
+knitr::kable(df, caption = 'Sample Data with Group Assignments')
+```
+
+\hfill
+
+* **C**.
+
+\hfill
+
+```{r}
+group.a <- subset(df, group == 'A')
+group.b <- subset(df, group == 'B')
+
+# centroid calculation
+calculate.centroid <- function(df, variables=c('x1','x2')) {
+    
+    coordinates <- NULL
+    
+    for (variable in variables) {
+        column.mean <- mean(df[, variable])
+        coordinates <- c(column.mean, coordinates)
+    }
+    
+    return(coordinates)
+}
+group.a.centroid <- calculate.centroid(group.a)
+group.b.centroid <- calculate.centroid(group.b)
+print(paste("Group A centroid at coordinates",
+            round(group.a.centroid[1], 2), 'and', round(group.a.centroid[2], 2)))
+print(paste("Group B centroid at coordinates",
+            round(group.b.centroid[1], 2), 'and', round(group.b.centroid[2], 2)))
+```
+
+\hfill
+
+* **D**.
+
+\hfill
+
+```{r}
+centroid.matrix <- matrix(c(group.a.centroid, group.b.centroid),
+                            nrow = 2, 
+                            ncol = 2)
+rownames(centroid.matrix) <- c('A','B')
+
+reassign.cluster <- function(df,
+                             col.idx=c(1,2),
+                             cluster.column='group',
+                             cluster.labels=c('A','B'),
+                             centroids=centroid.matrix) {
+    
+    df.matrix <- as.matrix(df[, col.idx])
+
+    updated.labels <- NULL
+    for (i in 1:dim(df.matrix)[1]) {
+
+        sqr.manhattan.dist <- (df.matrix[i, ] - centroids)^2
+        euclidean.dist <- sqrt(colSums(sqr.manhattan.dist))
+        closest.centroid <- which.min(euclidean.dist)
+        updated.labels <- c(updated.labels, cluster.labels[closest.centroid])
+
+    }
+    
+    return(data.frame(df.matrix, group = updated.labels))
+
+}
+updated.df <- reassign.cluster(df)
+knitr::kable(updated.df, caption = "Sample Data After One Reassignment Iteration")
+```
+
+\hfill
+
+* **E**.
+
+\hfill
+
+```{r}
+
+```
 # Resources
 
 [Dendrograms in R](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning)
