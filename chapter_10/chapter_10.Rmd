@@ -146,7 +146,6 @@ print(paste("Group B centroid at coordinates",
 centroid.matrix <- matrix(c(group.a.centroid, group.b.centroid),
                             nrow = 2, 
                             ncol = 2)
-rownames(centroid.matrix) <- c('A','B')
 
 reassign.cluster <- function(df,
                              col.idx=c(1,2),
@@ -180,8 +179,37 @@ knitr::kable(updated.df, caption = "Sample Data After One Reassignment Iteration
 \hfill
 
 ```{r}
-
+for (i in 1:20) {
+    # split data
+    group.a <- subset(df, group == 'A')
+    group.b <- subset(df, group == 'B')
+    
+    # recalculate centroid
+    group.a.centroid <- calculate.centroid(group.a)
+    group.b.centroid <- calculate.centroid(group.b)
+    
+    # create centroid matrix
+    centroid.matrix <- matrix(c(group.a.centroid, group.b.centroid), nrow = 2, ncol = 2)
+    
+    # re-assign group labels
+    df <- reassign.cluster(df)
+}
 ```
+
+\hfill
+
+* **F**.
+
+\hfill
+
+```{r}
+ggplot(df, aes(x = x1, y = x2, color = group)) +
+    geom_point() +
+    xlab('X1') +
+    ylab('X2') +
+    ggtitle('Cluster Assignments after 20 Iterations')
+```
+
 # Resources
 
 [Dendrograms in R](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning)
