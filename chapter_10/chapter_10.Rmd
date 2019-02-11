@@ -220,6 +220,8 @@ ggplot(df, aes(x = x1, y = x2, color = group)) +
 
 * **A**. *Assuming the maximal intercluster dissimilarity is* **not equal** *to the minimal intercluster dissimilarity*, the clusters {1, 2, 3} and {4, 5} will be fused higher on the dendrogrogram when complete linkage is used. While complete linkage uses the *maximal* intercluster dissimilarity, single linkage uses the *minimal* intercluster dissimilarity. So, if the first assumption is held, using complete linkage will lead to the fusion occurring higher on the dendrogram. However, if the maximal intercluster dissimilarity is equal to the minimal intercluster dissimilarity, then they would fuse at the same height, regardless of the linkage method used.
 
+* **B**. Assuming that in both scenarios the clusters {5} and {6} are by themselves (i.e. not joined with any other clusters/observations), then the clusters would be joined at the same height regardless of whether single or complete linkage were to be used. As stated in part **A**, complete linkage uses the maximal intercluster dissimilarity while single linkage uses the minimal intercluster dissimilarity. In this scenario, both "clusters" only have one observation in them so the maximal and minimal intercluster dissimilarity will be the exact same. 
+
 # Resources
 
 [Dendrograms in R](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning)
