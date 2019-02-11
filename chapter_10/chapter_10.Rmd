@@ -222,6 +222,24 @@ ggplot(df, aes(x = x1, y = x2, color = group)) +
 
 * **B**. Assuming that in both scenarios the clusters {5} and {6} are by themselves (i.e. not joined with any other clusters/observations), then the clusters would be joined at the same height regardless of whether single or complete linkage were to be used. As stated in part **A**, complete linkage uses the maximal intercluster dissimilarity while single linkage uses the minimal intercluster dissimilarity. In this scenario, both "clusters" only have one observation in them so the maximal and minimal intercluster dissimilarity will be the exact same. 
 
+\pagebreak
+
+## 5
+
+The three different scaling options, and the results that one would expect by running the $K$-means algorithm with K = 2 are:
+
+\setlength{\leftskip}{1cm}
+
+* *Variables unscaled* - Since the number of socks purchased will be greater than the number of computers purchased and will drive the dissimilarity between the clusters, one would expect the two clusters to be determined by the number of pairs of socks an indiviual shopper purchases. Perhaps those shoppers that purchased seven or fewer pairs of socks would be in one cluster and those who purchased more would be in the other cluser, or something similar.
+
+* *Variables scaled to have standard deviation one* - When the number of items purchased is scaled by that item's standard deviation across the data set, then each variable is given (roughly) equal importance in the clustering algorithm, therefore one would expect clusters with those that bought computers and those that did not buy computers (the *quantity* of socks purchased would have very little affect on the clusters, since the computer variable could conceptually be grouped into the "haves" and the "have not's").
+
+* *Variables scaled by dollars spent* - If the variables were measured in dollars spent (as opposed to quantity purchased), then one would expect the clusters to be dominated by whether a particular shopper purchased a computer or not.
+
+\setlength{\leftskip}{0cm}
+
+\hfill
+
 # Resources
 
 [Dendrograms in R](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning)
