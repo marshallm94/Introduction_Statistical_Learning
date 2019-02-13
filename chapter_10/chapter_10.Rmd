@@ -240,6 +240,32 @@ The three different scaling options, and the results that one would expect by ru
 
 \hfill
 
+## 6
+
+\setlength{\leftskip}{1cm}
+
+* **A**. As shown in the equation below, the total variance in a data set is defined as the summation across all columns of the summation of the squared elements in attribute $j$ divided by $N$ (assuming each column has been centered to have mean 0).
+
+$$
+\sum_{j=1}^{P} Var(\mathbf{X}) = \sum_{j=1}^{P} \frac{1}{N} \sum_{i=1}^{N}x_{i,j}^2 = Total~Variance~in~\mathbf{X}
+$$
+
+After the data set has been "mapped" onto the principal components, saying the $m^{th}$ principal component explaines 10% of the variance in the data set is saying that the summation of the squared elements *of the principal component* divided by $N$ is equal to 10% of the original variation (given in the equation above) in the data set.
+
+
+$$
+\frac{\sum_{i=1}^{N} z_{i,m}^2}{\sum_{j=1}^{P} \frac{1}{N} \sum_{i=1}^{N}x_{i,j}^2} = 0.1~~~where~~~ z_{i,m}^2 = \left( \sum_{j=1}^{P} \phi_{j,m}x_{i,j} \right)^2
+$$
+where $\phi_{j,m}$ = the loading associated with the $j^{th}$ column for the $m^{th}$ principal component.
+
+
+
+\setlength{\leftskip}{0cm}
+
+\hfill
+
+
+
 # Resources
 
 [Dendrograms in R](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning)
