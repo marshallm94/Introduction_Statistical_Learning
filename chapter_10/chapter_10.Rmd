@@ -258,7 +258,19 @@ $$
 $$
 where $\phi_{j,m}$ = the loading associated with the $j^{th}$ column for the $m^{th}$ principal component.
 
+\pagebreak
 
+* **B**. First and foremost, performing a two-sample $t$-test on *each* gene in the data set, where the two samples are the control group and the treatment group, would be 1000 statistical tests. This would require some statistical method for controlling the family wise error rate, either the Bonferroni Correction or the Benjamini-Hochberg Procedure$^{[1]}$.
+
+In addition, each tissue sample (represented as columns in $\mathbf{X}$) was processed on a different day, and the columns are ordered in a manner such that, "the samples that were processed earliest are on the left, and the samples that were processed later are on the right." In addition, two different machines were used to measure gene expression, and machine A was used more often in the earlier tests, while machine B was used more often later.
+
+There are a couple points to make about information in the above paragraph:
+
+1. Only one machine should have been used during the experiment. Even if the machines are of the exact same type, one can't rule out that small variations in the gene expression measurements could be attributed to the different machines, as opposed to actual differences in the expression of the gene.
+
+2. Since the tissue measurements were taken across a period of time, the "linear relationship from left to right" that the researched observed in the first principal component is likely capturing the two different machines being used, as opposed to true differences in gene expression (in addition, the linear relationship could be indicating that gene expression is changing over time, although a geneticist would be needed to speak to the validity of that).
+
+Although this would appear obvious and not worth mentioning, there is a little ambiguity in the phrasing of the textbook question, therefore I will make one more point. Performing $t$-tests on the *transformed* data set would not serve the overall purpose of the analysis, that being determining if there is a statistically significant difference of gene expression between the control group and the treatment group. The transformed data set would be a 100 by $M$ principal components data set, therefore running statistical tests would only tell the researcher whether there are statistically significant differences in the principal component scores across tissue samples. If the researcher performed PCA as a pre-analysis *and then reverted back to the original $\mathbf{X}$*, than this point is moot.
 
 \setlength{\leftskip}{0cm}
 
@@ -266,6 +278,8 @@ where $\phi_{j,m}$ = the loading associated with the $j^{th}$ column for the $m^
 
 
 
-# Resources
+# Resources & References
 
 [Dendrograms in R](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning)
+
+$^{[1]}$ [Multiple Comparisons Overview](http://www.biostathandbook.com/multiplecomparisons.html)
