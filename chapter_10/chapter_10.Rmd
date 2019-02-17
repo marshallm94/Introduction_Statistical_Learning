@@ -260,19 +260,59 @@ where $\phi_{j,m}$ = the loading associated with the $j^{th}$ column for the $m^
 
 \pagebreak
 
-* **B**. First and foremost, performing a two-sample $t$-test on *each* gene in the data set, where the two samples are the control group and the treatment group, would be 1000 statistical tests. This would require some statistical method for controlling the family wise error rate, either the Bonferroni Correction or the Benjamini-Hochberg Procedure$^{[1]}$.
+* **B**. First and foremost, performing a two-sample $t$-test on *each* gene in the data set, where the two samples are the control group and the treatment group, would be 1000 statistical tests. This would require some statistical method for controlling the family wise error rate, either the Bonferroni Correction or the Benjamini-Hochberg Procedure$^{[1]}$, and even then, these procedures are not built to handle a test quantity of that size.
 
 In addition, each tissue sample (represented as columns in $\mathbf{X}$) was processed on a different day, and the columns are ordered in a manner such that, "the samples that were processed earliest are on the left, and the samples that were processed later are on the right." In addition, two different machines were used to measure gene expression, and machine A was used more often in the earlier tests, while machine B was used more often later.
 
 There are a couple points to make about information in the above paragraph:
 
-1. Only one machine should have been used during the experiment. Even if the machines are of the exact same type, one can't rule out that small variations in the gene expression measurements could be attributed to the different machines, as opposed to actual differences in the expression of the gene.
+1. Only one machine should have been used during the experiment. Even if the machines are of the exact same type, one can't rule out that small variations in the gene expression measurements could be attributed to the different machines, as opposed to actual differences in the expression of the gene. I would imagine this would be especially pertinent with gene expression data, however a geneticist would be required to speak more to this point.
 
 2. Since the tissue measurements were taken across a period of time, the "linear relationship from left to right" that the researched observed in the first principal component is likely capturing the two different machines being used, as opposed to true differences in gene expression (in addition, the linear relationship could be indicating that gene expression is changing over time, although a geneticist would be needed to speak to the validity of that).
 
-Although this would appear obvious and not worth mentioning, there is a little ambiguity in the phrasing of the textbook question, therefore I will make one more point. Performing $t$-tests on the *transformed* data set would not serve the overall purpose of the analysis, that being determining if there is a statistically significant difference of gene expression between the control group and the treatment group. The transformed data set would be a 100 by $M$ principal components data set, therefore running statistical tests would only tell the researcher whether there are statistically significant differences in the principal component scores across tissue samples. If the researcher performed PCA as a pre-analysis *and then reverted back to the original $\mathbf{X}$*, than this point is moot.
+Although this would appear obvious and not worth mentioning, there is a little ambiguity in the phrasing of the textbook question, therefore I will make one more point. Performing $t$-tests on the *transformed* data set would not serve the overall purpose of the analysis, that being determining if there is a statistically significant difference of gene expression between the control group and the treatment group *for each gene*. The transformed data set would be a 100 by $M$ principal components data set, therefore running statistical tests would only tell the researcher whether there are statistically significant differences in the *principal component* scores across tissue samples. If the researcher performed PCA as a pre-analysis *and then reverted back to the original $\mathbf{X}$*, than this point is moot.
 
 \setlength{\leftskip}{0cm}
+
+* **C**. The majority of what I would change about the experiment would fall into the experimental design category - i.e. only using one machine for gene expression measurement, implementing the Benjamini-Hochberg procedure (or, ideally, choose a few genes to test from this sample and only test those, as opposed to 1000 statistical tests), keeping the randomization of the tissue samples for the control and treatment group being processed on random days, etc. In addition, one would want to determine if the Normality assumption of the $t$-test holds for genetic variation, whether that be visually looking at QQ plots or performing the Shapiro-Wilk test.
+
+\pagebreak
+
+As shown below, even with a False Discovery Rate of 0.25 (rather high), no tests are deemed significant using the Benjamini-Hochberg Procedure.
+
+\hfill
+
+```{r}
+set.seed(10000)
+control <- matrix(rnorm(1000*50), nrow = 50, ncol = 1000)
+treatment <- matrix(rnorm(1000*50), nrow = 50, ncol = 1000)
+
+df <- data.frame(rbind(control, treatment))
+df$group <- sample(c('Control','Treatment'), 100, replace = TRUE)
+
+genes <- colnames(df)
+genes <- genes[1:length(genes) - 1]
+p.values <- NULL
+for (gene in genes) {
+    result <- t.test(df[df$group == 'Control', gene], df[df$group != 'Control', gene])
+    p.values <- c(p.values, result$p.value)
+}
+
+results.df <- data.frame(Gene = genes,
+                         PValue = p.values)
+results.df <- results.df[order(results.df$PValue),]
+results.df$Rank <- seq(1, 1000, 1)
+rownames(results.df) <- results.df$Rank
+
+total.tests <- length(genes)
+fdr <-  0.25
+
+results.df$BHValue <- results.df$Rank / total.tests * fdr
+results.df$Significant <- ifelse(results.df$PValue < results.df$BHValue, 1, 0)
+knitr::kable(head(results.df),
+             caption = 'Top Statistical Tests Results: Control vs. Treatment')
+```
+
 
 \hfill
 
