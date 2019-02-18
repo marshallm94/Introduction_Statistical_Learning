@@ -331,6 +331,48 @@ knitr::kable(constant[1:5,1:5],
              caption = "$(1 - Cor(x_i, y_i)) = Dist(x_i, y_i)^2 * Constant$")
 ```
 
+\hfill
+
+## 8
+
+* **A**. Noting that I chose to standardize the data so each attribute is weighted equally.
+
+\hfill
+
+```{r}
+scaled.df <- scale(USArrests)
+pca <- prcomp(scaled.df)
+pve <-  pca$sdev^2 / sum(pca$sdev^2)
+```
+
+\hfill
+
+* **B**.
+
+\hfill
+
+```{r}
+# total variance in X
+total.var <- 0
+len <- dim(scaled.df)[1]
+for (i in 1:dim(scaled.df)[2]) {
+    col.var <- sum(scaled.df[,i]^2)
+    total.var <- total.var + col.var
+}
+
+transformed.df <- scaled.df %*% pca$rotation
+manual.pve <- NULL
+for (i in 1:dim(transformed.df)[2]){
+    col.var <- sum(transformed.df[,i]^2)
+    manual.pve <- c(manual.pve, col.var/total.var)
+}
+knitr::kable(data.frame(PrincipalComponent = 1:4,
+                        AutomaticPVE = pve,
+                        ManualPVE = manual.pve),
+             caption = 'Proportion of Variance Explained')
+```
+
+\hfill
 
 # Resources & References
 
