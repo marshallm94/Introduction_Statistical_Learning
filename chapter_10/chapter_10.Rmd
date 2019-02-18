@@ -374,6 +374,66 @@ knitr::kable(data.frame(PrincipalComponent = 1:4,
 
 \hfill
 
+## 9
+
+* **A**.
+
+\hfill
+
+```{r}
+df <- USArrests
+complete <- hclust(dist(df), method = 'complete')
+```
+
+\hfill
+
+* **B**.
+
+\hfill
+
+```{r}
+suppressPackageStartupMessages(library(ggdendro))
+
+label.df <- data.frame(labels = c('Cluster C','Cluster B','Cluster A'),
+                       x = c(7, 24, 42),
+                       y = (rep(125, 3)))
+
+ggdendrogram(complete, rotate = TRUE, theme_dendro = FALSE) +
+    geom_hline(yintercept = 150, col = 'red', lty = 2) +
+    geom_vline(xintercept = 16.5, col = 'blue', lty = 2) +
+    geom_vline(xintercept = 30.5, col = 'blue', lty = 2) +
+    geom_label(data = label.df, aes(x = x, y = y, label = labels)) +
+    ggtitle("Complete Linkage & Euclidean Distance Clustering") +
+    xlab('') +
+    ylab('Fusion Height')
+
+clusters <- cutree(complete, 3)
+clusters
+```
+
+\pagebreak
+
+* **C**.
+
+\hfill
+
+```{r}
+complete.scaled <- hclust(dist(scale(df)), method = 'complete')
+```
+
+\hfill
+
+* **D**. Clustering on scaled data yields what could be described as a more 'uniform' dendrogram - the branches seem to fuse at a more continuous pace, with no blatantly obvious height at which the tree should be cut, creating $K$ clusters. That said, it is my opinion that the attributes should be scaled in order standardize the units of each variable and not overweight any variable that might have been measured on a completely different scale than the others.
+
+\hfill
+
+```{r}
+ggdendrogram(complete.scaled, rotate = TRUE, theme_dendro = FALSE) +
+    ggtitle("Complete Linkage & Euclidean Distance Clustering on Scaled Data") +
+    xlab('') +
+    ylab('Fusion Height')
+```
+
 # Resources & References
 
 [Dendrograms in R](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning)
