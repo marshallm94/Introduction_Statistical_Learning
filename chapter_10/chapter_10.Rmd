@@ -313,9 +313,23 @@ knitr::kable(head(results.df),
              caption = 'Top Statistical Tests Results: Control vs. Treatment')
 ```
 
+\pagebreak
 
-\hfill
+# Applied
 
+## 7
+
+```{r}
+df <- USArrests
+scaled.df <- t(scale(t(df)))
+euc.df.scale <- as.matrix(dist(scaled.df))
+# using the transpose to perform a row-wise correlation as opposed to column-wise correlation
+cor.df <- cor(t(scaled.df))
+
+constant <- (euc.df.scale^2) / (1 - cor.df)
+knitr::kable(constant[1:5,1:5],
+             caption = "$(1 - Cor(x_i, y_i)) = Dist(x_i, y_i)^2 * Constant$")
+```
 
 
 # Resources & References
