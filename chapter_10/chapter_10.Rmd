@@ -434,6 +434,111 @@ ggdendrogram(complete.scaled, rotate = TRUE, theme_dendro = FALSE) +
     ylab('Fusion Height')
 ```
 
+\pagebreak
+
+## 10
+
+* **A**. Creating separation in three dimension between the three classes.
+
+\hfill
+
+```{r}
+set.seed(10000)
+df <- data.frame(
+    matrix(rnorm(60*50),
+           ncol = 50,
+           nrow = 60)
+)
+df$class <- sample(c('A','B','C'), replace = TRUE)
+
+dimensions <- sample(1:50, 3)
+for (i in dimensions) {
+    df[df$class == 'A',i] <- df[df$class == 'A', i] + sample(5:10, 1)
+    df[df$class == 'B',i] <- df[df$class == 'B', i] - sample(-15:-5, 1)
+    df[df$class == 'C',i] <- df[df$class == 'C', i] + sample(20:30, 1)
+}
+```
+
+\hfill
+
+* **B**.
+
+\hfill
+
+```{r}
+# excluding the class labels column
+pca <- prcomp(df[,1:(dim(df)[2] - 1)])
+transformed.df <- data.frame(pca$x)
+transformed.df$class <- df$class
+ggplot(df, aes(x = transformed.df$PC1, y = transformed.df$PC2, color = transformed.df$class)) +
+    geom_point() +
+    xlab("Principal Component 1") +
+    ylab("Principal Component 2") +
+    labs(color = 'Class')
+```
+
+\hfill
+
+* **C**. $K$-means perfectly classifies all observations.
+
+\hfill
+
+```{r}
+# excluding the class labels column
+km.out <- kmeans(df[,1:(dim(df)[2] - 1)], centers = 3, nstart = 20)
+table(km.out$cluster, df$class)
+```
+
+\pagebreak,
+
+* **D**. As shown in the table below, performing $K$-means with 2 clusters results in the algorithm grouping classes $A$ and $B$ together. Looking at the plot of the three distinct clusters above, this makes sense as there is a greater division between class $C$ and the other two if grouped together than any other grouping. Another way to look at this is, if one were to create a "self vs. others" SVM for each of the three classes, the margin would be far and away the widest for the "class C vs. others" classfier.
+
+\hfill
+
+```{r}
+km.out <- kmeans(df[,1:(dim(df)[2] - 1)], centers = 2, nstart = 20)
+table(km.out$cluster, df$class)
+```
+
+\hfill
+
+* **E**. Using 4 clusters, class $B$ gets split into two separate clusters. Replicating the above plot below, this time coloring the observations based on the assignments from $K$-means, this becomes apparent. Although there isn't a clear delineation between classes 1 and 3 in the below plot, that is an artifact of only plotting in two dimensions.
+
+\hfill
+
+```{r}
+km.out <- kmeans(df[,1:(dim(df)[2] - 1)], centers = 4, nstart = 20)
+table(km.out$cluster, df$class)
+ggplot(df, aes(x = transformed.df$PC1, y = transformed.df$PC2, color = factor(km.out$cluster))) +
+    geom_point() +
+    xlab("Principal Component 1") +
+    ylab("Principal Component 2") +
+    labs(color = 'K-means Class')
+```
+
+\hfill
+
+* **F**. Performing $K$-means on the first two principal components perfectly classifies the data
+
+\hfill
+
+```{r}
+km.pca <- kmeans(pca$x[,1:2], centers = 3, nstart = 20)
+table(km.pca$cluster, df$class)
+```
+
+\hfill
+
+* **G**. As shown in the table below, performing $K$-means on scaled data does *not* always lead to superior results.
+
+\hfill
+
+```{r}
+km.out <- kmeans(scale(df[,1:(dim(df)[2] - 1)]), centers = 3, nstart = 20)
+table(km.out$cluster, df$class)
+```
+
+
 # Resources & References
 
 [Dendrograms in R](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning)
