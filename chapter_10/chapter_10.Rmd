@@ -538,9 +538,82 @@ km.out <- kmeans(scale(df[,1:(dim(df)[2] - 1)]), centers = 3, nstart = 20)
 table(km.out$cluster, df$class)
 ```
 
+\hfill
+
+## 11
+
+* **A**.
+
+\hfill
+
+```{r}
+df <- read.csv("Ch10Ex11.csv", header = F, colClasses = rep('numeric', 40))
+row.names <- NULL
+for (i in 1:1000) {
+    row.names <- c(row.names, paste('gene',i,sep = ''))
+}
+rownames(df) <- row.names
+```
+
+\hfill
+
+* **B**. There is definitely some interesting behaviour when drawing dendrogram's with this data. Most notably, although there isn't a fusion height at which one could cut the dendrogram and have the diseased and healthy tissue samples cleanly separate into two groups, the diseased tissue samples are grouped into one cluster at lower height *across all three linkage methods*. This suggests that all diseased tissue samples are less dissimilar than all the healthy tissue samples across the genes measured.
+
+\hfill
+
+```{r}
+suppressPackageStartupMessages(library(dendextend))
+distance <- as.dist(1 - cor(df))
+
+complete.clust <- as.dendrogram(hclust(distance, method = 'complete'))
+single.clust <- as.dendrogram(hclust(distance, method = 'single'))
+average.clust <- as.dendrogram(hclust(distance, method = 'average'))
+
+# assigning red to be 'Healthy' tissue samples and blue to be 'Diseased' tissue samples
+class.colors <- ifelse(order.dendrogram(complete.clust) <= 20, 'red','blue')
+labels_colors(complete.clust) <- class.colors
+plot(complete.clust, main = 'Complete Linkage', ylab = 'Fusion Height', xlab = 'Tissue Sample')
+legend(1, 1.1, legend = c('Healthy','Diseased'), fill = c('red','blue'), cex = 0.8)
+
+class.colors <- ifelse(order.dendrogram(single.clust) <= 20, 'red','blue')
+labels_colors(single.clust) <- class.colors
+plot(single.clust, main = 'Single Linkage', ylab = 'Fusion Height', xlab = 'Tissue Sample')
+legend(30, 0.95, legend = c('Healthy','Diseased'), fill = c('red','blue'), cex = 0.8)
+
+class.colors <- ifelse(order.dendrogram(average.clust) <= 20, 'red','blue')
+labels_colors(average.clust) <- class.colors
+plot(average.clust, main = 'Average Linkage', ylab = 'Fusion Height', xlab = 'Tissue Sample')
+legend(15, 0.95, legend = c('Healthy','Diseased'), fill = c('red','blue'), cex = 0.8)
+```
+
+\hfill
+
+* **C**. Looking at the plot below, there is clear separation between the diseased and healthy tissue samples in the first principal component. One can look at the sorted loadings for the first principal component to determine which genes have the largest input on the principal component score, and therefore the largest affect on explaining variance in the tissue samples.
+
+\hfill 
+
+```{r}
+df.t <- data.frame(t(df))
+df.t$class <- factor(c(rep('Healthy', 20), rep('Diseased', 20)))
+
+pca.out <- prcomp(df.t[, 1:dim(df.t)[2] - 1])
+transformed.df <- data.frame(pca.out$x)
+
+ggplot(transformed.df, aes(x = 1:40, y = PC1, color = factor(df.t$class))) +
+    geom_point() +
+    xlab("Index") +
+    ylab("Principal Component 1 Value") +
+    ggtitle("Gene Expression | Principal Component 1") +
+    labs(color = 'Class')
+
+pc.1 <- pca.out$rotation[,1]
+sorted.loadings <- pc.1[order(abs(pc.1), decreasing = T)]
+sorted.loadings[1:5]
+```
+
 
 # Resources & References
 
 [Dendrograms in R](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning)
 
-$^{[1]}$ [Multiple Comparisons Overview](http://www.biostathandbook.com/multiplecomparisons.html)
+$^{[1]}$ [Multiple Comparisons Overview](http://www.biostathandbook.com/multiplecomparisons.html))
