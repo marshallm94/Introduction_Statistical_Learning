@@ -11,6 +11,7 @@ This repo holds my answers for all lab exercises in the book "An Introduction to
 [Chapter 5](chapter_5/chapter_5.pdf)
 
 [Chapter 6](chapter_6/chapter_6.pdf)
+* For whatever reason, the plots from question's 6 and 8 are being swapped when displayed on GitHub. However, downloading the file should show them in a coherent manner.
 
 [Chapter 7](chapter_7/chapter_7.pdf)
 
