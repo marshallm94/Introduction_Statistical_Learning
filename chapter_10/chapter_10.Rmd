@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 10 Exercises"
 author: "Marshall McQuillen"
-date: "2/8/2019"
+date: "2/18/2019"
 output: 
   pdf_document: 
     latex_engine: xelatex
