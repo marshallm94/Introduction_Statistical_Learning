@@ -239,7 +239,7 @@ f(x) = \left( y_1 - \beta_1 x_1 - \beta_2 x_1 \right)^2 +
 \lambda \left( | \beta_1 | + | \beta_2 | \right)
 $$
 
-\pagebreak
+\hfill
 
 * **D**. The reason that the lasso coefficients are not unique can be best approached through geometric and visual explanation.
 
