@@ -5,6 +5,7 @@ date: "8/3/2018"
 output: 
   pdf_document: 
     latex_engine: xelatex
+urlcolor: blue
 ---
 
 # Conceptual
@@ -99,7 +100,7 @@ $$
 
 \setlength{\leftskip}{1cm}
 
-Written out when $n=p=0$, the equation comes to:
+Written out when $n=p=2$, the equation comes to:
 
 $$
 \left( y_1 - \beta_0 - \beta_1x_{11} - \beta_2x_{12} \right)^2 +
@@ -238,7 +239,87 @@ f(x) = \left( y_1 - \beta_1 x_1 - \beta_2 x_1 \right)^2 +
 \lambda \left( | \beta_1 | + | \beta_2 | \right)
 $$
 
-* **D**. **NEED TO COME BACK TOO** 
+\pagebreak
+
+* **D**. The reason that the lasso coefficients are not unique can be best approached through geometric and visual explanation.
+
+\setlength{\leftskip}{1cm}
+
+It is known that in order to find the *minimum* of a function, one takes the derivative of said function, sets it (the derivative) equal to 0, and solves for the unkown variable (this by itself does not ensure a *minimum* - the second derivative of the function evaluated at $x$ must also be positive). In this case, the unknown variables are $\beta_1$ and $\beta_2$.
+
+The problem arises when one tries to take the derivative of the penalty term, shown below:
+
+$$
+\frac{\partial}{\partial(\beta_1)}{(\lambda(| \beta_1 | + | \beta_2 |))}
+$$
+
+The geometric manner of understanding the derivative can be understood as the slope of *the* tangeant line to the function $f(x)$ evaluated at $x$ (the operative word being "the," not "a"). As the secant line moves from position A to B to C in the plot of $f(x) = x^2$ below, the two points of each secant line that intersect $f(x)$ will eventually converge to one point (red point in plot), and there wil be *one* line that is tangeant to $f(x)$ at that point. This line represents the solution to the problem.
+
+\hfill
+
+```{r}
+suppressPackageStartupMessages(library(ggplot2))
+x <- seq(-5,5,0.1)
+
+# plot X^2
+label.df <- data.frame(labels = c('Secant Line (position A)',
+                                  'Secant Line (position B)',
+                                  'Secant Line (position C)',
+                                  'Tangent Line (final position)'),
+                       x = c(0, 0, 0, -3),
+                       y = c(15.2, 10.2, 5.2, 0.5))
+
+ggplot(data.frame(x = x,
+                  y = x^2), aes(x, y)) +
+    geom_line(col = 'blue') +
+    geom_hline(yintercept = 15, col = 'red', lty = 2) +
+    geom_hline(yintercept = 10, col = 'red', lty = 2) +
+    geom_hline(yintercept = 5, col = 'red', lty = 2) +
+    geom_hline(yintercept = 0, col = 'red', lty = 1) +
+    geom_point(data = data.frame(x = 0,
+                                 y = 0), aes(x, y), col = 'red', cex = 3) +
+    geom_label(data = label.df, aes(x = x, y = y, label = labels)) +
+    xlab("X") +
+    ylab("X^2") +
+    ggtitle("Derivative of Squared Value")
+```
+
+\hfill
+
+Alternatively, as shown below in the plot of $f(x) = |x|$, there are many (infinitely many to be exact), tangent lines to $f(x)$ evaluated at $x = 0$. Although the two points of the secant line to $f(x)$ eventually converge on the same point, there are numerous tangential lines at this point, each with its own unique slope. This shows that the equation is non-differentiable and therefore there is no unique solution. (more in-depth, linear algebra take on the problem [here](https://stats.stackexchange.com/questions/174003/why-is-my-derivation-of-a-closed-form-lasso-solution-incorrect))
+
+\hfill
+
+```{r}
+# plot abs(x)
+label.df <- data.frame(labels = c('Secant Line (position A)',
+                                  'Secant Line (position B)',
+                                  'Secant Line (position C)'),
+                       x = c(0, 0, -2.75),
+                       y = c(4.2, 2.2, 0.7))
+
+ggplot(data.frame(x = x,
+                  y = abs(x)), aes(x, y)) +
+    geom_line(col = 'blue') +
+    geom_hline(yintercept = 4, col = 'red', lty = 2) +
+    geom_hline(yintercept = 2, col = 'red', lty = 2) +
+    geom_hline(yintercept = 0.5, col = 'red', lty = 2) +
+    geom_label(data = label.df, aes(x = x, y = y, label = labels)) +
+    geom_abline(slope = 0.75, intercept = 0, col = 'red', lty = 1) +
+    geom_abline(slope = 0.5, intercept = 0, col = 'red', lty = 1) +
+    geom_abline(slope = 0.25, intercept = 0, col = 'red', lty = 1) +
+    geom_abline(slope = 0, intercept = 0, col = 'red', lty = 1) +
+    geom_abline(slope = -0.75, intercept = 0, col = 'red', lty = 1) +
+    geom_abline(slope = -0.5, intercept = 0, col = 'red', lty = 1) +
+    geom_abline(slope = -0.25, intercept = 0, col = 'red', lty = 1) +
+    geom_point(data = data.frame(x = 0,
+                             y = 0), aes(x, y), col = 'red', cex = 3) +
+    xlab("X") +
+    ylab("Absolute Value of X") +
+    ggtitle("Derivative of Absolute Value")
+```
+
+\setlength{\leftskip}{0cm}
 
 ## 6
 
@@ -730,7 +811,6 @@ sqrt(pls.test.mse)
 * **G**. Plotting the testing RMSE's of the five methods tested, it is clear that OLS, Ridge and Lasso are far superior to Principal Component Regression and Partial Least Squares. Since OLS produced a testing RMSE of just under 1000, this means that, *on average*, the prediction for the number of applications will be off by 983 using OLS.
 
 ```{r}
-library(ggplot2)
 errors <- c(sqrt(lm.test.mse),
   sqrt(ridge.test.mse),
   sqrt(lasso.test.mse),
