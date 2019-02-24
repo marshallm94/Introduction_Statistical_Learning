@@ -459,19 +459,36 @@ points(equation_estimate, col = 'green', cex = 4)
 * **A**. The Frequentist perspective, shown below, models the likelihood of the data as the element wise product of the output of the assumed PDF or PMF (the Gaussian PDF in this case), governed by a set of parameters ($\mathbf{\theta}$), evaluated for every $x_i$. The likelihood should (from the Frequentist perspective) be thought of as a function of $\theta$, holding $\mathbf{X}$ constant, and the *Maximum Likelihood Estimate* is the parameter or set of parameters $\theta$ that maximizes this quantity.
 
 $$
-L(\mathbf{\theta}|\mathbf{X}) = \prod_{i=1}^N g_{\theta}(x_i)~~~where~~~g_{\theta}(x) = \frac{1}{\sqrt{2\pi\sigma}}e^{\frac{(x - \mu)^2}{2\sigma^2}}
+L(\mathbf{\theta}|\mathbf{X}) = \prod_{i=1}^N g_{\theta}(x_i)~~~where~~~g_{\theta}(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{\frac{(x - \mu)^2}{2\sigma^2}}
 $$
 
 \setlength{\leftskip}{1cm}
 
 The above can be read as, "The likelihood that $\theta$ is the parameter or set of parameters that governs the probability distribution/population from which the data came *given the observed data*, is equal to the element wise product of the predefined probability distribution/mass function with $\theta$ as the parameter or set of parameters, evaluated for each $x_i$ in the data set."
 
-With regard to linear regression, $\mu$ is the linear combination of each $\beta_j$ and $x_{i,j}$, $\theta = \beta$, and $x$ in the Gaussian PDF is $y_i$. Therefore, the above equation becomes:
+With regard to linear regression, $\mu$ is the linear combination of each $\beta_j$ and $x_{i,j}$, $\theta = \beta$, and $x$ in the Gaussian PDF is $y_i$. In addition, maximum likelihood takes the maximum of the *log* likelihood. Therefore, the above equation becomes:
 
+\begin{align}
+\ell(\beta | \mathbf{X}) & = \sum_{i=1}^N log \left( g_{\beta}(x_i) \right) \\
+& = \sum_{i=1}^N log \left[ \frac{1}{\sigma\sqrt{2\pi}} \cdot e^{\frac{(x - \mu)^2}{2\sigma^2}} \right] \\
+& = \sum_{i=1}^N log \left[ \frac{1}{\sigma\sqrt{2\pi}} \cdot e^{\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2}} \right] \\
+& = \sum_{i=1}^N log \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \cdot log \left(e^{\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2}} \right) \\
+& = \sum_{i=1}^N log \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \cdot \left(\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2} \right) \\
+& = log \left( \frac{1}{\sigma\sqrt{2\pi}} \right)\sum_{i=1}^N \left(\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2} \right) \\
+& = log \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \sum_{i=1}^N \left( \frac{1}{2\sigma^2} \right) \cdot \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \\
+\ell(\beta | \mathbf{X}) & = log \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \cdot \left( \frac{1}{2\sigma^2} \right) \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \\
+\end{align}
 
-$$
-L(\mathbf{\beta}|\mathbf{X})  = \prod_{i=1}^N \frac{1}{\sqrt{2\pi\sigma}}e^{\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} + \epsilon_i \right)^2}{2\sigma^2}}
-$$
+\hfill
+
+* **B**.
+
+\begin{align}
+P(\beta | \mathbf{X}) & = \frac{P(\mathbf{X} | \beta) \cdot P(\beta)}{\int{P(\mathbf{X} | \beta) \cdot P(\beta)}d\beta} \\
+& = \left( \prod_{i=1}^N \frac{1}{\sqrt{2\pi\sigma}}e^{\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} + \epsilon_i \right)^2}{2\sigma^2}} \right) \cdot \left( \frac{1}{2b}\epsilon^{\frac{-|\beta|}{b}} \right) \\
+& = \left( \frac{1}{\sqrt{2\pi\sigma}} \right)^N \cdot \left( \prod_{i=1}^N e^{\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} + \epsilon_i \right)^2}{2\sigma^2}} \right) \cdot \left( \frac{1}{2b}\epsilon^{\frac{-|\beta|}{b}} \right) \\
+\end{align}
+
 
 \setlength{\leftskip}{0cm}
 
