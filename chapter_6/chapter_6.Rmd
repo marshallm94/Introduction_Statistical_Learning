@@ -468,6 +468,7 @@ The above can be read as, "The likelihood that $\theta$ is the parameter or set 
 
 With regard to linear regression, $\mu$ is the linear combination of each $\beta_j$ and $x_{i,j}$, $\theta = \beta$, and $x$ in the Gaussian PDF is $y_i$. In addition, maximum likelihood takes the maximum of the *log* likelihood. Therefore, the above equation becomes:
 
+
 \begin{align}
 \ell(\beta | \mathbf{X}) & = \sum_{i=1}^N log \left( g_{\beta}(x_i) \right) \\
 & = \sum_{i=1}^N log \left[ \frac{1}{\sigma\sqrt{2\pi}} \cdot e^{\frac{(x - \mu)^2}{2\sigma^2}} \right] \\
@@ -477,6 +478,13 @@ With regard to linear regression, $\mu$ is the linear combination of each $\beta
 & = log \left( \frac{1}{\sigma\sqrt{2\pi}} \right)\sum_{i=1}^N \left(\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2} \right) \\
 & = log \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \sum_{i=1}^N \left( \frac{1}{2\sigma^2} \right) \cdot \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \\
 \ell(\beta | \mathbf{X}) & = log \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \cdot \left( \frac{1}{2\sigma^2} \right) \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \\
+L(\beta | \mathbf{X}) & = \prod_{i=1}^N \left( \frac{1}{\sigma\sqrt{2\pi}} \cdot e^{ - \frac{(x - \mu)^2}{2\sigma^2}} \right) \\
+& = \prod_{i=1}^N \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \cdot \left( e^{ - \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2}} \right) \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \prod_{i=1}^N e^{ - \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2}} \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \prod_{i=1}^N e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{1}} \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \prod_{i=1}^N e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{1}} \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \left[ e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_1 - \beta_0 + \sum_{j=1}^P \beta_j x_{1,j} \right)^2}{1}} \right] \cdot \left[ e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_2 - \beta_0 + \sum_{j=1}^P \beta_j x_{2,j} \right)^2}{1}} \right] \cdots \left[ e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_N - \beta_0 + \sum_{j=1}^P \beta_j x_{N,j} \right)^2}{1}} \right] \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \\
 \end{align}
 
 \hfill
@@ -485,10 +493,71 @@ With regard to linear regression, $\mu$ is the linear combination of each $\beta
 
 \begin{align}
 P(\beta | \mathbf{X}) & = \frac{P(\mathbf{X} | \beta) \cdot P(\beta)}{\int{P(\mathbf{X} | \beta) \cdot P(\beta)}d\beta} \\
-& = \left( \prod_{i=1}^N \frac{1}{\sqrt{2\pi\sigma}}e^{\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} + \epsilon_i \right)^2}{2\sigma^2}} \right) \cdot \left( \frac{1}{2b}\epsilon^{\frac{-|\beta|}{b}} \right) \\
-& = \left( \frac{1}{\sqrt{2\pi\sigma}} \right)^N \cdot \left( \prod_{i=1}^N e^{\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} + \epsilon_i \right)^2}{2\sigma^2}} \right) \cdot \left( \frac{1}{2b}\epsilon^{\frac{-|\beta|}{b}} \right) \\
+P(\mathbf{X} | \beta) & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \\
+P(\beta) &  = \left( \frac{1}{2b} e^{\frac{-|\beta|}{b}} \right) \\
+P(\beta | \mathbf{X}) & \mathbf{\alpha}~~~P(\mathbf{X} | \beta) \cdot P(\beta) \\
+P(\beta | \mathbf{X}) & = \left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \right] \cdot \left[ \left( \frac{1}{2b} e^{\frac{-|\beta|}{b}} \right) \right] \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \right) \cdot \left( \frac{1}{2b} e^{\frac{-|\beta|}{b}} \right) \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \right) \cdot \left( \frac{1}{2b} \right) \cdot \left( e^{\frac{-|\beta|}{b}} \right) \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right) \cdot \left( e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \right) \cdot \left( e^{\frac{-|\beta|}{b}} \right) \\
+P(\beta | \mathbf{X}) & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right) \cdot \left( e^{ \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] - \frac{|\beta|}{b}} \right) \\
 \end{align}
 
+\setlength{\leftskip}{0cm}
+
+* **C**. With the posterior distribution of $\beta$ being defined above, where $\beta$ symbolizes the posterior distribution for *each* $\beta_j$ out of all $P$ $\beta$'s (i.e. in $P(\beta | \mathbf{X})$, $\beta$ is a vector of length $P$), one can show that the *maximum a posteriori estimate*, which is the mode of the posterior distribution of $\beta$, is equal to the standard Lasso equation, $\sum_{i=1}^N (y_i - \beta_0 - \sum_{j=1}^P \beta_jx_{i,j})^2 + \lambda\sum_{j=1}^P |\beta_j|$.
+
+\setlength{\leftskip}{1cm}
+
+To start, taking the log of the equation allows one to eliminate the exponent and make things easier to work with mathematically, in addition to reducing the potential for computational underflow, all while knowing that finding the maximum (or minimum for that matter) of the log of a function will yield the same result as finding the maximum (or minimum) of the original function.
+
+\begin{align}
+P(\beta | \mathbf{X}) & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right) \cdot \left( e^{ \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] - \frac{|\beta|}{b}} \right) \\
+log \left( P(\beta | \mathbf{X}) \right) & = log \left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right) \cdot \left( e^{ \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] - \frac{|\beta|}{b}} \right) \right] \\
+& = log \left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right)  \right] + \left( \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] - \frac{|\beta|}{b} \right) \\
+& = log \left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right)  \right] - \left( \left[ \left( \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] + \frac{|\beta|}{b} \right) \\
+\end{align}
+
+\pagebreak
+
+Showing that we want to take the maximum:
+
+\begin{align}
+max \left[log \left(P(\beta | \mathbf{X}) \right) \right] & = max \left[ log \left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right)  \right] - \left( \left[ \left( \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] + \frac{|\beta|}{b} \right) \right] \\
+& = max \left( \mathbf{A} - \mathbf{B} \right)~~~where~~~
+\begin{cases}
+\mathbf{A} = log \left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right)  \right] \\
+\mathbf{B} = \left( \left[ \left( \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] + \frac{|\beta|}{b} \right) \\
+\end{cases}
+\end{align}
+
+
+Since $\mathbf{A}$ in the above equation is held constanst (i.e. is not affected by $\beta$), finding $max \left(\mathbf{A} - \mathbf{B} \right)$ is synonymous to finding the minimum value for $\mathbf{B}$. Therefore, the above equation can become
+
+\begin{align}
+& = min(\mathbf{B})~~~where~~~\mathbf{B} = \left( \left[ \left( \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] + \frac{|\beta|}{b} \right) \\
+& = min\left( \left[ \left( \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] + \frac{|\beta|}{b} \right) \\
+& = min\left( \left( \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \frac{|\beta|}{b} \right)
+\end{align}
+
+Representing the L1 norm of $\beta$ using summation notation:
+
+\begin{align}
+& = min\left( \left( \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \frac{1}{b}\sum_{i=1}^P |\beta_j| \right) \\
+& = min\left( \frac{1}{2\sigma^2} \left[ \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \frac{2\sigma^2}{b}\sum_{i=1}^P |\beta_j| \right) \right) \\
+\end{align}
+
+Assigning $\lambda = \frac{2\sigma^2}{b}$, we get:
+
+$$
+= min\left( \frac{1}{2\sigma^2} \left[ \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \lambda\sum_{i=1}^P \beta_j \right) \right) \\
+$$
+
+By dropping $\frac{1}{2\sigma^2}$, which is acting as a constant (i.e. scaling factor), one ends up at the Lasso estimate:
+
+$$
+= min \left[ \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \lambda\sum_{i=1}^P \beta_j \right]
+$$
 
 \setlength{\leftskip}{0cm}
 
