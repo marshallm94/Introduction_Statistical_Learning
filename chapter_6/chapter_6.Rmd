@@ -466,7 +466,19 @@ $$
 
 The above can be read as, "The likelihood that $\theta$ is the parameter or set of parameters that governs the probability distribution/population from which the data came *given the observed data*, is equal to the element wise product of the predefined probability distribution/mass function with $\theta$ as the parameter or set of parameters, evaluated for each $x_i$ in the data set."
 
-With regard to linear regression, $\mu$ is the linear combination of each $\beta_j$ and $x_{i,j}$, $\theta = \beta$, and $x$ in the Gaussian PDF is $y_i$. In addition, maximum likelihood takes the maximum of the *log* likelihood. Therefore, the above equation becomes:
+With regard to linear regression, $\mu$ is the linear combination of each $\beta_j$ and $x_{i,j}$, $\theta = \beta$, and $x$ in the Gaussian PDF is $y_i$. With all this in mind, the likelihood of the data can be expressed as:
+
+\begin{align}
+L(\beta | \mathbf{X}) & = \prod_{i=1}^N \left( \frac{1}{\sigma\sqrt{2\pi}} \cdot e^{ - \frac{(x - \mu)^2}{2\sigma^2}} \right) \\
+& = \prod_{i=1}^N \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \cdot \left( e^{ - \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2}} \right) \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \prod_{i=1}^N e^{ - \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2}} \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \prod_{i=1}^N e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{1}} \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \prod_{i=1}^N e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{1}} \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \left[ e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_1 - \beta_0 + \sum_{j=1}^P \beta_j x_{1,j} \right)^2}{1}} \right] \cdot \left[ e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_2 - \beta_0 + \sum_{j=1}^P \beta_j x_{2,j} \right)^2}{1}} \right] \cdots \left[ e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_N - \beta_0 + \sum_{j=1}^P \beta_j x_{N,j} \right)^2}{1}} \right] \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \\
+\end{align}
+
+If one wanted to express this in terms of the *log* likelihood, the manner in which MLE operates, the above would become:
 
 \begin{align}
 \ell(\beta | \mathbf{X}) & = \sum_{i=1}^N log \left( g_{\beta}(x_i) \right) \\
@@ -476,14 +488,7 @@ With regard to linear regression, $\mu$ is the linear combination of each $\beta
 & = \sum_{i=1}^N log \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \cdot \left(\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2} \right) \\
 & = log \left( \frac{1}{\sigma\sqrt{2\pi}} \right)\sum_{i=1}^N \left(\frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2} \right) \\
 & = log \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \sum_{i=1}^N \left( \frac{1}{2\sigma^2} \right) \cdot \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \\
-\ell(\beta | \mathbf{X}) & = log \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \cdot \left( \frac{1}{2\sigma^2} \right) \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \\
-L(\beta | \mathbf{X}) & = \prod_{i=1}^N \left( \frac{1}{\sigma\sqrt{2\pi}} \cdot e^{ - \frac{(x - \mu)^2}{2\sigma^2}} \right) \\
-& = \prod_{i=1}^N \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \cdot \left( e^{ - \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2}} \right) \\
-& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \prod_{i=1}^N e^{ - \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{2\sigma^2}} \\
-& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \prod_{i=1}^N e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{1}} \\
-& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \prod_{i=1}^N e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2}{1}} \\
-& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \left[ e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_1 - \beta_0 + \sum_{j=1}^P \beta_j x_{1,j} \right)^2}{1}} \right] \cdot \left[ e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_2 - \beta_0 + \sum_{j=1}^P \beta_j x_{2,j} \right)^2}{1}} \right] \cdots \left[ e^{ - \frac{1}{2\sigma^2} \cdot \frac{\left( y_N - \beta_0 + \sum_{j=1}^P \beta_j x_{N,j} \right)^2}{1}} \right] \\
-& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \\
+\ell(\beta | \mathbf{X}) & = log \left( \frac{1}{\sigma\sqrt{2\pi}} \right) \cdot \left( \frac{1}{2\sigma^2} \right) \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2
 \end{align}
 
 \setlength{\leftskip}{0cm}
@@ -499,7 +504,7 @@ P(\beta | \mathbf{X}) & = \frac{P(\mathbf{X} | \beta) \cdot P(\beta)}{\int{P(\ma
 
 \setlength{\leftskip}{1cm}
 
-Since $\int{P(\mathbf{X} | \beta) \cdot P(\beta)}d\beta$ in the above equation is the marginal probablity of the data $\mathbf{X}$, or the joint probability of $P(\mathbf{X} | \beta)$ *for all $\beta$*, one can note that $P(\beta | \mathbf{X})~\mathbf{\alpha}~P(\mathbf{X} | \beta) \cdot P(\beta)$, which is to say that $P(\beta | \mathbf{X})$ is proportional to $P(\mathbf{X} | \beta) \cdot P(\beta)$, the constant being the marginal probability of $\mathbf{X}$, and continue by solving $P(\beta | \mathbf{X}) = P(\mathbf{X} | \beta) \cdot P(\beta) \\$.
+Since $\int{P(\mathbf{X} | \beta) \cdot P(\beta)}d\beta$ in the above equation is the marginal probablity of the data $\mathbf{X}$, or the joint probability of $P(\mathbf{X} | \beta)$ *for all $\beta$*, one can note that $P(\beta | \mathbf{X})~\mathbf{\alpha}~P(\mathbf{X} | \beta) \cdot P(\beta)$, which is to say that $P(\beta | \mathbf{X})$ is proportional to $P(\mathbf{X} | \beta) \cdot P(\beta)$, the constant being the marginal probability of $\mathbf{X}$, and continue by solving $P(\beta | \mathbf{X}) = P(\mathbf{X} | \beta) \cdot P(\beta)$.
 
 \begin{align}
 P(\mathbf{X} | \beta) & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \\
@@ -508,7 +513,7 @@ P(\beta | \mathbf{X}) & = \left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N e^
 & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \right) \cdot \left( \frac{1}{2b} e^{\frac{-|\beta|}{b}} \right) \\
 & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \right) \cdot \left( \frac{1}{2b} \right) \cdot \left( e^{\frac{-|\beta|}{b}} \right) \\
 & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right) \cdot \left( e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \right) \cdot \left( e^{\frac{-|\beta|}{b}} \right) \\
-P(\beta | \mathbf{X}) & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right) \cdot \left( e^{ \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] - \frac{|\beta|}{b}} \right) \\
+P(\beta | \mathbf{X}) & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{2b} \right) \cdot \left( e^{ \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 \right] - \frac{|\beta|}{b}} \right)
 \end{align}
 
 \setlength{\leftskip}{0cm}
@@ -566,6 +571,37 @@ By dropping $\frac{1}{2\sigma^2}$, which is acting as a constant (i.e. scaling f
 $$
 = min \left[ \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \lambda\sum_{i=1}^P \beta_j \right]
 $$
+
+\setlength{\leftskip}{0cm}
+
+* **D**. Assuming the $\beta$'s are drawn from a Gaussian prior with $\mu = 0$ and $\sigma^2 = c$, one can show the expansion of said distribution as follows:
+
+\begin{align}
+P(\beta) & = \prod_{j=1}^P P(\beta_j) \\
+& = \prod_{j=1}^P \frac{1}{\sqrt{2c\pi}} \cdot e^{\left( -\frac{(x-\mu)^2}{2c} \right)} \\
+& = \prod_{j=1}^P \frac{1}{\sqrt{2c\pi}} \cdot e^{\left( -\frac{(x-0)^2}{2c} \right)} \\
+& = \prod_{j=1}^P \frac{1}{\sqrt{2c\pi}} \cdot e^{\left( -\frac{(x)^2}{2c} \right)} \\
+& = \prod_{j=1}^P \frac{1}{\sqrt{2c\pi}} \cdot e^{\left( -\frac{(\beta)^2}{2c} \right)} \\
+& = \left( \frac{1}{\sqrt{2c\pi}} \right)^P \cdot \prod_{j=1}^P e^{\left( -\frac{(\beta)^2}{2c} \right)} \\
+& = \left( \frac{1}{\sqrt{2c\pi}} \right)^P \cdot \prod_{j=1}^P e^{\left( -\frac{1}{2c} \left(\beta^2\right) \right)} \\
+& = \left( \frac{1}{\sqrt{2c\pi}} \right)^P e^{\left( -\frac{1}{2c} \left(\beta_1^2\right) \right)} \cdot e^{\left( -\frac{1}{2c} \left(\beta_2^2\right) \right)} \cdot e^{\left( -\frac{1}{2c} \left(\beta_3^2\right) \right)} \cdots e^{\left( -\frac{1}{2c} \left(\beta_P^2\right) \right)} \\
+P(\beta) & = \left( \frac{1}{\sqrt{2c\pi}} \right)^P e^{\left( -\frac{1}{2c} \cdot \left(\sum_{j=1}^P\beta_j^2\right) \right)}
+\end{align}
+
+\setlength{\leftskip}{1cm}
+
+Bringing in the likelihood that was written out in part **A**, and once again knowing that $P(\beta | \mathbf{X})~\mathbf{\alpha}~P(\mathbf{X} | \beta) \cdot P(\beta)$, the posterior distribution becomes:
+
+\begin{align}
+P(\beta | \mathbf{X}) & ~\mathbf{\alpha}~P(\mathbf{X} | \beta) \cdot P(\beta) \\
+P(\beta | \mathbf{X}) & = P(\mathbf{X} | \beta) \cdot P(\beta) \\
+P(\mathbf{X} | \beta) & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \\
+P(\beta) & = \left( \frac{1}{\sqrt{2c\pi}} \right)^P e^{\left( -\frac{1}{2c} \cdot \left(\sum_{j=1}^P\beta_j^2\right) \right)} \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \cdot \left( \frac{1}{\sqrt{2c\pi}} \right)^P e^{\left( -\frac{1}{2c} \cdot \left(\sum_{j=1}^P\beta_j^2\right) \right)} \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{\sqrt{2c\pi}} \right)^P \cdot e^{ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2} \cdot  e^{\left( -\frac{1}{2c} \cdot \left(\sum_{j=1}^P\beta_j^2\right) \right)} \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{\sqrt{2c\pi}} \right)^P \cdot e^{ \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \left( -\frac{1}{2c} \right) \cdot \sum_{j=1}^P \beta_j^2 \right]} \\
+& = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{\sqrt{2c\pi}} \right)^P \cdot e^{ \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 - \left( \frac{1}{2c} \right) \cdot \sum_{j=1}^P \beta_j^2 \right]}
+\end{align}
 
 \setlength{\leftskip}{0cm}
 
