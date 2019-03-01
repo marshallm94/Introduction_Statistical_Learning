@@ -605,6 +605,45 @@ P(\beta) & = \left( \frac{1}{\sqrt{2c\pi}} \right)^P e^{\left( -\frac{1}{2c} \cd
 
 \setlength{\leftskip}{0cm}
 
+* **E**. Similar to the method that was shown in part B, one can show that the *maximum a posteriori estimate* is equal to the estimate produced by Ridge regression by showing that taking the maximum of the posterior distribution of $\beta$ is equal to the the minimization of the Ridge regression loss function with respect to $\beta$. 
+
+\begin{align}
+P(\beta | \mathbf{X}) & = \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{\sqrt{2c\pi}} \right)^P \cdot e^{ \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 - \left( \frac{1}{2c} \right) \cdot \sum_{j=1}^P \beta_j^2 \right]} \\
+& = log\left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{\sqrt{2c\pi}} \right)^P \cdot e^{ \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 - \left( \frac{1}{2c} \right) \cdot \sum_{j=1}^P \beta_j^2 \right]} \right] \\
+& = log\left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{\sqrt{2c\pi}} \right)^P  \right] + \left[ \left( - \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 - \left( \frac{1}{2c} \right) \cdot \sum_{j=1}^P \beta_j^2 \right] \\
+& = log\left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{\sqrt{2c\pi}} \right)^P  \right] - \left[ \left( \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \left( \frac{1}{2c} \right) \cdot \sum_{j=1}^P \beta_j^2 \right]
+\end{align}
+
+\setlength{\leftskip}{1cm}
+
+Similar to what was illustrated in the Lasso portion of the question, we want to use the estimate that maximizes the posterior distribution, and since the first part of the equation is held constant, finding $max \left(\mathbf{A} - \mathbf{B} \right)$ when $\mathbf{A}$ is held constant is equivalent to finding the minimum value $\mathbf{B}$ can take:
+
+\begin{align}
+max \biggl( P(\beta | \mathbf{X}) \biggr) & = max \left( \mathbf{A} - \mathbf{B} \right)~~~where~~~
+\begin{cases}
+\mathbf{A} = log\left[ \left( \frac{1}{\sigma\sqrt{2\pi}} \right)^N \cdot \left( \frac{1}{\sqrt{2c\pi}} \right)^P  \right] \\
+\mathbf{B} = \left[ \left( \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \left( \frac{1}{2c} \right) \cdot \sum_{j=1}^P \beta_j^2 \right] \\
+\end{cases} \\
+& = min \left( \left[ \left( \frac{1}{2\sigma^2} \right) \cdot \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \left( \frac{1}{2c} \right) \cdot \sum_{j=1}^P \beta_j^2 \right] \right) \\
+& = min \left( \frac{1}{2\sigma^2} \left[ \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \left( \frac{\sigma^2}{c} \right) \cdot \sum_{j=1}^P \beta_j^2 \right] \right) \\
+\end{align}
+
+Assigning $\lambda = \frac{\sigma^2}{c}$, we get:
+
+$$
+= min \left( \frac{1}{2\sigma^2} \left[ \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \lambda \sum_{j=1}^P \beta_j^2 \right] \right)
+$$
+
+Once again, by dropping $\frac{1}{2\sigma^2}$, which is acting as a constant (i.e. scaling factor), one ends up at the Ridge estimate:
+
+$$
+= min \left( \sum_{i=1}^N \left( y_i - \beta_0 + \sum_{j=1}^P \beta_j x_{i,j} \right)^2 + \lambda \sum_{j=1}^P \beta_j^2 \right)
+$$
+
+Knowing that the mean, median and mode of a Normal Distribution are all equal to each other, this shows that the Ridge Regression estimate for $\beta$ is equal to the mean and mode of the posterior distribution.
+
+\setlength{\leftskip}{0cm}
+
 # Applied
 
 ## 8
