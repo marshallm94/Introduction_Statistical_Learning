@@ -16,16 +16,48 @@ urlcolor: blue
 
 * **A**. 10.12, illustrated below, is showing the the *within-cluster variation* is equal to twice the squared distance between each data point in cluster *k* ($C_k$) and that cluster's centroid, summed across all data points.
 
-
-\begin{align}
-\frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P (x_{i,j} - x_{i',j})^2 & = 2\sum_{i \in C_k}\sum_{j=1}^P (x_{i,j} - \bar{x}_{k,j})^2 \\
-\frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P (x_{i,j} - x_{i',j})(x_{i,j} - x_{i',j}) & = 2\sum_{i \in C_k}\sum_{j=1}^P (x_{i,j} - \bar{x}_{k,j})(x_{i,j} - \bar{x}_{k,j}) \\
-\frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P (x_{i,j}^2 - 2x_{i,j}x_{i',j} + x_{i',j}^2) & = 2\sum_{i \in C_k}\sum_{j=1}^P (x_{i,j}^2 - 2\bar{x}_{k,j}x_{i,j} + \bar{x}_{k,j}^2) \\
-\frac{\lvert C_k \rvert}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P (x_{i,j}^2 - 2x_{i,j}x_{i',j} + x_{i',j}^2) & = 2\lvert C_k \rvert\sum_{i \in C_k}\sum_{j=1}^P (x_{i,j}^2 - 2\bar{x}_{k,j}x_{i,j} + \bar{x}_{k,j}^2) \\
-\sum_{i,i' \in C_k}\sum_{j=1}^P (x_{i,j}^2 - 2x_{i,j}x_{i',j} + x_{i',j}^2) & = 2\lvert C_k \rvert\sum_{i \in C_k}\sum_{j=1}^P (x_{i,j}^2 - 2\bar{x}_{k,j}x_{i,j} + \bar{x}_{k,j}^2) \\
-\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\sum_{i,i' \in C_k}\sum_{j=1}^Px_{i,j}x_{i',j} + \sum_{i' \in C_k}\sum_{j=1}^P x_{i',j}^2 & = 2\lvert C_k \rvert\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\lvert C_k \rvert\sum_{i \in C_k}\sum_{j=1}^P2\bar{x}_{k,j}x_{i,j} + 2\lvert C_k \rvert\sum_{i \in C_k}\sum_{j=1}^P\bar{x}_{k,j}^2 \\
-\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\sum_{i,i' \in C_k}\sum_{j=1}^Px_{i,j}x_{i',j} + \sum_{i' \in C_k}\sum_{j=1}^P x_{i',j}^2 & = 2\lvert C_k \rvert\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 4\lvert C_k \rvert\sum_{i \in C_k}\sum_{j=1}^P\bar{x}_{k,j}x_{i,j} + 2\lvert C_k \rvert\sum_{i \in C_k}\sum_{j=1}^P\bar{x}_{k,j}^2 \\
-\end{align}
+```{r echo=FALSE}
+suppressPackageStartupMessages(library(ggplot2))
+x <- c(2, 4, 6)
+y <- c(6, 4, 2)
+df <- data.frame(x = x, y = y)
+mu <- subset(df, x == 4 & y == 4)
+ggplot(df, aes(x, y)) +
+    geom_point(color = 'blue') +
+    geom_point(data = mu, color = 'red') +
+    geom_path(color = 'royalblue', lty = 'dashed') +
+    geom_segment(aes(x = 2, xend = 2, y = 4, yend = 6), color = 'skyblue', lty = 'dashed') +
+    geom_segment(aes(x = 4, xend = 4, y = 2, yend = 4), color = 'skyblue', lty = 'dashed') +
+    geom_segment(aes(x = 2, xend = 4, y = 4, yend = 4), color = 'skyblue', lty = 'dashed') +
+    geom_segment(aes(x = 4, xend = 6, y = 2, yend = 2), color = 'skyblue', lty = 'dashed') +
+    geom_segment(aes(x = 2, xend = 2, y = 2, yend = 6), color = 'red', lty = 'dotted') +
+    geom_segment(aes(x = 2, xend = 6, y = 2, yend = 2), color = 'red', lty = 'dotted') +
+    geom_path(color = 'red', lty = 'dotted') +
+    geom_segment(aes(x = 2, xend = 4, y = 6, yend = 8), color = 'skyblue', lty = 'dashed') +
+    geom_segment(aes(x = 4, xend = 6, y = 4, yend = 6), color = 'skyblue', lty = 'dashed') +
+    geom_segment(aes(x = 6, xend = 8, y = 2, yend = 4), color = 'skyblue', lty = 'dashed') +
+    geom_segment(aes(x = 4, xend = 6, y = 8, yend = 6), color = 'skyblue', lty = 'dashed') +
+    geom_segment(aes(x = 6, xend = 8, y = 6, yend = 4), color = 'skyblue', lty = 'dashed') +
+    geom_segment(aes(x = 2, xend = 6, y = 6, yend = 10), color = 'red', lty = 'dotted') +
+    geom_segment(aes(x = 6, xend = 10, y = 2, yend = 6), color = 'red', lty = 'dotted') +
+    geom_segment(aes(x = 6, xend = 10, y = 10, yend = 6), color = 'red', lty = 'dotted') +
+    geom_segment(aes(x = 6, xend = 10, y = 10, yend = 14), color = 'red', lty = 'dotted') +
+    geom_segment(aes(x = 10, xend = 14, y = 6, yend = 10), color = 'red', lty = 'dotted') +
+    geom_segment(aes(x = 10, xend = 14, y = 14, yend = 10), color = 'red', lty = 'dotted') +
+    annotate('text', x = 4, y = 6, label = expression(A^2 + B^2 == C^2), cex = 1.5) +
+    annotate('text', x = 6, y = 4, label = expression(B^2 + A^2 == C^2), cex = 1.5) +
+    annotate('text', x = 3, y = 4, label = expression(A), cex = 1.5) +
+    annotate('text', x = 4, y = 3, label = expression(B), cex = 1.5) +
+    annotate('text', x = 1.75, y = 4, label = expression(2 * A), cex = 1.5) +
+    annotate('text', x = 4, y = 1.75, label = expression(2 * B), cex = 1.5) +
+    annotate('text', x = 10, y = 10, label = expression((2*A[i])^2 + (2*B)^2 == (C^2)^2), cex = 1.5) +
+    annotate('text', x = 6.5, y = 6.5, label = expression((2*B[i])^2 + (2*A)^2 == (C^2)^2), cex = 1.5) +
+    coord_fixed(1) +
+    xlab("J1") +
+    ylab("J2") +
+    ggtitle("Equation 10.12 - Geometric Representation",
+            "Cluster with 2 Observations")
+```
 
 
 ## 2
@@ -90,7 +122,6 @@ abline(v = 2.5, col = 'red', lty = 2)
 \hfill
 
 ```{r}
-suppressPackageStartupMessages(library(ggplot2))
 df <- data.frame(x1 = c(1,1,0,5,6,4),
                  x2 = c(4,3,4,1,2,0))
 qplot(df$x1, df$x2, xlab = 'X1', ylab = 'X2')
