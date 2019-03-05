@@ -12,16 +12,17 @@ urlcolor: blue
 
 ## 1
 
-**NEED TO COME BACK TOO**
 
 * **A**. 10.12, illustrated below, is showing the the *within-cluster variation* is equal to twice the squared distance between each data point in cluster *k* ($C_k$) and that cluster's centroid, summed across all data points.
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 suppressPackageStartupMessages(library(ggplot2))
 x <- c(2, 4, 6)
 y <- c(6, 4, 2)
 df <- data.frame(x = x, y = y)
 mu <- subset(df, x == 4 & y == 4)
+
+suppressWarnings(
 ggplot(df, aes(x, y)) +
     geom_point(color = 'blue') +
     geom_point(data = mu, color = 'red') +
@@ -44,19 +45,20 @@ ggplot(df, aes(x, y)) +
     geom_segment(aes(x = 6, xend = 10, y = 10, yend = 14), color = 'red', lty = 'dotted') +
     geom_segment(aes(x = 10, xend = 14, y = 6, yend = 10), color = 'red', lty = 'dotted') +
     geom_segment(aes(x = 10, xend = 14, y = 14, yend = 10), color = 'red', lty = 'dotted') +
-    annotate('text', x = 4, y = 6, label = expression(A^2 + B^2 == C^2), cex = 1.5) +
-    annotate('text', x = 6, y = 4, label = expression(B^2 + A^2 == C^2), cex = 1.5) +
-    annotate('text', x = 3, y = 4, label = expression(A), cex = 1.5) +
-    annotate('text', x = 4, y = 3, label = expression(B), cex = 1.5) +
-    annotate('text', x = 1.75, y = 4, label = expression(2 * A), cex = 1.5) +
-    annotate('text', x = 4, y = 1.75, label = expression(2 * B), cex = 1.5) +
-    annotate('text', x = 10, y = 10, label = expression((2*A[i])^2 + (2*B)^2 == (C^2)^2), cex = 1.5) +
-    annotate('text', x = 6.5, y = 6.5, label = expression((2*B[i])^2 + (2*A)^2 == (C^2)^2), cex = 1.5) +
+    annotate('text', x = 4, y = 6, label = expression(A^2 + B^2 == C^2), cex = 1.75) +
+    annotate('text', x = 6, y = 4, label = expression(B^2 + A^2 == C^2), cex = 1.75) +
+    annotate('text', x = 3, y = 4, label = expression(A), cex = 1.75) +
+    annotate('text', x = 4, y = 3, label = expression(B), cex = 1.75) +
+    annotate('text', x = 1.75, y = 4, label = expression(2 * A), cex = 1.75) +
+    annotate('text', x = 4, y = 1.75, label = expression(2 * B), cex = 1.75) +
+    annotate('text', x = 10, y = 10, label = expression((2*A[i])^2 + (2*B)^2 == (C^2)^2), cex = 1.75) +
+    annotate('text', x = 6.5, y = 6.5, label = expression((2*B[i])^2 + (2*A)^2 == (C^2)^2), cex = 1.75) +
     coord_fixed(1) +
     xlab("J1") +
     ylab("J2") +
     ggtitle("Equation 10.12 - Geometric Representation",
             "Cluster with 2 Observations")
+)
 ```
 
 
