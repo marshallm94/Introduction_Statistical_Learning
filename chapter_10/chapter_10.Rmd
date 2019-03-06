@@ -13,7 +13,21 @@ urlcolor: blue
 ## 1
 
 
-* **A**. 10.12, illustrated below, is showing the the *within-cluster variation* is equal to twice the squared distance between each data point in cluster *k* ($C_k$) and that cluster's centroid, summed across all data points.
+* **A & B**. One way to illustrate the relationship in 10.12 is to illustrate the equation geometrically. Equation 10.12, reproduced below, can be read as: 
+
+\setlength{\leftskip}{1cm}
+
+"The sum of the squared difference between every pairswise *permutation* of points within a cluster $C_k$, divided by the number of observations in that cluster, is equal to two times the sum of the squared difference between each observation and the cluster centroid $\bar{x_{k,j}}$."
+
+\hfill
+
+$$
+\frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 = 2\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2~~~where~~~\bar{x_{k,j}} = \frac{1}{\lvert C_k \rvert}\sum_{i \in C_k} x_{i,j}
+$$
+
+If one takes this concept and broadcasts it down to a 2 dimensional data set ($P=2$) with two observations ($N=2$), this concept can be illustrated with the following plot.
+
+\hfill
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 suppressPackageStartupMessages(library(ggplot2))
@@ -27,18 +41,18 @@ ggplot(df, aes(x, y)) +
     geom_point(color = 'blue') +
     geom_point(data = mu, color = 'red') +
     geom_path(color = 'royalblue', lty = 'dashed') +
-    geom_segment(aes(x = 2, xend = 2, y = 4, yend = 6), color = 'skyblue', lty = 'dashed') +
-    geom_segment(aes(x = 4, xend = 4, y = 2, yend = 4), color = 'skyblue', lty = 'dashed') +
-    geom_segment(aes(x = 2, xend = 4, y = 4, yend = 4), color = 'skyblue', lty = 'dashed') +
-    geom_segment(aes(x = 4, xend = 6, y = 2, yend = 2), color = 'skyblue', lty = 'dashed') +
-    geom_segment(aes(x = 2, xend = 2, y = 2, yend = 6), color = 'red', lty = 'dotted') +
-    geom_segment(aes(x = 2, xend = 6, y = 2, yend = 2), color = 'red', lty = 'dotted') +
+    geom_segment(aes(x = 2, xend = 2, y = 4, yend = 6), color = 'lightblue', lty = 'dashed') +
+    geom_segment(aes(x = 4, xend = 4, y = 2, yend = 4), color = 'lightblue', lty = 'dashed') +
+    geom_segment(aes(x = 2, xend = 4, y = 4, yend = 4), color = 'lightblue', lty = 'dashed') +
+    geom_segment(aes(x = 4, xend = 6, y = 2, yend = 2), color = 'lightblue', lty = 'dashed') +
+    geom_segment(aes(x = 2, xend = 2, y = 2, yend = 6), color = 'salmon', lty = 'dotted') +
+    geom_segment(aes(x = 2, xend = 6, y = 2, yend = 2), color = 'salmon', lty = 'dotted') +
     geom_path(color = 'red', lty = 'dotted') +
-    geom_segment(aes(x = 2, xend = 4, y = 6, yend = 8), color = 'skyblue', lty = 'dashed') +
-    geom_segment(aes(x = 4, xend = 6, y = 4, yend = 6), color = 'skyblue', lty = 'dashed') +
-    geom_segment(aes(x = 6, xend = 8, y = 2, yend = 4), color = 'skyblue', lty = 'dashed') +
-    geom_segment(aes(x = 4, xend = 6, y = 8, yend = 6), color = 'skyblue', lty = 'dashed') +
-    geom_segment(aes(x = 6, xend = 8, y = 6, yend = 4), color = 'skyblue', lty = 'dashed') +
+    geom_segment(aes(x = 2, xend = 4, y = 6, yend = 8), color = 'royalblue', lty = 'dashed') +
+    geom_segment(aes(x = 4, xend = 6, y = 4, yend = 6), color = 'royalblue', lty = 'dashed') +
+    geom_segment(aes(x = 6, xend = 8, y = 2, yend = 4), color = 'royalblue', lty = 'dashed') +
+    geom_segment(aes(x = 4, xend = 6, y = 8, yend = 6), color = 'royalblue', lty = 'dashed') +
+    geom_segment(aes(x = 6, xend = 8, y = 6, yend = 4), color = 'royalblue', lty = 'dashed') +
     geom_segment(aes(x = 2, xend = 6, y = 6, yend = 10), color = 'red', lty = 'dotted') +
     geom_segment(aes(x = 6, xend = 10, y = 2, yend = 6), color = 'red', lty = 'dotted') +
     geom_segment(aes(x = 6, xend = 10, y = 10, yend = 6), color = 'red', lty = 'dotted') +
@@ -61,6 +75,19 @@ ggplot(df, aes(x, y)) +
 )
 ```
 
+In the above plot, the left side of equation 10.12 is displayed in red, and the right side of equation 10.12 is illustrated in blue. If one were to rewrite the equation, using the dimensions specified ($2~x~2$), it becomes abundantly clear that:
+
+\hfill
+
+\begin{align}
+\frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 & = 2\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 \\
+\frac{1}{4}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 & = \sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 \\
+\frac{1}{4}\sum red~squares & = \sum blue~squares
+\end{align}
+
+\hfill
+
+\setlength{\leftskip}{0cm}
 
 ## 2
 
