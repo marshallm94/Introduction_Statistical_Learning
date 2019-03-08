@@ -85,27 +85,33 @@ In the above plot, the left side of equation 10.12 is displayed in red, and the 
 \frac{1}{4}\sum red~squares & = \sum blue~squares
 \end{align}
 
-\hfill
-
 Algebraically, this is proved by:
 
 \begin{align}
-\frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 & = 2\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 \\
-\frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} - x_{i',j} + \bar{x_{k,j}} \right)^2 & = \\
-\frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( (x_{i,j} - \bar{x_{k,j}}) - (x_{i',j} - \bar{x_{k,j}}) \right)^2 & = \\
-\frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( (x_{i,j} - \bar{x_{k,j}})^2 - 2(x_{i',j} - \bar{x_{k,j}})(x_{i,j} - \bar{x_{k,j}}) + (x_{i',j} - \bar{x_{k,j}})^2 \right) & = \\
-\\
-\\
-\frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 & = 2\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 \\
-\frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j}^2 - 2x_{i',j}x_{i,j} + x_{i',j}^2 \right) & = 2\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j}^2 - 2\bar{x_{k,j}}x_{i,j} + \bar{x_{k,j}}^2 \right) \\
-\frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P2x_{i',j}x_{i,j} + \frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^Px_{i',j}^2 & = \\
-\sum_{i \in C_k}\sum_{j=1}^P \frac{1}{\lvert C_k \rvert}x_{i,j}^2 - \sum_{i,i' \in C_k}\sum_{j=1}^P \frac{1}{\lvert C_k \rvert} 2x_{i',j}x_{i,j} + \sum_{i' \in C_k}\sum_{j=1}^P \frac{1}{\lvert C_k \rvert} x_{i',j}^2 & = \\
-\sum_{i \in C_k}\sum_{j=1}^P \frac{1}{\lvert C_k \rvert}x_{i,j}^2 - \sum_{i,i' \in C_k}\sum_{j=1}^P 2x_{i',j}\bar{x_{k,j}} + \sum_{i' \in C_k}\sum_{j=1}^P \frac{1}{\lvert C_k \rvert} x_{i',j}^2 & = \\
-\frac{1}{\lvert C_k \rvert}\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}\bar{x_{k,j}} + \frac{1}{\lvert C_k \rvert}\sum_{i' \in C_k}\sum_{j=1}^P x_{i',j}^2 & = \\
-\frac{2}{\lvert C_k \rvert}\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\sum_{i' \in C_k}\sum_{j=1}^P x_{i',j}\bar{x_{k,j}} & = \\
-\frac{2}{\lvert C_k \rvert}\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\sum_{i' \in C_k}\sum_{j=1}^P x_{i',j}\bar{x_{k,j}} & = \\
+\frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 = 2\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 \\
+\frac{1}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 = \frac{2}{2}\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 \\
+\frac{1}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 = \sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 \\
+\frac{1}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j}^2 - 2x_{i',j}x_{i,j} + x_{i',j}^2 \right) = \\
+\frac{\lvert C_k \rvert}{2\lvert C_k \rvert}\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P 2x_{i',j}x_{i,j} + \frac{\lvert C_k \rvert}{2\lvert C_k \rvert}\sum_{i' \in C_k}\sum_{j=1}^P x_{i',j}^2 = \\
+\frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{2}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}x_{i,j} + \frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}^2 = \\
+\frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}x_{i,j} + \frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}^2 = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}x_{i,j} = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 =
 \end{align}
 
+\begin{align}
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 \left( - \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2  + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2\right) = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 - \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2  + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\lvert C_k \rvert \sum_{j=1}^P (\bar{x_{k,j}})(\bar{x_{k,j}}) + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\lvert C_k \rvert \sum_{j=1}^P \left( \frac{1}{\lvert C_k \rvert}\sum_{i \in C_k} x_{ij} \right)(\bar{x_{k,j}}) + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{2\lvert C_k \rvert}{\lvert C_k \rvert} \sum_{j=1}^P \sum_{i \in C_k} x_{ij}\bar{x_{k,j}} + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\sum_{j=1}^P \sum_{i \in C_k} x_{ij}\bar{x_{k,j}} + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \sum_{j=1}^P \sum_{i \in C_k} 2x_{ij}\bar{x_{k,j}} + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \sum_{i \in C_k}\sum_{j=1}^P 2x_{ij}\bar{x_{k,j}} + \sum_{i \in C_k}\sum_{j=1}^P \bar{x_{k,j}}^2 = \\
+\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j}^2 - 2x_{ij}\bar{x_{k,j}} + \bar{x_{k,j}}^2 \right) = \\
+\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 = \sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2
+\end{align}
 
 \setlength{\leftskip}{0cm}
 
