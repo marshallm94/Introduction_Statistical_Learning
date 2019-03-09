@@ -1,7 +1,7 @@
 ---
 title: "ISLR | Chapter 10 Exercises"
 author: "Marshall McQuillen"
-date: "2/18/2019"
+date: "3/8/2019"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -85,25 +85,55 @@ In the above plot, the left side of equation 10.12 is displayed in red, and the 
 \frac{1}{4}\sum red~squares & = \sum blue~squares
 \end{align}
 
-Algebraically, this is proved by:
+\hfill
+
+**Algebraic Proof**
+
+The first steps are simple (although I'm sure all of these steps are 'simple' for someone...); dividing by 2, simplify both equations, and expand the quadratic equation on the left.
 
 \begin{align}
 \frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 = 2\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 \\
 \frac{1}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 = \frac{2}{2}\sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 \\
 \frac{1}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j} - x_{i',j} \right)^2 = \sum_{i \in C_k}\sum_{j=1}^P \left( x_{i,j} - \bar{x_{k,j}} \right)^2 \\
 \frac{1}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P \left( x_{i,j}^2 - 2x_{i',j}x_{i,j} + x_{i',j}^2 \right) = \\
+\end{align}
+
+From this point on, I will work with the left hand side of the equation exclusively. When expanding the summation terms to each part of the expanded quadratic equation, there are a couple terms that get added. The first and third term in the expanded quadratic each *either* have an $i$ or an $i'$, therefore the summation that is applied to each will either be $\sum_{i \in C_k}$ or $\sum_{i' \in C_k}$ . However, in the original expanded quadratic equation, both of these terms are under the mathematical umbrella of $\sum_{i, i' \in C_k}$. Therefore, when one brings each of the terms out from under that umbrella, the equality $\sum_{i \in C_k} = \lvert C_k \rvert$ must be used in order to keep the equation valid. This is the origin of the $\lvert C_k \rvert$ in the numerator of both the first and third term in the below rearrangement. After that rearrangment, there is some simplification, followed by a combination of the first and third terms.
+
+\begin{align}
 \frac{\lvert C_k \rvert}{2\lvert C_k \rvert}\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P 2x_{i',j}x_{i,j} + \frac{\lvert C_k \rvert}{2\lvert C_k \rvert}\sum_{i' \in C_k}\sum_{j=1}^P x_{i',j}^2 = \\
-\frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{2}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}x_{i,j} + \frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}^2 = \\
-\frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}x_{i,j} + \frac{1}{2}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}^2 = \\
+\frac{1}{2}\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{2}{2\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}x_{i,j} + \frac{1}{2}\sum_{i' \in C_k}\sum_{j=1}^P x_{i',j}^2 = \\
+\frac{1}{2}\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}x_{i,j} + \frac{1}{2}\sum_{i' \in C_k}\sum_{j=1}^P x_{i',j}^2 = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}x_{i,j} =
+\end{align}
+
+Using equality 1 defined in the book, and reproduced below, one can show that:
+
+\begin{align}
+Equality~1:~\bar{x_{k,j}}= \frac{1}{\lvert C_k \rvert}\sum_{i \in C_k} x_{i,j}~~~therefore~~~\bar{x_{k,j}} \lvert C_k \rvert = \sum_{i \in C_k} x_{i,j} \\
 \sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{i,i' \in C_k}\sum_{j=1}^P x_{i',j}x_{i,j} = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{j=1}^P\sum_{i \in C_k}x_{i,j}\sum_{i' \in C_k} x_{i',j} = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{j=1}^P \left( \sum_{i \in C_k}x_{i,j} \right) \left(\sum_{i' \in C_k} x_{i',j} \right) = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{j=1}^P \left( \sum_{i \in C_k}x_{i,j} \right) \left(\sum_{i' \in C_k} x_{i',j} \right) = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{1}{\lvert C_k \rvert}\sum_{j=1}^P \left( \bar{x_{k,j}} \lvert C_k \rvert \right) \left( \bar{x_{k,j}} \lvert C_k \rvert \right) = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \sum_{j=1}^P \frac{1}{\lvert C_k \rvert} \left( \bar{x_{k,j}} \lvert C_k \rvert \right) \left( \bar{x_{k,j}} \lvert C_k \rvert \right) = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \sum_{j=1}^P \frac{\left( \bar{x_{k,j}} \lvert C_k \rvert \right) \left( \bar{x_{k,j}} \lvert C_k \rvert \right)}{\lvert C_k \rvert} = \\
+\sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \sum_{j=1}^P \bar{x_{k,j}}^2 \lvert C_k \rvert = \\
 \sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 =
 \end{align}
+
+Adding and subtracting $\lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2$ (effectively adding 0 to the equation):
 
 \begin{align}
 \sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 \left( - \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2  + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2\right) = \\
 \sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 - \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2  + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
 \sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
 \sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\lvert C_k \rvert \sum_{j=1}^P (\bar{x_{k,j}})(\bar{x_{k,j}}) + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
+\end{align}
+
+Using equality 1 (defined above) to make a substitution, one can re-arrange a bit, factor the quadratic and bring the right hand side of the equation back into the picture to show the equality:
+
+\begin{align}
 \sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\lvert C_k \rvert \sum_{j=1}^P \left( \frac{1}{\lvert C_k \rvert}\sum_{i \in C_k} x_{ij} \right)(\bar{x_{k,j}}) + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
 \sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - \frac{2\lvert C_k \rvert}{\lvert C_k \rvert} \sum_{j=1}^P \sum_{i \in C_k} x_{ij}\bar{x_{k,j}} + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
 \sum_{i \in C_k}\sum_{j=1}^P x_{i,j}^2 - 2\sum_{j=1}^P \sum_{i \in C_k} x_{ij}\bar{x_{k,j}} + \lvert C_k \rvert \sum_{j=1}^P \bar{x_{k,j}}^2 = \\
