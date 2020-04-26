@@ -1,5 +1,8 @@
 This repo holds my answers for all lab exercises in the book "An Introduction to Statistical Learning with Applications in R"
 
+For a more succinct write out of the answers, checkout [this link](https://blog.princehonest.com/stat-learning/),
+which served as a useful resource whenever I got stuck working through any problems.
+
 **PDF Reports:**
 
 [Chapter 2](chapter_2/chapter_2.pdf)
